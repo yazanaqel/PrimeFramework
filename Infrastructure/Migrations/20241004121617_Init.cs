@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -126,7 +126,7 @@ namespace Infrastructure.Migrations
                 {
                     ClientId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    AuthenticationMemberId = table.Column<int>(type: "int", nullable: false),
+                    AuthenticationUserId = table.Column<int>(type: "int", nullable: false),
                     CreatedOnUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedOnUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ClientType = table.Column<string>(type: "nvarchar(8)", maxLength: 8, nullable: false),
@@ -237,9 +237,9 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Clients_AuthenticationMemberId",
+                name: "IX_Clients_AuthenticationUserId",
                 table: "Clients",
-                column: "AuthenticationMemberId",
+                column: "AuthenticationUserId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -261,9 +261,9 @@ namespace Infrastructure.Migrations
                 column: "ClientId");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_Clients_Users_AuthenticationMemberId",
+                name: "FK_Clients_Users_AuthenticationUserId",
                 table: "Clients",
-                column: "AuthenticationMemberId",
+                column: "AuthenticationUserId",
                 principalSchema: "Identity",
                 principalTable: "Users",
                 principalColumn: "Id");
@@ -273,7 +273,7 @@ namespace Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_Clients_Users_AuthenticationMemberId",
+                name: "FK_Clients_Users_AuthenticationUserId",
                 table: "Clients");
 
             migrationBuilder.DropTable(

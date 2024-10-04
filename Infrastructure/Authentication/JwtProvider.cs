@@ -13,24 +13,30 @@ internal class JwtProvider(IOptions<JwtOptions> options, IPermissionService perm
     private readonly JwtOptions _options = options.Value;
     private readonly IPermissionService _permissionService = permissionService;
 
-    public async Task<string> GenerateAsync(User member)
+    public async Task<string> GenerateAsync(User user)
     {
         var claims = new List<Claim>
         {
-            new(JwtRegisteredClaimNames.Sub, member.Id.ToString()),
-            new(JwtRegisteredClaimNames.Email, member.Email.ToString()),
+            new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+            new(JwtRegisteredClaimNames.Email, user.Email.ToString()),
         };
 
         var rolePermissions = await _permissionService
-            .GetRolePermissionsAsync(member.Id);
+            .GetRolePermissionsAsync(user.Id);
 
-        foreach (var role in rolePermissions)
+        if (rolePermissions.Any())
         {
-            claims.Add(new Claim(ClaimTypes.Role, role.Key));
-
-            foreach (var permission in role.Value)
+            foreach (var role in rolePermissions)
             {
-                claims.Add(new Claim(CustomClaims.Permissions, permission));
+                claims.Add(new Claim(ClaimTypes.Role, role.Key));
+
+                if(role.Value.Any())
+                {
+                    foreach (var permission in role.Value)
+                    {
+                        claims.Add(new Claim(CustomClaims.Permissions, permission));
+                    }
+                }
             }
         }
 

@@ -1,4 +1,5 @@
 ﻿using Application.Abstractions;
+using Domain.Constants;
 using Infrastructure.Authentication;
 using Infrastructure.Authentication.IdentityEntities;
 using Infrastructure.Repositories.Authentication;
@@ -16,10 +17,10 @@ public static class DependencyInjection
 
         services.AddDbContext<ApplicationDbContext>(options =>
         {
-            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
+            options.UseSqlServer(configuration.GetConnectionString(AppSettingsSections.DefaultConnection));
         });
 
-        services.AddIdentity<User, IdentityRole<int>>(op =>
+        services.AddIdentity<User, Role>(op =>
         {
             op.Password.RequireDigit = false;
             op.Password.RequiredLength = 6;
@@ -27,7 +28,7 @@ public static class DependencyInjection
             op.Password.RequireLowercase = false;
             op.Password.RequireNonAlphanumeric = false;
             op.SignIn.RequireConfirmedAccount = false;
-            op.ClaimsIdentity.UserIdClaimType = "UserId";
+            //op.ClaimsIdentity.UserIdClaimType = "UserId";
         })
     .AddEntityFrameworkStores<ApplicationDbContext>().
     AddDefaultTokenProviders();

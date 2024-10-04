@@ -21,9 +21,9 @@ internal sealed class ClientConfiguration : IEntityTypeConfiguration<Client>
                 .HasValue<Company>(nameof(Company));
 
         builder
-            .HasOne(c => (User)c.AuthenticationMember)
+            .HasOne(c => (User)c.AuthenticationUser)
             .WithOne()
-            .HasForeignKey<Client>(c => c.AuthenticationMemberId)
+            .HasForeignKey<Client>(c => c.AuthenticationUserId)
             .OnDelete(DeleteBehavior.NoAction);
 
     }

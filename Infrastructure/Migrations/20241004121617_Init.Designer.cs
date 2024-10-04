@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241003214429_Initial")]
-    partial class Initial
+    [Migration("20241004121617_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,7 +33,7 @@ namespace Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ClientId"));
 
-                    b.Property<int>("AuthenticationMemberId")
+                    b.Property<int>("AuthenticationUserId")
                         .HasColumnType("int");
 
                     b.Property<string>("ClientType")
@@ -49,7 +49,7 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("ClientId");
 
-                    b.HasIndex("AuthenticationMemberId")
+                    b.HasIndex("AuthenticationUserId")
                         .IsUnique();
 
                     b.ToTable("Clients", (string)null);
@@ -358,13 +358,13 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Clients.Client", b =>
                 {
-                    b.HasOne("Infrastructure.Authentication.IdentityEntities.User", "AuthenticationMember")
+                    b.HasOne("Infrastructure.Authentication.IdentityEntities.User", "AuthenticationUser")
                         .WithOne()
-                        .HasForeignKey("Domain.Entities.Clients.Client", "AuthenticationMemberId")
+                        .HasForeignKey("Domain.Entities.Clients.Client", "AuthenticationUserId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("AuthenticationMember");
+                    b.Navigation("AuthenticationUser");
                 });
 
             modelBuilder.Entity("Infrastructure.Authentication.IdentityEntities.RolePermission", b =>

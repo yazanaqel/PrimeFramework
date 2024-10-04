@@ -9,5 +9,3 @@ public sealed class HasPermissionAttribute : AuthorizeAttribute
 
     }
 }
-
-

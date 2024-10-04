@@ -30,7 +30,7 @@ namespace Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ClientId"));
 
-                    b.Property<int>("AuthenticationMemberId")
+                    b.Property<int>("AuthenticationUserId")
                         .HasColumnType("int");
 
                     b.Property<string>("ClientType")
@@ -46,7 +46,7 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("ClientId");
 
-                    b.HasIndex("AuthenticationMemberId")
+                    b.HasIndex("AuthenticationUserId")
                         .IsUnique();
 
                     b.ToTable("Clients", (string)null);
@@ -355,13 +355,13 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Clients.Client", b =>
                 {
-                    b.HasOne("Infrastructure.Authentication.IdentityEntities.User", "AuthenticationMember")
+                    b.HasOne("Infrastructure.Authentication.IdentityEntities.User", "AuthenticationUser")
                         .WithOne()
-                        .HasForeignKey("Domain.Entities.Clients.Client", "AuthenticationMemberId")
+                        .HasForeignKey("Domain.Entities.Clients.Client", "AuthenticationUserId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("AuthenticationMember");
+                    b.Navigation("AuthenticationUser");
                 });
 
             modelBuilder.Entity("Infrastructure.Authentication.IdentityEntities.RolePermission", b =>

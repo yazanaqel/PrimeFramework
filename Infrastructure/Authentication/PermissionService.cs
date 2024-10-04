@@ -7,10 +7,10 @@ public class PermissionService(ApplicationDbContext dbContext) : IPermissionServ
 {
     private readonly ApplicationDbContext _dbContext = dbContext;
 
-    public async Task<Dictionary<string, HashSet<string>>> GetRolePermissionsAsync(int memberId)
+    public async Task<Dictionary<string?, HashSet<string?>>> GetRolePermissionsAsync(int userId)
     {
         var rolePermissions = await _dbContext.Set<IdentityEntities.User>()
-            .Where(u => u.Id == memberId)
+            .Where(u => u.Id == userId)
             .SelectMany(u => u.UserRoles)
             .GroupBy(ur => ur.Role.Name)
             .Select(g => new
@@ -22,7 +22,7 @@ public class PermissionService(ApplicationDbContext dbContext) : IPermissionServ
             })
             .ToDictionaryAsync(x => x.RoleName, x => x.Permissions);
 
-        return rolePermissions;
+           return rolePermissions;
     }
 
 }

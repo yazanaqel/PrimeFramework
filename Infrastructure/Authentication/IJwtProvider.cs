@@ -3,5 +3,5 @@
 namespace Infrastructure.Authentication;
 public interface IJwtProvider
 {
-    Task<string> GenerateAsync(User member);
+    Task<string> GenerateAsync(User user);
 }

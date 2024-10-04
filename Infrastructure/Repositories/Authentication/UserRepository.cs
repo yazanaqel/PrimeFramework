@@ -9,14 +9,14 @@ internal class UserRepository(ApplicationDbContext dbContext, UserManager<User> 
     private readonly UserManager<User> _userManager = userManager;
     private readonly IJwtProvider _jwtProvider = jwtProvider;
 
-    public async Task<bool> RegisterAsync(User member)
+    public async Task<bool> RegisterAsync(User user)
     {
-        var isEmailUnique = await _userManager.FindByEmailAsync(member.Email);
+        var isEmailUnique = await _userManager.FindByEmailAsync(user.Email);
 
         if (isEmailUnique is not null)
             return false;
 
-        var result = await _userManager.CreateAsync(member, "Qwerty1@345");
+        var result = await _userManager.CreateAsync(user, "Qwerty1@345");
 
         _dbContext.SaveChanges();
 
@@ -28,12 +28,12 @@ internal class UserRepository(ApplicationDbContext dbContext, UserManager<User> 
 
     public async Task<string> LoginAsync(string email, string password)
     {
-        var member = await _userManager.FindByEmailAsync(email);
+        var user = await _userManager.FindByEmailAsync(email);
 
-        if (member is null)
+        if (user is null)
             return string.Empty;
 
-        string token = await _jwtProvider.GenerateAsync(member);
+        string token = await _jwtProvider.GenerateAsync(user);
         return token;
     }
 }

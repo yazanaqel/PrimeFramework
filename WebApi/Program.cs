@@ -1,6 +1,9 @@
 using Application;
 using Infrastructure;
+using Infrastructure.Authentication.IdentityEntities;
+using Infrastructure.DatabaseSeed;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using WebApi.JwtSetup;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -38,6 +41,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var userManager = services.GetRequiredService<UserManager<User>>();
+    await Seeder.SeedUsersAsync(userManager);
+}
+
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
@@ -45,5 +55,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
 
 app.Run();

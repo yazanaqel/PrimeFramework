@@ -11,7 +11,7 @@ public class DomainErrors
 
         public static readonly Func<Guid,Error> NotFound = id => new Error(
             "User.NotFound",
-            $"The member with the identifier {id} was not found.");
+            $"The user with the identifier {id} was not found.");
 
         public static readonly Error InvalidCredentials = new(
             "User.InvalidCredentials",
