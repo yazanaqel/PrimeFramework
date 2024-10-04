@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241004121617_Init")]
+    [Migration("20241004154233_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -67,7 +67,11 @@ namespace Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Name")
+                    b.Property<string>("NormalizedName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PermissionName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -79,22 +83,26 @@ namespace Infrastructure.Migrations
                         new
                         {
                             Id = 1,
-                            Name = "Read"
+                            NormalizedName = "READ",
+                            PermissionName = "READ"
                         },
                         new
                         {
                             Id = 2,
-                            Name = "Write"
+                            NormalizedName = "WRITE",
+                            PermissionName = "WRITE"
                         },
                         new
                         {
                             Id = 3,
-                            Name = "Modify"
+                            NormalizedName = "MODIFY",
+                            PermissionName = "MODIFY"
                         },
                         new
                         {
                             Id = 4,
-                            Name = "Delete"
+                            NormalizedName = "DELETE",
+                            PermissionName = "DELETE"
                         });
                 });
 
@@ -123,13 +131,13 @@ namespace Infrastructure.Migrations
                         new
                         {
                             Id = 1,
-                            Name = "admin",
+                            Name = "ADMIN",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = 2,
-                            Name = "user",
+                            Name = "USER",
                             NormalizedName = "USER"
                         });
                 });
@@ -159,36 +167,36 @@ namespace Infrastructure.Migrations
                         {
                             RoleId = 1,
                             Id = 1,
-                            ClaimType = "Admin",
-                            ClaimValue = "Read"
+                            ClaimType = "ADMIN",
+                            ClaimValue = "READ"
                         },
                         new
                         {
                             RoleId = 1,
                             Id = 2,
-                            ClaimType = "Admin",
-                            ClaimValue = "Write"
+                            ClaimType = "ADMIN",
+                            ClaimValue = "WRITE"
                         },
                         new
                         {
                             RoleId = 1,
                             Id = 3,
-                            ClaimType = "Admin",
-                            ClaimValue = "Modify"
+                            ClaimType = "ADMIN",
+                            ClaimValue = "MODIFY"
                         },
                         new
                         {
                             RoleId = 1,
                             Id = 4,
-                            ClaimType = "Admin",
-                            ClaimValue = "Delete"
+                            ClaimType = "ADMIN",
+                            ClaimValue = "DELETE"
                         },
                         new
                         {
                             RoleId = 2,
                             Id = 1,
-                            ClaimType = "User",
-                            ClaimValue = "Read"
+                            ClaimType = "USER",
+                            ClaimValue = "READ"
                         });
                 });
 

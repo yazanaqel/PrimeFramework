@@ -24,17 +24,17 @@ internal sealed class RolePermissionConfigration : IEntityTypeConfiguration<Role
             .HasForeignKey(rp => rp.Id);
 
 
-        builder.HasData(Create(Roles.Admin, Permissions.Read));
-        builder.HasData(Create(Roles.Admin, Permissions.Write));
-        builder.HasData(Create(Roles.Admin, Permissions.Modify));
-        builder.HasData(Create(Roles.Admin, Permissions.Delete));
+        builder.HasData(Create(Roles.ADMIN, Permissions.READ));
+        builder.HasData(Create(Roles.ADMIN, Permissions.WRITE));
+        builder.HasData(Create(Roles.ADMIN, Permissions.MODIFY));
+        builder.HasData(Create(Roles.ADMIN, Permissions.DELETE));
 
-        builder.HasData(Create(Roles.User, Permissions.Read));
+        builder.HasData(Create(Roles.USER, Permissions.READ));
 
     }
 
     private static RolePermission Create(Roles role, Permissions permission)
     {
-        return new RolePermission { RoleId = ((int)role), Id = ((int)permission), ClaimType = role.ToString(), ClaimValue = permission.ToString() };
+        return new RolePermission { RoleId = ((int)role), Id = ((int)permission), ClaimType = role.ToString().ToUpper(), ClaimValue = permission.ToString().ToUpper() };
     }
 }

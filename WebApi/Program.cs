@@ -4,6 +4,7 @@ using Infrastructure.Authentication.IdentityEntities;
 using Infrastructure.DatabaseSeed;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using WebApi.Controllers.Authentication;
 using WebApi.JwtSetup;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -56,5 +57,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+app.MapAuthenticationEndpoints();
 
 app.Run();

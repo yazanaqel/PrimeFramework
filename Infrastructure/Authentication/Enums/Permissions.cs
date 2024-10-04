@@ -1,5 +1,5 @@
 ﻿namespace Infrastructure.Authentication.Enums;
 public enum Permissions
 {
-    Read = 1, Write = 2, Modify = 3, Delete = 4
+    READ = 1, WRITE = 2, MODIFY = 3, DELETE = 4
 }

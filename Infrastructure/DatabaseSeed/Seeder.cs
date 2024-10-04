@@ -1,5 +1,4 @@
 ﻿using Domain.Constants;
-using Domain.Shared;
 using Infrastructure.Authentication.Enums;
 using Infrastructure.Authentication.IdentityEntities;
 using Microsoft.AspNetCore.Identity;
@@ -21,7 +20,7 @@ public class Seeder
             var result = await userManager.CreateAsync(user, DatabaseSeeder.PrimePassword);
 
             if (result.Succeeded)
-                await userManager.AddToRoleAsync(user, "admin");
+                await userManager.AddToRoleAsync(user, nameof(Roles.ADMIN));
 
         }
     }

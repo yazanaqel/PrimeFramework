@@ -27,20 +27,20 @@ public class WeatherForecastController : ControllerBase
         => GetAllWeatherForecast();
 
 
-    [Authorize(Roles = nameof(Roles.User))]
+    [Authorize(Roles = nameof(Roles.USER))]
     [HttpGet("RoleUser")]
     public IEnumerable<WeatherForecast> RoleUser()
         => GetAllWeatherForecast();
 
 
 
-    [Authorize(Policy = nameof(Permissions.Read))]
+    [Authorize(Policy = nameof(Permissions.READ))]
     [HttpGet("PolicyRead")]
     public IEnumerable<WeatherForecast> PolicyRead()
         => GetAllWeatherForecast();
 
 
-    [HasPermission(Permissions.Modify)]
+    [HasPermission(Permissions.MODIFY)]
     [HttpGet("PermissionModify")]
     public IEnumerable<WeatherForecast> PermissionModify()
         => GetAllWeatherForecast();

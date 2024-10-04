@@ -23,7 +23,8 @@ namespace Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    PermissionName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    NormalizedName = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -204,13 +205,13 @@ namespace Infrastructure.Migrations
             migrationBuilder.InsertData(
                 schema: "Identity",
                 table: "Permissions",
-                columns: new[] { "Id", "Name" },
+                columns: new[] { "Id", "NormalizedName", "PermissionName" },
                 values: new object[,]
                 {
-                    { 1, "Read" },
-                    { 2, "Write" },
-                    { 3, "Modify" },
-                    { 4, "Delete" }
+                    { 1, "READ", "READ" },
+                    { 2, "WRITE", "WRITE" },
+                    { 3, "MODIFY", "MODIFY" },
+                    { 4, "DELETE", "DELETE" }
                 });
 
             migrationBuilder.InsertData(
@@ -219,8 +220,8 @@ namespace Infrastructure.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { 1, null, "admin", "ADMIN" },
-                    { 2, null, "user", "USER" }
+                    { 1, null, "ADMIN", "ADMIN" },
+                    { 2, null, "USER", "USER" }
                 });
 
             migrationBuilder.InsertData(
@@ -229,11 +230,11 @@ namespace Infrastructure.Migrations
                 columns: new[] { "Id", "RoleId", "ClaimType", "ClaimValue" },
                 values: new object[,]
                 {
-                    { 1, 1, "Admin", "Read" },
-                    { 2, 1, "Admin", "Write" },
-                    { 3, 1, "Admin", "Modify" },
-                    { 4, 1, "Admin", "Delete" },
-                    { 1, 2, "User", "Read" }
+                    { 1, 1, "ADMIN", "READ" },
+                    { 2, 1, "ADMIN", "WRITE" },
+                    { 3, 1, "ADMIN", "MODIFY" },
+                    { 4, 1, "ADMIN", "DELETE" },
+                    { 1, 2, "USER", "READ" }
                 });
 
             migrationBuilder.CreateIndex(

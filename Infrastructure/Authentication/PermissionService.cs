@@ -17,7 +17,7 @@ public class PermissionService(ApplicationDbContext dbContext) : IPermissionServ
             {
                 RoleName = g.Key,
                 Permissions = g.SelectMany(ur => ur.Role.RolePermissions)
-                               .Select(rp => rp.Permission.Name)
+                               .Select(rp => rp.Permission.PermissionName)
                                .ToHashSet()
             })
             .ToDictionaryAsync(x => x.RoleName, x => x.Permissions);
