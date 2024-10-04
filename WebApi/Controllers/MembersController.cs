@@ -1,4 +1,5 @@
-﻿using Application.Features.Members.CreateMember;
+﻿using Infrastructure.Authentication.IdentityEntities;
+using Infrastructure.Repositories.Authentication;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Abstractions;
@@ -8,39 +9,31 @@ namespace WebApi.Controllers;
 [ApiController]
 public class MembersController : ApiController
 {
-    public MembersController(ISender sender) : base(sender) { }
+    private readonly IUserRepository _memberRepository;
+
+    public MembersController(ISender sender, IUserRepository memberRepository) : base(sender)
+    {
+        _memberRepository = memberRepository;
+    }
 
     [HttpPost("Register")]
-    public async Task<IActionResult> RegisterMember(CreateMemberRequestDto request,CancellationToken cancellationToken)
+    public async Task<IActionResult> RegisterMember(string email, string password, CancellationToken cancellationToken)
     {
-        var command = new CreateMemberCommand(request);
-
-        var result = await Sender.Send(command,cancellationToken);
-
-        if(result.IsFailure)
+        var member = new User
         {
-            return HandleFailure(result);
-        }
+            Email = email,
+            UserName = email,
+        };
 
-        return Ok(result.Value);
+        var result = await _memberRepository.RegisterAsync(member);
 
-        //return CreatedAtAction(
-        //    nameof(GetMemberById),
-        //    new { id = result.Value },
-        //    result.Value);
+        return Ok(result);
     }
     [HttpPost("Login")]
-    public async Task<IActionResult> LoginMember(LoginMemberRequestDto request,CancellationToken cancellationToken)
+    public async Task<IActionResult> LoginMember(string email, string password, CancellationToken cancellationToken)
     {
-        var command = new LoginMemberCommand(request);
+        var result = await _memberRepository.LoginAsync(email, password);
 
-        var tokenResult = await Sender.Send(command,cancellationToken);
-
-        if(tokenResult.IsFailure)
-        {
-            return HandleFailure(tokenResult);
-        }
-
-        return Ok(tokenResult.Value);
+        return Ok(result);
     }
 }

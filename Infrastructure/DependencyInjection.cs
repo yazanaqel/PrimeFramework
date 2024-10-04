@@ -1,7 +1,9 @@
 ﻿using Application.Abstractions;
-using Domain.Repositories;
 using Infrastructure.Authentication;
-using Infrastructure.Repositories;
+using Infrastructure.Authentication.IdentityEntities;
+using Infrastructure.Repositories.Authentication;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Infrastructure;
 public static class DependencyInjection
 {
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services,IConfiguration configuration)
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
 
         services.AddDbContext<ApplicationDbContext>(options =>
@@ -17,10 +19,26 @@ public static class DependencyInjection
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
         });
 
-        services.AddScoped<IJwtProvider,JwtProvider>();
+        services.AddIdentity<User, IdentityRole<int>>(op =>
+        {
+            op.Password.RequireDigit = false;
+            op.Password.RequiredLength = 6;
+            op.Password.RequireUppercase = false;
+            op.Password.RequireLowercase = false;
+            op.Password.RequireNonAlphanumeric = false;
+            op.SignIn.RequireConfirmedAccount = false;
+            op.ClaimsIdentity.UserIdClaimType = "UserId";
+        })
+    .AddEntityFrameworkStores<ApplicationDbContext>().
+    AddDefaultTokenProviders();
+
+        services.AddScoped<IPermissionService, PermissionService>();
+        services.AddScoped<IJwtProvider, JwtProvider>();
+        services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
+        services.AddSingleton<IAuthorizationPolicyProvider, PermissionAuthorizationPolicyProvider>();
         services.AddScoped<IDbContext>(factory => factory.GetRequiredService<ApplicationDbContext>());
         services.AddScoped<IUnitOfWork>(factory => factory.GetRequiredService<ApplicationDbContext>());
-        services.AddScoped<IMemberRepository,MemberRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
 
         return services;
     }

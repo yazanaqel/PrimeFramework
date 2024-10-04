@@ -1,10 +1,11 @@
-﻿using Infrastructure.Authentication;
+﻿using Domain.Constants;
+using Infrastructure.Authentication;
 using Microsoft.Extensions.Options;
 
 namespace WebApi.JwtSetup;
 public class JwtOptionsSetup : IConfigureOptions<JwtOptions>
 {
-    private const string SectionName = "Jwt";
+    private const string SectionName = AppSettingsSections.Jwt ;
     private readonly IConfiguration _configuration;
 
     public JwtOptionsSetup(IConfiguration configuration)

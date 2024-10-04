@@ -4,7 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Features.Members.GetMemberById;
-internal class MemberResponse
+namespace Infrastructure.Authentication.Enums;
+public enum Roles
 {
+    Admin = 1, User = 2
 }

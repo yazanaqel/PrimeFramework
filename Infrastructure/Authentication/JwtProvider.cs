@@ -1,5 +1,6 @@
-﻿using Application.Abstractions;
-using Domain.Entities;
+﻿using Domain.Constants;
+using Infrastructure.Authentication.Enums;
+using Infrastructure.Authentication.IdentityEntities;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -7,46 +8,49 @@ using System.Security.Claims;
 using System.Text;
 
 namespace Infrastructure.Authentication;
-internal class JwtProvider : IJwtProvider
+internal class JwtProvider(IOptions<JwtOptions> options, IPermissionService permissionService) : IJwtProvider
 {
-    private readonly JwtOptions _options;
+    private readonly JwtOptions _options = options.Value;
+    private readonly IPermissionService _permissionService = permissionService;
 
-    public JwtProvider(IOptions<JwtOptions> options)
+    public async Task<string> GenerateAsync(User member)
     {
-        _options = options.Value;
-    }
-
-    public string Generate(Member member)
-    {
-        try
+        var claims = new List<Claim>
         {
-            var claims = new Claim[]
-{
             new(JwtRegisteredClaimNames.Sub, member.Id.ToString()),
-            new(JwtRegisteredClaimNames.Email, member.Email.Value)
-};
+            new(JwtRegisteredClaimNames.Email, member.Email.ToString()),
+        };
 
-            var signingCredentials = new SigningCredentials(
-                new SymmetricSecurityKey(
-                    Encoding.UTF8.GetBytes(_options.SecretKey)),
-                SecurityAlgorithms.HmacSha256);
+        var rolePermissions = await _permissionService
+            .GetRolePermissionsAsync(member.Id);
 
-            var token = new JwtSecurityToken(
-                issuer: _options.Issuer,
-                audience: _options.Audience,
-                claims: claims,
-                expires: DateTime.UtcNow.AddHours(1),
-                signingCredentials: signingCredentials);
+        foreach (var role in rolePermissions)
+        {
+            claims.Add(new Claim(ClaimTypes.Role, role.Key));
 
-            string tokenValue = new JwtSecurityTokenHandler()
+            foreach (var permission in role.Value)
+            {
+                claims.Add(new Claim(CustomClaims.Permissions, permission));
+            }
+        }
+
+
+        var signingCredentials = new SigningCredentials(
+            new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(_options.SecretKey)),
+            SecurityAlgorithms.HmacSha256);
+
+        var token = new JwtSecurityToken(
+            _options.Issuer,
+            _options.Audience,
+            claims,
+            null,
+            DateTime.UtcNow.AddHours(1),
+            signingCredentials);
+
+        string tokenValue = new JwtSecurityTokenHandler()
             .WriteToken(token);
 
-            return tokenValue;
-        }
-        catch(Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-        }
-        return string.Empty;
+        return tokenValue;
     }
 }

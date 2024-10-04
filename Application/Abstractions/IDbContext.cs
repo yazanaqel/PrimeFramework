@@ -1,5 +1,5 @@
 ﻿namespace Application.Abstractions;
 public interface IDbContext
 {
-    //DbSet<Member> Member { get; set; }
+    //DbSet<User> User { get; set; }
 }
