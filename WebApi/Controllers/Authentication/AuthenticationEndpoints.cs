@@ -12,28 +12,31 @@ public static class AuthenticationEndpoints
     {
         app.MapPost("/Users/Login", async (LoginUserRequest request, IMediator mediator, IValidator<LoginUserRequest> validator) =>
         {
-            ValidationResult result = await validator.ValidateAsync(request);
+            ValidationResult validationResult = await validator.ValidateAsync(request);
 
-            if (!result.IsValid)
+            if (!validationResult.IsValid)
             {
-                return Results.BadRequest(result.Errors);
+                return Results.BadRequest(validationResult.Errors);
             }
 
             var response = await mediator.Send(new LoginUserCommand(request));
-            return Results.Ok(response);
+
+            return response.IsSuccess ? Results.Ok(response.Value) : Results.NotFound(response.Error);
+
         });
 
         app.MapPost("/Users/Register", async (RegisterUserRequest request, IMediator mediator, IValidator<RegisterUserRequest> validator) =>
         {
-            ValidationResult result = await validator.ValidateAsync(request);
+            ValidationResult validationResult = await validator.ValidateAsync(request);
 
-            if (!result.IsValid)
+            if (!validationResult.IsValid)
             {
-                return Results.BadRequest(result.Errors);
+                return Results.BadRequest(validationResult.Errors);
             }
 
             var response = await mediator.Send(new RegisterUserCommand(request));
-            return Results.Ok(response);
+
+            return response.IsSuccess ? Results.Ok(response.Value) : Results.NotFound(response.Error);
         });
 
     }
