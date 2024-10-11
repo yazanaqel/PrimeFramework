@@ -19,6 +19,8 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen();
 
+builder.Services.ConfigureOptions<SeederOptionsSetup>();
+
 builder.Services.ConfigureOptions<JwtOptionsSetup>();
 
 builder.Services.ConfigureOptions<JwtBearerOptionsSetup>();
@@ -42,13 +44,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-    var userManager = services.GetRequiredService<UserManager<User>>();
-    await Seeder.SeedUsersAsync(userManager);
-}
-
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
@@ -58,5 +53,14 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.MapAuthenticationEndpoints();
+
+
+using (var scope = app.Services.CreateAsyncScope())
+{
+    var services = scope.ServiceProvider;
+    var seeder = services.GetRequiredService<ISeeder>();
+    await seeder.Initialize();
+}
+
 
 app.Run();

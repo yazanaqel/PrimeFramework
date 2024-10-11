@@ -2,6 +2,7 @@
 using Domain.Constants;
 using Infrastructure.Authentication;
 using Infrastructure.Authentication.IdentityEntities;
+using Infrastructure.DatabaseSeed;
 using Infrastructure.Repositories.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -37,9 +38,13 @@ public static class DependencyInjection
         services.AddScoped<IJwtProvider, JwtProvider>();
         services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
         services.AddSingleton<IAuthorizationPolicyProvider, PermissionAuthorizationPolicyProvider>();
+
         services.AddScoped<IDbContext>(factory => factory.GetRequiredService<ApplicationDbContext>());
         services.AddScoped<IUnitOfWork>(factory => factory.GetRequiredService<ApplicationDbContext>());
+
         services.AddScoped<IUserRepository, UserRepository>();
+
+        services.AddSingleton<ISeeder, Seeder>();
 
         return services;
     }

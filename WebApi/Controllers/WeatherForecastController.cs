@@ -32,6 +32,11 @@ public class WeatherForecastController : ControllerBase
     public IEnumerable<WeatherForecast> RoleUser()
         => GetAllWeatherForecast();
 
+    [Authorize(Roles = nameof(Roles.ADMIN))]
+    [HttpGet("RoleAdmin")]
+    public IEnumerable<WeatherForecast> RoleAdmin()
+    => GetAllWeatherForecast();
+
 
 
     [Authorize(Policy = nameof(Permissions.READ))]
