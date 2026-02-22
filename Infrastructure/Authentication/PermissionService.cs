@@ -1,13 +1,12 @@
-﻿using Infrastructure.Authentication.IdentityEntities;
-using Microsoft.EntityFrameworkCore;
-using static Domain.Errors.DomainErrors;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Authentication;
+
 public class PermissionService(ApplicationDbContext dbContext) : IPermissionService
 {
     private readonly ApplicationDbContext _dbContext = dbContext;
 
-    public async Task<Dictionary<string?, HashSet<string?>>> GetRolePermissionsAsync(int userId)
+    public async Task<Dictionary<string?,HashSet<string?>>> GetRolePermissionsAsync(int userId)
     {
         var rolePermissions = await _dbContext.Set<IdentityEntities.User>()
             .Where(u => u.Id == userId)
@@ -20,9 +19,9 @@ public class PermissionService(ApplicationDbContext dbContext) : IPermissionServ
                                .Select(rp => rp.Permission.PermissionName)
                                .ToHashSet()
             })
-            .ToDictionaryAsync(x => x.RoleName, x => x.Permissions);
+            .ToDictionaryAsync(x => x.RoleName,x => x.Permissions);
 
-           return rolePermissions;
+        return rolePermissions;
     }
 
 }

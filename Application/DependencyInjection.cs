@@ -16,7 +16,7 @@ public static class DependencyInjection
 
         services.AddScoped(typeof(IPipelineBehavior<,>),typeof(ValidationPipelineBehavior<,>));
 
-        services.AddScoped(typeof(IPipelineBehavior<,>),typeof(UnitOfWorkBehavior<,>));
+        //services.AddScoped(typeof(IPipelineBehavior<,>),typeof(UnitOfWorkBehavior<,>));
 
         return services;
     }

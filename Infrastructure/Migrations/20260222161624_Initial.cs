@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Init : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -78,6 +78,35 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Users",
+                schema: "Identity",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CreatedOnUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModifiedOnUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NormalizedUserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NormalizedEmail = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumberConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
+                    LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
+                    LockoutEnabled = table.Column<bool>(type: "bit", nullable: false),
+                    AccessFailedCount = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "UserTokens",
                 schema: "Identity",
                 columns: table => new
@@ -119,60 +148,6 @@ namespace Infrastructure.Migrations
                         principalTable: "Roles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Clients",
-                columns: table => new
-                {
-                    ClientId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    AuthenticationUserId = table.Column<int>(type: "int", nullable: false),
-                    CreatedOnUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ModifiedOnUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    ClientType = table.Column<string>(type: "nvarchar(8)", maxLength: 8, nullable: false),
-                    CompanyName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Clients", x => x.ClientId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Users",
-                schema: "Identity",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CreatedOnUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ModifiedOnUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    ClientId = table.Column<int>(type: "int", nullable: true),
-                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    NormalizedUserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    NormalizedEmail = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhoneNumberConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
-                    LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
-                    LockoutEnabled = table.Column<bool>(type: "bit", nullable: false),
-                    AccessFailedCount = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Users", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Users_Clients_ClientId",
-                        column: x => x.ClientId,
-                        principalTable: "Clients",
-                        principalColumn: "ClientId");
                 });
 
             migrationBuilder.CreateTable(
@@ -238,12 +213,6 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Clients_AuthenticationUserId",
-                table: "Clients",
-                column: "AuthenticationUserId",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_RolePermissions_Id",
                 schema: "Identity",
                 table: "RolePermissions",
@@ -254,29 +223,11 @@ namespace Infrastructure.Migrations
                 schema: "Identity",
                 table: "UserRoles",
                 column: "RoleId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Users_ClientId",
-                schema: "Identity",
-                table: "Users",
-                column: "ClientId");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Clients_Users_AuthenticationUserId",
-                table: "Clients",
-                column: "AuthenticationUserId",
-                principalSchema: "Identity",
-                principalTable: "Users",
-                principalColumn: "Id");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Clients_Users_AuthenticationUserId",
-                table: "Clients");
-
             migrationBuilder.DropTable(
                 name: "RolePermissions",
                 schema: "Identity");
@@ -308,9 +259,6 @@ namespace Infrastructure.Migrations
             migrationBuilder.DropTable(
                 name: "Users",
                 schema: "Identity");
-
-            migrationBuilder.DropTable(
-                name: "Clients");
         }
     }
 }

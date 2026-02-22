@@ -8,7 +8,7 @@ internal class RegisterUserRequestValidator : AbstractValidator<RegisterUserRequ
     {
         RuleFor(x => x.Email).EmailAddress();
         RuleFor(x => x.Password).NotEmpty();
-        RuleFor(x => x.ConfirmPassword)
-                    .Equal(x => x.Password).WithMessage("The password and confirmation password do not match.");
+        RuleFor(x => x.ConfirmPassword).Equal(x => x.Password)
+            .WithMessage("The password and confirmation password do not match.");
     }
 }

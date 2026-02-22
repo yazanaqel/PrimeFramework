@@ -1,19 +1,19 @@
-﻿using Domain.Errors;
-using Domain.Shared;
+﻿using Application.Repositories;
+using Domain.Errors;
 using Infrastructure.Authentication;
 using Infrastructure.Authentication.Enums;
 using Infrastructure.Authentication.IdentityEntities;
 using Microsoft.AspNetCore.Identity;
 
-namespace Infrastructure.Repositories.Authentication;
+namespace Infrastructure.Identity;
 
-internal class UserRepository(UserManager<User> userManager,IJwtProvider jwtProvider) /*: IUserRepository*/
+internal class UserIdentity(UserManager<User> userManager,IJwtProvider jwtProvider) : IUserIdentity
 {
     private readonly UserManager<User> _userManager = userManager;
     private readonly IJwtProvider _jwtProvider = jwtProvider;
 
 
-    public async Task<Result<string>> LoginAsync(string email,string password)
+    public async Task<string> LoginAsync(string email,string password)
     {
         var user = await _userManager.FindByEmailAsync(email);
 
@@ -21,18 +21,18 @@ internal class UserRepository(UserManager<User> userManager,IJwtProvider jwtProv
         {
             string token = await _jwtProvider.GenerateAsync(user);
 
-            return Result.Success(token);
+            return token;
         }
 
-        return Result.Failure<string>(DomainErrors.User.InvalidCredentials);
+        return DomainErrors.User.InvalidCredentials;
     }
 
-    public async Task<Result<string>> RegisterAsync(string email,string password)
+    public async Task<string> RegisterAsync(string email,string password)
     {
         var user = await _userManager.FindByEmailAsync(email);
 
         if(user is not null)
-            return Result.Failure<string>(DomainErrors.User.EmailAlreadyInUse);
+            return DomainErrors.User.EmailAlreadyInUse;
 
 
         var registerUser = new User { UserName = email,Email = email };
@@ -44,7 +44,7 @@ internal class UserRepository(UserManager<User> userManager,IJwtProvider jwtProv
 
         string token = await _jwtProvider.GenerateAsync(registerUser);
 
-        return Result.Success(token);
+        return token;
 
     }
 }

@@ -22,40 +22,6 @@ namespace Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Domain.Entities.Clients.Client", b =>
-                {
-                    b.Property<int>("ClientId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ClientId"));
-
-                    b.Property<int>("AuthenticationUserId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ClientType")
-                        .IsRequired()
-                        .HasMaxLength(8)
-                        .HasColumnType("nvarchar(8)");
-
-                    b.Property<DateTime>("CreatedOnUtc")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("ModifiedOnUtc")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("ClientId");
-
-                    b.HasIndex("AuthenticationUserId")
-                        .IsUnique();
-
-                    b.ToTable("Clients", (string)null);
-
-                    b.HasDiscriminator<string>("ClientType").HasValue("Client");
-
-                    b.UseTphMappingStrategy();
-                });
-
             modelBuilder.Entity("Infrastructure.Authentication.IdentityEntities.Permission", b =>
                 {
                     b.Property<int>("Id")
@@ -208,9 +174,6 @@ namespace Infrastructure.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ClientId")
-                        .HasColumnType("int");
-
                     b.Property<string>("ConcurrencyStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -257,8 +220,6 @@ namespace Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ClientId");
 
                     b.ToTable("Users", "Identity");
                 });
@@ -335,43 +296,6 @@ namespace Infrastructure.Migrations
                     b.ToTable("UserTokens", "Identity");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Clients.Company", b =>
-                {
-                    b.HasBaseType("Domain.Entities.Clients.Client");
-
-                    b.Property<string>("CompanyName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasDiscriminator().HasValue("Company");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Clients.Person", b =>
-                {
-                    b.HasBaseType("Domain.Entities.Clients.Client");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasDiscriminator().HasValue("Person");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Clients.Client", b =>
-                {
-                    b.HasOne("Infrastructure.Authentication.IdentityEntities.User", "AuthenticationUser")
-                        .WithOne()
-                        .HasForeignKey("Domain.Entities.Clients.Client", "AuthenticationUserId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("AuthenticationUser");
-                });
-
             modelBuilder.Entity("Infrastructure.Authentication.IdentityEntities.RolePermission", b =>
                 {
                     b.HasOne("Infrastructure.Authentication.IdentityEntities.Permission", "Permission")
@@ -389,15 +313,6 @@ namespace Infrastructure.Migrations
                     b.Navigation("Permission");
 
                     b.Navigation("Role");
-                });
-
-            modelBuilder.Entity("Infrastructure.Authentication.IdentityEntities.User", b =>
-                {
-                    b.HasOne("Domain.Entities.Clients.Client", "Client")
-                        .WithMany()
-                        .HasForeignKey("ClientId");
-
-                    b.Navigation("Client");
                 });
 
             modelBuilder.Entity("Infrastructure.Authentication.IdentityEntities.UserRole", b =>
