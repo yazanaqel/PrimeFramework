@@ -1,6 +1,6 @@
 ﻿using Domain.Shared;
 
-namespace Application.Abstractions; 
+namespace Application.Repositories; 
 
 public interface IUserRepository
 {

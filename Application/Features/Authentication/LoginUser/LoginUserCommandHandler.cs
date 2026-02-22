@@ -1,5 +1,5 @@
-﻿using Application.Abstractions;
-using Application.Abstractions.Messaging;
+﻿using Application.Abstractions.Messaging;
+using Application.Repositories;
 using Domain.Shared;
 
 namespace Application.Features.Authentication.LoginUser;

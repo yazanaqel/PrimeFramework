@@ -1,5 +1,4 @@
-﻿using Application.Abstractions;
-using Domain.Constants;
+﻿using Domain.Constants;
 using Infrastructure.Authentication;
 using Infrastructure.Authentication.IdentityEntities;
 using Infrastructure.DatabaseSeed;
@@ -11,9 +10,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Infrastructure;
+
 public static class DependencyInjection
 {
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services,IConfiguration configuration)
     {
 
         services.AddDbContext<ApplicationDbContext>(options =>
@@ -21,7 +21,7 @@ public static class DependencyInjection
             options.UseSqlServer(configuration.GetConnectionString(AppSettingsSections.DefaultConnection));
         });
 
-        services.AddIdentity<User, Role>(op =>
+        services.AddIdentity<User,Role>(op =>
         {
             op.Password.RequireDigit = false;
             op.Password.RequiredLength = 6;
@@ -34,17 +34,17 @@ public static class DependencyInjection
     .AddEntityFrameworkStores<ApplicationDbContext>().
     AddDefaultTokenProviders();
 
-        services.AddScoped<IPermissionService, PermissionService>();
-        services.AddScoped<IJwtProvider, JwtProvider>();
-        services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
-        services.AddSingleton<IAuthorizationPolicyProvider, PermissionAuthorizationPolicyProvider>();
+        services.AddScoped<IPermissionService,PermissionService>();
+        services.AddScoped<IJwtProvider,JwtProvider>();
+        services.AddSingleton<IAuthorizationHandler,PermissionAuthorizationHandler>();
+        services.AddSingleton<IAuthorizationPolicyProvider,PermissionAuthorizationPolicyProvider>();
 
-        services.AddScoped<IDbContext>(factory => factory.GetRequiredService<ApplicationDbContext>());
-        services.AddScoped<IUnitOfWork>(factory => factory.GetRequiredService<ApplicationDbContext>());
+        //services.AddScoped<IDbContext>(factory => factory.GetRequiredService<ApplicationDbContext>());
+        //services.AddScoped<IUnitOfWork>(factory => factory.GetRequiredService<ApplicationDbContext>());
 
-        services.AddScoped<IUserRepository, UserRepository>();
+        //services.AddScoped<IUserRepository,UserRepository>();
 
-        services.AddSingleton<ISeeder, Seeder>();
+        services.AddSingleton<ISeeder,Seeder>();
 
         return services;
     }

@@ -1,12 +1,13 @@
 ﻿using Application.Abstractions;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Infrastructure.Authentication.IdentityEntities;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace Infrastructure;
-public class ApplicationDbContext : IdentityDbContext<User, Role, int, IdentityUserClaim<int>, UserRole, IdentityUserLogin<int>, RolePermission, IdentityUserToken<int>>, IDbContext, IUnitOfWork
+
+public class ApplicationDbContext : IdentityDbContext<User,Role,int,IdentityUserClaim<int>,UserRole,IdentityUserLogin<int>,RolePermission,IdentityUserToken<int>>, IAppDbContext/*, IUnitOfWork*/
 
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
