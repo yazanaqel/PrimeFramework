@@ -1,7 +1,8 @@
-﻿using Domain.Shared;
+﻿using CSharpFunctionalExtensions;
 using MediatR;
 
 namespace Application.Abstractions.Messaging;
+
 public interface ICommand : IRequest<Result>
 {
 }

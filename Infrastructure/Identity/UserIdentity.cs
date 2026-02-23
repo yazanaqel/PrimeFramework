@@ -1,5 +1,4 @@
 ﻿using Application.Repositories;
-using Domain.Errors;
 using Infrastructure.Authentication;
 using Infrastructure.Authentication.Enums;
 using Infrastructure.Authentication.IdentityEntities;
@@ -24,7 +23,7 @@ internal class UserIdentity(UserManager<User> userManager,IJwtProvider jwtProvid
             return token;
         }
 
-        return DomainErrors.User.InvalidCredentials;
+        return string.Empty;
     }
 
     public async Task<string> RegisterAsync(string email,string password)
@@ -32,7 +31,7 @@ internal class UserIdentity(UserManager<User> userManager,IJwtProvider jwtProvid
         var user = await _userManager.FindByEmailAsync(email);
 
         if(user is not null)
-            return DomainErrors.User.EmailAlreadyInUse;
+            return string.Empty;
 
 
         var registerUser = new User { UserName = email,Email = email };
