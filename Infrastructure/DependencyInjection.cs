@@ -20,6 +20,8 @@ public static class DependencyInjection
         services.AddDbContext<ApplicationDbContext>(options =>
         {
             options.UseSqlServer(configuration.GetConnectionString(AppSettingsSections.DefaultConnection));
+            options.EnableDetailedErrors();
+            //options.EnableSensitiveDataLogging(); // Only in development
         });
 
         services.AddIdentity<User,Role>(op =>

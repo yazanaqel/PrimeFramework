@@ -2,7 +2,7 @@
 using MediatR;
 
 namespace Application.Extensions;
-public static class RequestExtensions
+public static class RequestTypeExtension
 {
 
     public static bool IsQuery<T>(this IRequest<T> request)

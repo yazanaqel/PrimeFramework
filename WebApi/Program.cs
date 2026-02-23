@@ -4,6 +4,7 @@ using Infrastructure.Authentication.IdentityEntities;
 using Infrastructure.DatabaseSeed;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Serilog;
 using WebApi.Controllers.Authentication;
 using WebApi.JwtSetup;
 
@@ -34,6 +35,10 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization();
 
+builder.Host.UseSerilog((context,config) =>
+{
+    config.ReadFrom.Configuration(context.Configuration);
+});
 
 var app = builder.Build();
 
@@ -45,6 +50,11 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseSerilogRequestLogging(options =>
+{
+    options.IncludeQueryInRequestPath = true;
+});
 
 app.UseAuthentication();
 

@@ -14,7 +14,7 @@ public static class AuthenticationEndpoints
         {
             ValidationResult validationResult = await validator.ValidateAsync(request);
 
-            if (!validationResult.IsValid)
+            if(!validationResult.IsValid)
                 return Results.BadRequest(validationResult.Errors);
 
             var response = await mediator.Send(new LoginUserCommand(request));
