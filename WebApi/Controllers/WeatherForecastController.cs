@@ -1,7 +1,7 @@
 using Infrastructure.Authentication;
-using Infrastructure.Authentication.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using WebApi.Constants;
 
 namespace WebApi.Controllers;
 [Route("api/[controller]")]
@@ -45,7 +45,7 @@ public class WeatherForecastController : ControllerBase
         => GetAllWeatherForecast();
 
 
-    [HasPermission(Permissions.MODIFY)]
+    [HasPermission(Infrastructure.Authentication.Enums.Permissions.MODIFY)]
     [HttpGet("PermissionModify")]
     public IEnumerable<WeatherForecast> PermissionModify()
         => GetAllWeatherForecast();

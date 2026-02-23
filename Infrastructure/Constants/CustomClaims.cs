@@ -1,5 +1,6 @@
 ﻿namespace Domain.Constants;
-public static class CustomClaims
+
+internal static class CustomClaims
 {
     public const string Permissions = nameof(Permissions);
 }

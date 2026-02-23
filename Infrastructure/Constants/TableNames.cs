@@ -1,7 +1,7 @@
 ﻿namespace Domain.Constants;
-public static class TableNames
+
+internal static class TableNames
 {
-    public const string Clients = nameof(Clients);
     public const string Users = nameof(Users);
     public const string Roles = nameof(Roles);
     public const string Permissions = nameof(Permissions);

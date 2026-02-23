@@ -1,5 +1,6 @@
 ﻿namespace Domain.Constants;
-public static class DatabaseSeeder
+
+internal static class DatabaseSeeder
 {
     public const string PrimeAdmin = nameof(PrimeAdmin);
 }

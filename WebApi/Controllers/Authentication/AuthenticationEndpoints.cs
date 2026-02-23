@@ -24,6 +24,7 @@ public static class AuthenticationEndpoints
             return response.IsSuccess ? Results.Ok(response.Value) : Results.NotFound(response.Error);
         });
 
+
         app.UseExceptionHandler(errorApp =>
         {
             errorApp.Run(async context =>
@@ -35,7 +36,7 @@ public static class AuthenticationEndpoints
                     context.Response.StatusCode = StatusCodes.Status400BadRequest;
 
                     var errors = validationException.Errors
-                        .Select(e => new { e.PropertyName,e.ErrorMessage });
+                        .Select(e => new { e.PropertyName,e.ErrorMessage});
 
                     await context.Response.WriteAsJsonAsync(errors);
                     return;
