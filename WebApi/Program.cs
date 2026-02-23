@@ -4,9 +4,11 @@ using Infrastructure.DatabaseSeed;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Serilog;
 using WebApi.Controllers.Authentication;
+using WebApi.Exceptions;
 using WebApi.JwtSetup;
 
 var builder = WebApplication.CreateBuilder(args);
+
 
 builder.Services.AddApplication();
 
@@ -17,6 +19,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+
+builder.Services.AddProblemDetails();
 
 builder.Services.ConfigureOptions<SeederOptionsSetup>();
 
@@ -46,6 +52,8 @@ if(app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseExceptionHandler();
 
 app.UseHttpsRedirection();
 

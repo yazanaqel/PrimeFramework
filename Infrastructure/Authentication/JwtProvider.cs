@@ -1,5 +1,4 @@
 ﻿using Domain.Constants;
-using Infrastructure.Authentication.Enums;
 using Infrastructure.Authentication.IdentityEntities;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -8,7 +7,8 @@ using System.Security.Claims;
 using System.Text;
 
 namespace Infrastructure.Authentication;
-internal class JwtProvider(IOptions<JwtOptions> options, IPermissionService permissionService) : IJwtProvider
+
+internal class JwtProvider(IOptions<JwtOptions> options,IPermissionService permissionService) : IJwtProvider
 {
     private readonly JwtOptions _options = options.Value;
     private readonly IPermissionService _permissionService = permissionService;
@@ -24,17 +24,17 @@ internal class JwtProvider(IOptions<JwtOptions> options, IPermissionService perm
         var rolePermissions = await _permissionService
             .GetRolePermissionsAsync(user.Id);
 
-        if (rolePermissions.Any())
+        if(rolePermissions.Any())
         {
-            foreach (var role in rolePermissions)
+            foreach(var role in rolePermissions)
             {
-                claims.Add(new Claim(ClaimTypes.Role, role.Key));
+                claims.Add(new Claim(ClaimTypes.Role,role.Key));
 
                 if(role.Value.Any())
                 {
-                    foreach (var permission in role.Value)
+                    foreach(var permission in role.Value)
                     {
-                        claims.Add(new Claim(CustomClaims.Permissions, permission));
+                        claims.Add(new Claim(CustomClaims.Permissions,permission));
                     }
                 }
             }

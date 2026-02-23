@@ -6,7 +6,7 @@ public class PermissionService(ApplicationDbContext dbContext) : IPermissionServ
 {
     private readonly ApplicationDbContext _dbContext = dbContext;
 
-    public async Task<Dictionary<string?,HashSet<string?>>> GetRolePermissionsAsync(int userId)
+    public async Task<Dictionary<string,HashSet<string>>> GetRolePermissionsAsync(int userId)
     {
         var rolePermissions = await _dbContext.Set<IdentityEntities.User>()
             .Where(u => u.Id == userId)
