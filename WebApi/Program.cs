@@ -1,9 +1,7 @@
 using Application;
 using Infrastructure;
-using Infrastructure.Authentication.IdentityEntities;
 using Infrastructure.DatabaseSeed;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
 using Serilog;
 using WebApi.Controllers.Authentication;
 using WebApi.JwtSetup;
@@ -43,7 +41,7 @@ builder.Host.UseSerilog((context,config) =>
 var app = builder.Build();
 
 
-if (app.Environment.IsDevelopment())
+if(app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
@@ -65,7 +63,7 @@ app.MapControllers();
 app.MapAuthenticationEndpoints();
 
 
-using (var scope = app.Services.CreateAsyncScope())
+using(var scope = app.Services.CreateAsyncScope())
 {
     var services = scope.ServiceProvider;
     var seeder = services.GetRequiredService<ISeeder>();

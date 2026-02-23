@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 namespace Application.Behaviors;
 
 public sealed class LoggingBehavior<TRequest, TResponse>(ILogger<LoggingBehavior<TRequest,TResponse>> logger)
-    : IPipelineBehavior<TRequest,TResponse> where TRequest : class
+    : IPipelineBehavior<TRequest,TResponse> where TRequest : notnull
 
 {
     private readonly ILogger<LoggingBehavior<TRequest,TResponse>> _logger = logger;
