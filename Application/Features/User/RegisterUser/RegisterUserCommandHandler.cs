@@ -1,26 +1,24 @@
-﻿using Application.Abstractions;
-using Application.Abstractions.Messaging;
+﻿using Application.Abstractions.Messaging;
 using Application.Repositories;
 using CSharpFunctionalExtensions;
 using Domain.Entities.Users;
 
 namespace Application.Features.Authentication.RegisterUser;
 
-internal sealed class RegisterUserCommandHandler(IUserIdentity userIdentity,IUnitOfWork unitOfWork) : ICommandHandler<RegisterUserCommand,string>
+internal sealed class RegisterUserCommandHandler(IUserIdentity userIdentity) : ICommandHandler<RegisterUserCommand,string>
 {
     private readonly IUserIdentity _userIdentity = userIdentity;
-    private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
     public async Task<Result<string>> Handle(RegisterUserCommand command,CancellationToken cancellationToken)
     {
-        var result = await _userIdentity.RegisterAsync(
-            new AppUser(command.Request.Email,command.Request.Email,command.Request.Password));
+        var availableEmail = await _userIdentity.IsEmailAvailable(command.Request.Email);
 
-        if(string.IsNullOrWhiteSpace(result))
-        {
-            return Result.Failure<string>("Failed to register user.");
-        }
+        if(!availableEmail)
+            return Result.Failure<string>("Email Is Not Available");
 
-        return Result.Success(result);
+        var user = await _userIdentity.RegisterAsync(
+            appUser: new AppUser(command.Request.Email,command.Request.Email,command.Request.Password));
+
+        return Result.Success(user);
     }
 }

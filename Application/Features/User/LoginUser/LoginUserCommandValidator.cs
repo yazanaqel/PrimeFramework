@@ -6,7 +6,7 @@ public sealed class LoginUserCommandValidator : AbstractValidator<LoginUserComma
 {
     public LoginUserCommandValidator()
     {
-        RuleFor(x => x.Request.Email).NotEmpty().EmailAddress();
-        RuleFor(x => x.Request.Password).NotEmpty().MinimumLength(6);
+        RuleFor(x => x.Request.Email).EmailAddress();
+        RuleFor(x => x.Request.Password).MinimumLength(6);
     }
 }

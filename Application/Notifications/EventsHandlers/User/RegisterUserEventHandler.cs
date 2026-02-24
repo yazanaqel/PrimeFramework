@@ -13,7 +13,7 @@ public sealed class RegisterUserEventHandler(IEmailService emailService) : INoti
         await _emailService.SendEmailAsync
             ("yazan.aqel93@gmail.com",
             "Email Service",
-            $"<h1>Hi :)<h1/>");
+            $"<h1>New User Registered Event<h1/>");
     }
 
 }

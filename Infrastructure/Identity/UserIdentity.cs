@@ -15,7 +15,15 @@ internal class UserIdentity(UserManager<User> userManager,IJwtProvider jwtProvid
     private readonly IJwtProvider _jwtProvider = jwtProvider;
     private readonly ApplicationDbContext _applicationDbContext = applicationDbContext;
 
+    public async Task<bool> IsEmailAvailable(string email)
+    {
+        var user = await _userManager.FindByEmailAsync(email);
 
+        if(user is not null)
+            return false;
+
+        return true;
+    }
 
     public async Task<IEnumerable<AppUser>> GetAllUsersAsync()
     {
@@ -33,22 +41,13 @@ internal class UserIdentity(UserManager<User> userManager,IJwtProvider jwtProvid
         var user = await _userManager.FindByEmailAsync(email);
 
         if(user is not null && await _userManager.CheckPasswordAsync(user,password))
-        {
-            string token = await _jwtProvider.GenerateAsync(user);
+            return await _jwtProvider.GenerateAsync(user);
 
-            return token;
-        }
-
-        return string.Empty;
+        return "Wrong Email Or Password";
     }
 
     public async Task<string> RegisterAsync(AppUser appUser)
     {
-        var user = await _userManager.FindByEmailAsync(appUser.Email);
-
-        if(user is not null)
-            return string.Empty;
-
         var strategy = _applicationDbContext.Database.CreateExecutionStrategy();
 
         string token = string.Empty;
@@ -65,7 +64,9 @@ internal class UserIdentity(UserManager<User> userManager,IJwtProvider jwtProvid
 
             token = await _jwtProvider.GenerateAsync(user);
 
-            await AddAppUser(appUser);
+            _applicationDbContext.Set<AppUser>().Add(appUser);
+
+            await _applicationDbContext.SaveChangesAsync();
 
             await transaction.CommitAsync();
         });
@@ -73,11 +74,4 @@ internal class UserIdentity(UserManager<User> userManager,IJwtProvider jwtProvid
         return token;
     }
 
-
-    private async Task AddAppUser(AppUser appUser)
-    {
-        _applicationDbContext.Set<AppUser>().Add(appUser);
-
-        await _applicationDbContext.SaveChangesAsync();
-    }
 }
