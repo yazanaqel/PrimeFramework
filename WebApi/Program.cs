@@ -1,11 +1,9 @@
 using Application;
 using Infrastructure;
 using Infrastructure.DatabaseSeed;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Serilog;
 using WebApi.Controllers.Authentication;
 using WebApi.Exceptions;
-using WebApi.JwtSetup;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,21 +21,6 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
 builder.Services.AddProblemDetails();
-
-builder.Services.ConfigureOptions<SeederOptionsSetup>();
-
-builder.Services.ConfigureOptions<JwtOptionsSetup>();
-
-builder.Services.ConfigureOptions<JwtBearerOptionsSetup>();
-
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-
-}).AddJwtBearer();
-
-builder.Services.AddAuthorization();
 
 builder.Host.UseSerilog((context,config) =>
 {

@@ -1,9 +1,9 @@
 ﻿using Application.Features.User.GetAllUsers;
 using Application.Repositories;
 using Domain.Entities.Users;
-using Infrastructure.Authentication;
 using Infrastructure.Authentication.Enums;
 using Infrastructure.Authentication.IdentityEntities;
+using Infrastructure.Authentication.JwtSetup;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 

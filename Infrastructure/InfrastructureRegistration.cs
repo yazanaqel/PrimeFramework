@@ -28,36 +28,18 @@ public static class InfrastructureRegistration
             //options.EnableSensitiveDataLogging(); // Only in development
         });
 
-        services.AddIdentity<User,Role>(op =>
-        {
-            op.Password.RequireDigit = false;
-            op.Password.RequiredLength = 6;
-            op.Password.RequireUppercase = false;
-            op.Password.RequireLowercase = false;
-            op.Password.RequireNonAlphanumeric = false;
-            op.SignIn.RequireConfirmedAccount = false;
-            //op.ClaimsIdentity.UserIdClaimType = "UserId";
-        }).AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
-
         //services.AddScoped<IDbContext>(factory => factory.GetRequiredService<ApplicationDbContext>());
 
-        services.AddScoped<IPermissionService,PermissionService>();
-
-        services.AddScoped<IJwtProvider,JwtProvider>();
-
-        services.AddSingleton<IAuthorizationHandler,PermissionAuthorizationHandler>();
-
-        services.AddSingleton<IAuthorizationPolicyProvider,PermissionAuthorizationPolicyProvider>();
-
         services.AddEmail(configuration);
+
+        services.AddIdentity();
+
+        services.AddSeeder();
 
         services.AddScoped<IDomainEventDispatcher,DomainEventDispatcher>();
 
         services.AddScoped<IUnitOfWork,ApplicationDbContext>();
 
-        services.AddScoped<IUserIdentity,UserIdentity>();
-
-        services.AddScoped<ISeeder,Seeder>();
 
         return services;
     }

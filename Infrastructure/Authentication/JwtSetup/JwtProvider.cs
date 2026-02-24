@@ -6,7 +6,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace Infrastructure.Authentication;
+namespace Infrastructure.Authentication.JwtSetup;
 
 internal class JwtProvider(IOptions<JwtOptions> options,IPermissionService permissionService) : IJwtProvider
 {
@@ -28,7 +28,7 @@ internal class JwtProvider(IOptions<JwtOptions> options,IPermissionService permi
         {
             foreach(var role in rolePermissions)
             {
-                claims.Add(new Claim(ClaimTypes.Role,role.Key));
+                claims.Add(new Claim(ClaimTypes.Role,role.Key.ToUpper()));
 
                 if(role.Value.Any())
                 {

@@ -1,4 +1,4 @@
-﻿namespace Infrastructure.Authentication;
+﻿namespace Infrastructure.Authentication.JwtSetup;
 public class JwtOptions
 {
     public string Issuer { get; init; } = string.Empty;

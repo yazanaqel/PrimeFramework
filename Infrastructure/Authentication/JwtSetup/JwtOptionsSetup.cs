@@ -1,5 +1,6 @@
 ﻿using Domain.Constants;
-using Infrastructure.Authentication;
+using Infrastructure.Authentication.JwtSetup;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
 namespace WebApi.JwtSetup;
