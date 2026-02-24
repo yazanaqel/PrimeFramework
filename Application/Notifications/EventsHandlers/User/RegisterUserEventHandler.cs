@@ -10,9 +10,10 @@ public sealed class RegisterUserEventHandler(IEmailService emailService) : INoti
 
     public async Task Handle(UserRegisteredEvent notification,CancellationToken ct)
     {
-        await _emailService.SendEmailAsync("yazan.aqel93@gmail.com","Email Service","Register_User_Event_Handler");
-
-        Console.WriteLine("Register_User_Event_Handler");
+        await _emailService.SendEmailAsync
+            ("yazan.aqel93@gmail.com",
+            "Email Service",
+            $"<h1>Hi :)<h1/>");
     }
 
 }

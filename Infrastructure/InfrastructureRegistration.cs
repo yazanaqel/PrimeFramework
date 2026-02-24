@@ -1,4 +1,5 @@
 ﻿using Application.Abstractions;
+using Application.Behaviors;
 using Application.Notifications.Email;
 using Application.Repositories;
 using Domain.Constants;
@@ -8,6 +9,8 @@ using Infrastructure.DatabaseSeed;
 using Infrastructure.Identity;
 using Infrastructure.Notifications.Email;
 using Infrastructure.Notifications.EventDispatcher;
+using Infrastructure.Repositories;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -40,6 +43,7 @@ public static class InfrastructureRegistration
 
         services.AddScoped<IUnitOfWork,ApplicationDbContext>();
 
+        services.AddScoped(typeof(IGenericRepository<>),typeof(GenericRepository<>));
 
         return services;
     }
