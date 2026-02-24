@@ -1,4 +1,5 @@
 ﻿using Domain.Constants;
+using Domain.Entities.Users;
 using Infrastructure.Authentication.Enums;
 using Infrastructure.Authentication.IdentityEntities;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +23,18 @@ internal sealed class PermissionConfiguration : IEntityTypeConfiguration<Permiss
             );
 
         builder.HasData(permissions);
+    }
+
+}
+
+    internal sealed class AppUserConfiguration : IEntityTypeConfiguration<AppUser>
+{
+    public void Configure(EntityTypeBuilder<AppUser> builder)
+    {
+        builder.ToTable("AppUser",SchemaNames.Identity);
+
+        builder.HasKey(x => x.Id);
+
     }
 
 }

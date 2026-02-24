@@ -22,6 +22,29 @@ namespace Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Domain.Entities.Users.AppUser", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AppUser", "Identity");
+                });
+
             modelBuilder.Entity("Infrastructure.Authentication.IdentityEntities.Permission", b =>
                 {
                     b.Property<int>("Id")
@@ -71,11 +94,9 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Infrastructure.Authentication.IdentityEntities.Role", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ConcurrencyStamp")
                         .HasColumnType("nvarchar(max)");
@@ -93,22 +114,22 @@ namespace Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 1,
-                            Name = "ADMIN",
+                            Id = new Guid("11111111-1111-1111-1111-111111111111"),
+                            Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = 2,
-                            Name = "USER",
+                            Id = new Guid("22222222-2222-2222-2222-222222222222"),
+                            Name = "User",
                             NormalizedName = "USER"
                         });
                 });
 
             modelBuilder.Entity("Infrastructure.Authentication.IdentityEntities.RolePermission", b =>
                 {
-                    b.Property<int>("RoleId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Id")
                         .HasColumnType("int");
@@ -128,35 +149,35 @@ namespace Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            RoleId = 1,
+                            RoleId = new Guid("11111111-1111-1111-1111-111111111111"),
                             Id = 1,
                             ClaimType = "ADMIN",
                             ClaimValue = "READ"
                         },
                         new
                         {
-                            RoleId = 1,
+                            RoleId = new Guid("11111111-1111-1111-1111-111111111111"),
                             Id = 2,
                             ClaimType = "ADMIN",
                             ClaimValue = "WRITE"
                         },
                         new
                         {
-                            RoleId = 1,
+                            RoleId = new Guid("11111111-1111-1111-1111-111111111111"),
                             Id = 3,
                             ClaimType = "ADMIN",
                             ClaimValue = "MODIFY"
                         },
                         new
                         {
-                            RoleId = 1,
+                            RoleId = new Guid("11111111-1111-1111-1111-111111111111"),
                             Id = 4,
                             ClaimType = "ADMIN",
                             ClaimValue = "DELETE"
                         },
                         new
                         {
-                            RoleId = 2,
+                            RoleId = new Guid("22222222-2222-2222-2222-222222222222"),
                             Id = 1,
                             ClaimType = "USER",
                             ClaimValue = "READ"
@@ -165,11 +186,9 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Infrastructure.Authentication.IdentityEntities.User", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
@@ -226,11 +245,11 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Infrastructure.Authentication.IdentityEntities.UserRole", b =>
                 {
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("RoleId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("UserId", "RoleId");
 
@@ -239,13 +258,13 @@ namespace Infrastructure.Migrations
                     b.ToTable("UserRoles", "Identity");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
                 {
                     b.Property<int>("Id")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ClaimType")
                         .HasColumnType("nvarchar(max)");
@@ -258,7 +277,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("UserPermissions", "Identity");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
                 {
                     b.Property<string>("LoginProvider")
                         .HasColumnType("nvarchar(450)");
@@ -269,18 +288,18 @@ namespace Infrastructure.Migrations
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("LoginProvider", "ProviderKey");
 
                     b.ToTable("UserLogins", "Identity");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
                 {
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("LoginProvider")
                         .HasColumnType("nvarchar(450)");

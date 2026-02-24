@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Configurations.Authentication;
-internal sealed class UserLoginConfiguration : IEntityTypeConfiguration<IdentityUserLogin<int>>
+internal sealed class UserLoginConfiguration : IEntityTypeConfiguration<IdentityUserLogin<Guid>>
 {
-    public void Configure(EntityTypeBuilder<IdentityUserLogin<int>> builder)
+    public void Configure(EntityTypeBuilder<IdentityUserLogin<Guid>> builder)
     {
         builder.ToTable(TableNames.UserLogins, SchemaNames.Identity);
 

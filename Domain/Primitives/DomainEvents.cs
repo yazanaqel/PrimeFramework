@@ -1,4 +1,2 @@
-﻿using Domain.Primitives;
-
-namespace Domain.DomainEvents;
+﻿namespace Domain.Primitives;
 public abstract record DomainEvent(Guid Id) : IDomainEvent;

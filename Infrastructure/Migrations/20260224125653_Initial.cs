@@ -17,6 +17,21 @@ namespace Infrastructure.Migrations
                 name: "Identity");
 
             migrationBuilder.CreateTable(
+                name: "AppUser",
+                schema: "Identity",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AppUser", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Permissions",
                 schema: "Identity",
                 columns: table => new
@@ -36,8 +51,7 @@ namespace Infrastructure.Migrations
                 schema: "Identity",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     NormalizedName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true)
@@ -55,7 +69,7 @@ namespace Infrastructure.Migrations
                     LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ProviderKey = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserId = table.Column<int>(type: "int", nullable: false)
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -68,7 +82,7 @@ namespace Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -82,8 +96,7 @@ namespace Infrastructure.Migrations
                 schema: "Identity",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreatedOnUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedOnUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -111,7 +124,7 @@ namespace Infrastructure.Migrations
                 schema: "Identity",
                 columns: table => new
                 {
-                    UserId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
@@ -127,7 +140,7 @@ namespace Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false),
-                    RoleId = table.Column<int>(type: "int", nullable: false),
+                    RoleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -155,8 +168,8 @@ namespace Infrastructure.Migrations
                 schema: "Identity",
                 columns: table => new
                 {
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    RoleId = table.Column<int>(type: "int", nullable: false)
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    RoleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -195,8 +208,8 @@ namespace Infrastructure.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { 1, null, "ADMIN", "ADMIN" },
-                    { 2, null, "USER", "USER" }
+                    { new Guid("11111111-1111-1111-1111-111111111111"), null, "Admin", "ADMIN" },
+                    { new Guid("22222222-2222-2222-2222-222222222222"), null, "User", "USER" }
                 });
 
             migrationBuilder.InsertData(
@@ -205,11 +218,11 @@ namespace Infrastructure.Migrations
                 columns: new[] { "Id", "RoleId", "ClaimType", "ClaimValue" },
                 values: new object[,]
                 {
-                    { 1, 1, "ADMIN", "READ" },
-                    { 2, 1, "ADMIN", "WRITE" },
-                    { 3, 1, "ADMIN", "MODIFY" },
-                    { 4, 1, "ADMIN", "DELETE" },
-                    { 1, 2, "USER", "READ" }
+                    { 1, new Guid("11111111-1111-1111-1111-111111111111"), "ADMIN", "READ" },
+                    { 2, new Guid("11111111-1111-1111-1111-111111111111"), "ADMIN", "WRITE" },
+                    { 3, new Guid("11111111-1111-1111-1111-111111111111"), "ADMIN", "MODIFY" },
+                    { 4, new Guid("11111111-1111-1111-1111-111111111111"), "ADMIN", "DELETE" },
+                    { 1, new Guid("22222222-2222-2222-2222-222222222222"), "USER", "READ" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -228,6 +241,10 @@ namespace Infrastructure.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "AppUser",
+                schema: "Identity");
+
             migrationBuilder.DropTable(
                 name: "RolePermissions",
                 schema: "Identity");

@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Configurations.Authentication;
-internal sealed class UserClaimConfiguration : IEntityTypeConfiguration<IdentityUserClaim<int>>
+internal sealed class UserClaimConfiguration : IEntityTypeConfiguration<IdentityUserClaim<Guid>>
 {
-    public void Configure(EntityTypeBuilder<IdentityUserClaim<int>> builder)
+    public void Configure(EntityTypeBuilder<IdentityUserClaim<Guid>> builder)
     {
         builder.ToTable(TableNames.UserPermissions, SchemaNames.Identity);
 

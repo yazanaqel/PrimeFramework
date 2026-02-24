@@ -1,8 +1,10 @@
-﻿using Application.Repositories;
+﻿using Application.Abstractions;
+using Application.Repositories;
 using Domain.Constants;
 using Infrastructure.Authentication;
 using Infrastructure.Authentication.IdentityEntities;
 using Infrastructure.DatabaseSeed;
+using Infrastructure.EventDispatcher;
 using Infrastructure.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -43,7 +45,10 @@ public static class DependencyInjection
         services.AddSingleton<IAuthorizationPolicyProvider,PermissionAuthorizationPolicyProvider>();
 
         //services.AddScoped<IDbContext>(factory => factory.GetRequiredService<ApplicationDbContext>());
-        //services.AddScoped<IUnitOfWork>(factory => factory.GetRequiredService<ApplicationDbContext>());
+
+        services.AddScoped<IDomainEventDispatcher,DomainEventDispatcher>();
+
+        services.AddScoped<IUnitOfWork,ApplicationDbContext>();
 
         services.AddScoped<IUserIdentity,UserIdentity>();
 

@@ -1,5 +1,6 @@
 ﻿using Application.Features.Authentication.LoginUser;
 using Application.Features.Authentication.RegisterUser;
+using Application.Features.User.GetAllUsers;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Diagnostics;
@@ -24,6 +25,12 @@ public static class AuthenticationEndpoints
             return response.IsSuccess ? Results.Ok(response.Value) : Results.NotFound(response.Error);
         });
 
+        app.MapGet("/Users/GetAllUsers",async (IMediator mediator) =>
+        {
+            var response = await mediator.Send(new GetAllUsersQuery());
+
+            return response.IsSuccess ? Results.Ok(response.Value) : Results.NotFound(response.Error);
+        });
 
         app.UseExceptionHandler(errorApp =>
         {

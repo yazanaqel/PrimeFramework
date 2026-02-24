@@ -1,16 +1,32 @@
-﻿using Application.Repositories;
+﻿using Application.Features.User.GetAllUsers;
+using Application.Repositories;
+using Domain.Entities.Users;
 using Infrastructure.Authentication;
 using Infrastructure.Authentication.Enums;
 using Infrastructure.Authentication.IdentityEntities;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Identity;
 
-internal class UserIdentity(UserManager<User> userManager,IJwtProvider jwtProvider) : IUserIdentity
+internal class UserIdentity(UserManager<User> userManager,IJwtProvider jwtProvider,ApplicationDbContext applicationDbContext) : IUserIdentity
 {
     private readonly UserManager<User> _userManager = userManager;
     private readonly IJwtProvider _jwtProvider = jwtProvider;
+    private readonly ApplicationDbContext _applicationDbContext = applicationDbContext;
 
+
+
+    public async Task<IEnumerable<AppUser>> GetAllUsersAsync()
+    {
+        return await _userManager.Users
+            .Select(u => AppUser.MapUser
+            (
+                u.Id,
+                u.UserName,
+                u.Email
+            )).ToListAsync();
+    }
 
     public async Task<string> LoginAsync(string email,string password)
     {
@@ -26,24 +42,42 @@ internal class UserIdentity(UserManager<User> userManager,IJwtProvider jwtProvid
         return string.Empty;
     }
 
-    public async Task<string> RegisterAsync(string email,string password)
+    public async Task<string> RegisterAsync(AppUser appUser)
     {
-        var user = await _userManager.FindByEmailAsync(email);
+        var user = await _userManager.FindByEmailAsync(appUser.Email);
 
         if(user is not null)
             return string.Empty;
 
+        var strategy = _applicationDbContext.Database.CreateExecutionStrategy();
 
-        var registerUser = new User { UserName = email,Email = email };
+        string token = string.Empty;
 
-        var result = await _userManager.CreateAsync(registerUser,password);
+        await strategy.ExecuteAsync(async () =>
+        {
+            await using var transaction = await _applicationDbContext.Database.BeginTransactionAsync();
 
-        if(result.Succeeded)
-            await userManager.AddToRoleAsync(registerUser,nameof(Roles.USER));
+            var user = new User { Id = appUser.Id,UserName = appUser.Email,Email = appUser.Email };
 
-        string token = await _jwtProvider.GenerateAsync(registerUser);
+            await _userManager.CreateAsync(user,appUser.Password);
+
+            await userManager.AddToRoleAsync(user,nameof(Roles.USER));
+
+            token = await _jwtProvider.GenerateAsync(user);
+
+            await AddAppUser(appUser);
+
+            await transaction.CommitAsync();
+        });
 
         return token;
+    }
 
+
+    private async Task AddAppUser(AppUser appUser)
+    {
+        _applicationDbContext.Set<AppUser>().Add(appUser);
+
+        await _applicationDbContext.SaveChangesAsync();
     }
 }
