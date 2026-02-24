@@ -1,6 +1,6 @@
 ﻿namespace Domain.Primitives;
 
-public abstract class Entity<TId>
+public abstract class Entity<TId> : IEntity
 {
     private readonly List<IDomainEvent> _domainEvents = new();
 

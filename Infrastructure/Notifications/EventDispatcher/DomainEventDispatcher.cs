@@ -2,7 +2,7 @@
 using Domain.Primitives;
 using MediatR;
 
-namespace Infrastructure.EventDispatcher;
+namespace Infrastructure.Notifications.EventDispatcher;
 
 public sealed class DomainEventDispatcher : IDomainEventDispatcher
 {

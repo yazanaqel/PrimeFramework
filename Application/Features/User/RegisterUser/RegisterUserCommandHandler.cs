@@ -21,8 +21,6 @@ internal sealed class RegisterUserCommandHandler(IUserIdentity userIdentity,IUni
             return Result.Failure<string>("Failed to register user.");
         }
 
-        await _unitOfWork.SaveChangesAsync();
-
         return Result.Success(result);
     }
 }

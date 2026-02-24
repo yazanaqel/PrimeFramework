@@ -4,7 +4,7 @@ using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Application;
-public static class DependencyInjection
+public static class ApplicationRegistration
 {
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
@@ -17,7 +17,7 @@ public static class DependencyInjection
 
         services.AddTransient(typeof(IPipelineBehavior<,>),typeof(ValidationBehavior<,>));
         services.AddTransient(typeof(IPipelineBehavior<,>),typeof(LoggingBehavior<,>));
-        //services.AddScoped(typeof(IPipelineBehavior<,>),typeof(UnitOfWorkBehavior<,>));
+        services.AddTransient(typeof(IPipelineBehavior<,>),typeof(UnitOfWorkBehavior<,>));
 
         return services;
     }
