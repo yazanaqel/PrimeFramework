@@ -3,7 +3,7 @@
 namespace Domain.Entities.Users;
 
 public sealed record UserRegisteredEvent(
-    Guid Id,
+    Guid EventId,
     Guid UserId,
     string Email,
-    DateTime OccurredOn) : DomainEvent(Id);
+    DateTime OccurredOn) : DomainEvent(EventId);

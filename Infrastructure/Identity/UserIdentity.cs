@@ -56,7 +56,7 @@ internal class UserIdentity(UserManager<User> userManager,IJwtProvider jwtProvid
         {
             await using var transaction = await _applicationDbContext.Database.BeginTransactionAsync();
 
-            var user = new User { Id = appUser.Id,UserName = appUser.Email,Email = appUser.Email };
+            var user = new User { Id = appUser.Id,UserName = appUser.Email.Value,Email = appUser.Email.Value };
 
             await _userManager.CreateAsync(user,appUser.Password);
 

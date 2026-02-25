@@ -1,33 +1,23 @@
 ﻿namespace Domain.ValueObjects;
-public abstract class ValueObject : IEquatable<ValueObject>
+
+public abstract class ValueObject<T> : IEquatable<T>
+    where T : ValueObject<T>
 {
-    public abstract IEnumerable<object> GetAtomicValues();
+    public abstract IEnumerable<object> GetEqualityComponents();
 
-    public bool Equals(ValueObject? other)
+    public bool Equals(T? other)
     {
-        return other is not null && ValuesAreEqual(other);
-    }
+        if(other is null)
+            return false;
 
-    public override bool Equals(object? obj)
-    {
-        return obj is ValueObject other && ValuesAreEqual(other);
-    }
-    public static bool operator ==(ValueObject left,ValueObject right)
-    {
-        return Equals(left,right);
+        return GetEqualityComponents()
+            .SequenceEqual(other.GetEqualityComponents());
     }
 
-    public static bool operator !=(ValueObject left,ValueObject right)
-    {
-        return !Equals(left,right);
-    }
-    public override int GetHashCode()
-    {
-        return GetAtomicValues().Aggregate(default(int),HashCode.Combine);
-    }
+    public override bool Equals(object? obj) =>
+        obj is T valueObject && Equals(valueObject);
 
-    private bool ValuesAreEqual(ValueObject other)
-    {
-        return GetAtomicValues().SequenceEqual(other.GetAtomicValues());
-    }
+    public override int GetHashCode() =>
+        GetEqualityComponents()
+            .Aggregate(default(int),HashCode.Combine);
 }

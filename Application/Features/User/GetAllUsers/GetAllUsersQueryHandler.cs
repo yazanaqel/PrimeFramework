@@ -12,6 +12,6 @@ internal sealed class GetAllUsersQueryHandler(IUserIdentity userIdentity) : IQue
     {
         var users = await _userIdentity.GetAllUsersAsync();
 
-        return Result.Success(users.Select(u => new GetAllUsersResponse(u.Id,u.Email,u.UserName)));
+        return Result.Success(users.Select(u => new GetAllUsersResponse(u.Id,u.Email.Value,u.UserName)));
     }
 }

@@ -27,14 +27,3 @@ internal sealed class PermissionConfiguration : IEntityTypeConfiguration<Permiss
 
 }
 
-    internal sealed class AppUserConfiguration : IEntityTypeConfiguration<AppUser>
-{
-    public void Configure(EntityTypeBuilder<AppUser> builder)
-    {
-        builder.ToTable("AppUser",SchemaNames.Identity);
-
-        builder.HasKey(x => x.Id);
-
-    }
-
-}
