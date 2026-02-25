@@ -4,10 +4,14 @@ using System.Linq.Expressions;
 
 namespace Infrastructure.Repositories;
 
-internal class GenericRepository<T>(ApplicationDbContext applicationDbContext) : IGenericRepository<T> where T : class
+internal abstract class GenericRepository<T, TId> : IGenericRepository<T> where T : Domain.Primitives.Entity<TId> /*where TId : class*/
 {
-    private readonly ApplicationDbContext _applicationDbContext = applicationDbContext;
+    private readonly ApplicationDbContext _applicationDbContext;
 
+    protected GenericRepository(ApplicationDbContext applicationDbContext)
+    {
+        _applicationDbContext = applicationDbContext;
+    }
     public async Task<T?> GetByIdAsync(Guid id)
     {
         return await _applicationDbContext.Set<T>().FindAsync(id);

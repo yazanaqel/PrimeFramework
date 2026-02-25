@@ -43,7 +43,7 @@ public static class InfrastructureRegistration
 
         services.AddScoped<IUnitOfWork,ApplicationDbContext>();
 
-        services.AddScoped(typeof(IGenericRepository<>),typeof(GenericRepository<>));
+        //services.AddScoped(typeof(IGenericRepository<>),typeof(GenericRepository<,>));
 
         return services;
     }

@@ -2,48 +2,58 @@
 
 using System.Text.RegularExpressions;
 
-
-public sealed class Email : ValueObject<Email>
+public readonly record struct Email
 {
     private static readonly Regex EmailRegex =
-        new(@"^[^@\s]+@[^@\s]+\.[^@\s]+$",RegexOptions.Compiled);
+        new(@"^[^@\s]+@[^@\s]+\.[^@\s]+$",RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
     public string Value { get; }
 
-    private Email(string value)
+    public Email(string value)
     {
+        if(string.IsNullOrWhiteSpace(value))
+            throw new ArgumentException("Email cannot be empty",nameof(value));
+
+        // Normalize: trim + lowercase
+        value = value.Trim().ToLowerInvariant();
+
+        if(!EmailRegex.IsMatch(value))
+            throw new ArgumentException("Invalid email format",nameof(value));
+
         Value = value;
     }
 
-    public static Email Create(string email)
-    {
-        if(string.IsNullOrWhiteSpace(email))
-            throw new ArgumentException("Email cannot be empty.",nameof(email));
+    // Case-insensitive equality (override default structural equality)
+    public bool Equals(Email other)
+        => string.Equals(Value,other.Value,StringComparison.OrdinalIgnoreCase);
 
-        email = email.Trim();
-
-        //if(!EmailRegex.IsMatch(email))
-        //    throw new ArgumentException("Invalid email format.",nameof(email));
-
-        return new Email(email);
-    }
+    public override int GetHashCode()
+        => StringComparer.OrdinalIgnoreCase.GetHashCode(Value);
 
     public override string ToString() => Value;
 
-    #region Equality
-
-
-    public static bool operator ==(Email? left,Email? right) => Equals(left,right);
-
-    public static bool operator !=(Email? left,Email? right) =>!Equals(left,right);
-
-    public override IEnumerable<object> GetEqualityComponents()
+    // Optional: TryCreate for application/UI layers
+    public static bool TryCreate(string value,out Email email)
     {
-        yield return Value.ToLowerInvariant();
+        try
+        {
+            email = new Email(value);
+            return true;
+        }
+        catch
+        {
+            email = default;
+            return false;
+        }
     }
 
-
-
-    #endregion
+    public static Email Create(string value)
+    {
+        if(TryCreate(value,out Email email))
+        {
+            return email;
+        }
+        return default;
+    }
 }
 

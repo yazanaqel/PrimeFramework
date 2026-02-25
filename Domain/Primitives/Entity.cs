@@ -2,6 +2,10 @@
 
 public abstract class Entity<TId> : IEntity
 {
+    protected Entity()
+    {
+        
+    }
     private readonly List<IDomainEvent> _domainEvents = new();
 
     public TId Id { get; protected set; }

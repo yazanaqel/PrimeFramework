@@ -31,8 +31,8 @@ internal class UserIdentity(UserManager<User> userManager,IJwtProvider jwtProvid
             .Select(u => AppUser.MapUser
             (
                 u.Id,
-                u.UserName,
-                u.Email
+                u.Email,
+                u.UserName
             )).ToListAsync();
     }
 

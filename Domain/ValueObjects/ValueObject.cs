@@ -17,7 +17,16 @@ public abstract class ValueObject<T> : IEquatable<T>
     public override bool Equals(object? obj) =>
         obj is T valueObject && Equals(valueObject);
 
-    public override int GetHashCode() =>
-        GetEqualityComponents()
-            .Aggregate(default(int),HashCode.Combine);
+    public override int GetHashCode()
+    {
+        return GetEqualityComponents()
+            .Aggregate(1,(current,obj) =>
+            {
+                unchecked
+                {
+                    return current * 23 + (obj?.GetHashCode() ?? 0);
+                }
+            });
+    }
 }
+
