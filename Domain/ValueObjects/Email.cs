@@ -14,7 +14,7 @@ public readonly record struct Email
         if(string.IsNullOrWhiteSpace(value))
             throw new ArgumentException("Email cannot be empty",nameof(value));
 
-        // Normalize: trim + lowercase
+
         value = value.Trim().ToLowerInvariant();
 
         if(!EmailRegex.IsMatch(value))
@@ -23,7 +23,7 @@ public readonly record struct Email
         Value = value;
     }
 
-    // Case-insensitive equality (override default structural equality)
+
     public bool Equals(Email other)
         => string.Equals(Value,other.Value,StringComparison.OrdinalIgnoreCase);
 
@@ -32,7 +32,7 @@ public readonly record struct Email
 
     public override string ToString() => Value;
 
-    // Optional: TryCreate for application/UI layers
+
     public static bool TryCreate(string value,out Email email)
     {
         try
