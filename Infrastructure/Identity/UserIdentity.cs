@@ -1,11 +1,13 @@
 ﻿using Application.Features.User.GetAllUsers;
 using Application.Repositories;
 using Domain.Entities.Users;
+using Domain.ValueObjects;
 using Infrastructure.Authentication.Enums;
 using Infrastructure.Authentication.IdentityEntities;
 using Infrastructure.Authentication.JwtSetup;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Infrastructure.Identity;
 
@@ -15,7 +17,7 @@ internal class UserIdentity(UserManager<User> userManager,IJwtProvider jwtProvid
     private readonly IJwtProvider _jwtProvider = jwtProvider;
     private readonly ApplicationDbContext _applicationDbContext = applicationDbContext;
 
-    public async Task<bool> IsEmailAvailable(string email)
+    public async Task<bool> IsEmailAvailable(string email,CancellationToken cancellationToken)
     {
         var user = await _userManager.FindByEmailAsync(email);
 
@@ -25,15 +27,18 @@ internal class UserIdentity(UserManager<User> userManager,IJwtProvider jwtProvid
         return true;
     }
 
-    public async Task<IEnumerable<AppUser>> GetAllUsersAsync()
+    public async Task<IEnumerable<AppUser>> GetAllUsersAsync(CancellationToken cancellationToken)
     {
+
         return await _userManager.Users
+            .OrderBy(u => u.UserName)
             .Select(u => AppUser.MapUser
-            (
-                u.Id,
-                u.Email,
-                u.UserName
-            )).ToListAsync();
+             (
+                 u.Id,
+                 u.Email,
+                 u.UserName
+             )).ToListAsync();
+
     }
 
     public async Task<string> LoginAsync(string email,string password)
@@ -46,7 +51,7 @@ internal class UserIdentity(UserManager<User> userManager,IJwtProvider jwtProvid
         return "Wrong Email Or Password";
     }
 
-    public async Task<string> RegisterAsync(AppUser appUser)
+    public async Task<string> RegisterAsync(AppUser appUser,CancellationToken cancellationToken)
     {
         var strategy = _applicationDbContext.Database.CreateExecutionStrategy();
 
@@ -54,7 +59,7 @@ internal class UserIdentity(UserManager<User> userManager,IJwtProvider jwtProvid
 
         await strategy.ExecuteAsync(async () =>
         {
-            await using var transaction = await _applicationDbContext.Database.BeginTransactionAsync();
+            await using var transaction = await _applicationDbContext.Database.BeginTransactionAsync(cancellationToken);
 
             var user = new User { Id = appUser.Id,UserName = appUser.Email.Value,Email = appUser.Email.Value };
 
@@ -66,9 +71,9 @@ internal class UserIdentity(UserManager<User> userManager,IJwtProvider jwtProvid
 
             _applicationDbContext.Set<AppUser>().Add(appUser);
 
-            await _applicationDbContext.SaveChangesAsync();
+            await _applicationDbContext.SaveChangesAsync(cancellationToken);
 
-            await transaction.CommitAsync();
+            await transaction.CommitAsync(cancellationToken);
         });
 
         return token;

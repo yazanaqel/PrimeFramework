@@ -11,23 +11,23 @@ public static class AuthenticationEndpoints
 {
     public static void MapAuthenticationEndpoints(this WebApplication app)
     {
-        app.MapPost("/Users/Login",async (LoginUserRequest request,IMediator mediator) =>
+        app.MapPost("/Users/Login",async (LoginUserRequest request,IMediator mediator,CancellationToken cancellationToken) =>
         {
-            var response = await mediator.Send(new LoginUserCommand(request));
+            var response = await mediator.Send(new LoginUserCommand(request,cancellationToken));
 
             return response.IsSuccess ? Results.Ok(response.Value) : Results.NotFound(response.Error);
         });
 
-        app.MapPost("/Users/Register",async (RegisterUserRequest request,IMediator mediator) =>
+        app.MapPost("/Users/Register",async (RegisterUserRequest request,IMediator mediator,CancellationToken cancellationToken) =>
         {
-            var response = await mediator.Send(new RegisterUserCommand(request));
+            var response = await mediator.Send(new RegisterUserCommand(request,cancellationToken));
 
             return response.IsSuccess ? Results.Ok(response.Value) : Results.NotFound(response.Error);
         });
 
-        app.MapGet("/Users/GetAllUsers",async (IMediator mediator) =>
+        app.MapGet("/Users/GetAllUsers",async (IMediator mediator,CancellationToken cancellationToken) =>
         {
-            var response = await mediator.Send(new GetAllUsersQuery());
+            var response = await mediator.Send(new GetAllUsersQuery(cancellationToken));
 
             return response.IsSuccess ? Results.Ok(response.Value) : Results.NotFound(response.Error);
         });
@@ -43,7 +43,7 @@ public static class AuthenticationEndpoints
                     context.Response.StatusCode = StatusCodes.Status400BadRequest;
 
                     var errors = validationException.Errors
-                        .Select(e => new { e.PropertyName,e.ErrorMessage});
+                        .Select(e => new { e.PropertyName,e.ErrorMessage });
 
                     await context.Response.WriteAsJsonAsync(errors);
                     return;

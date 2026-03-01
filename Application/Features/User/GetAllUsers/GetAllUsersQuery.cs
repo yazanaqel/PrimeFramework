@@ -2,4 +2,4 @@
 
 namespace Application.Features.User.GetAllUsers;
 
-public sealed record GetAllUsersQuery() : IQuery<IEnumerable<GetAllUsersResponse>>;
+public sealed record GetAllUsersQuery(CancellationToken cancellationToken) : IQuery<IEnumerable<GetAllUsersResponse>>;

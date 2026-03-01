@@ -15,7 +15,7 @@ internal sealed class RegisterUserCommandHandler(IUserIdentity userIdentity) : I
 
         if(Email.TryCreate(command.Request.Email,out var email))
         {
-            var availableEmail = await _userIdentity.IsEmailAvailable(email.Value);
+            var availableEmail = await _userIdentity.IsEmailAvailable(email.Value,cancellationToken);
 
             if(!availableEmail)
                 return Result.Failure<string>("Email Is Not Available");
@@ -26,7 +26,7 @@ internal sealed class RegisterUserCommandHandler(IUserIdentity userIdentity) : I
         }
 
         var user = await _userIdentity.RegisterAsync(
-            appUser: new AppUser(email,command.Request.Email,command.Request.Password));
+            appUser: new AppUser(email,command.Request.Email,command.Request.Password),cancellationToken);
 
         return Result.Success(user);
     }
