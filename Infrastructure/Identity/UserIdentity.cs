@@ -1,7 +1,9 @@
 ﻿using Application.Features.User.GetAllUsers;
 using Application.Repositories;
+using Domain.Abstractions;
 using Domain.Entities.Users;
 using Domain.ValueObjects;
+using Infrastructure.Abstractions;
 using Infrastructure.Authentication.Enums;
 using Infrastructure.Authentication.IdentityEntities;
 using Infrastructure.Authentication.JwtSetup;
@@ -77,6 +79,14 @@ internal class UserIdentity(UserManager<User> userManager,IJwtProvider jwtProvid
         });
 
         return token;
+    }
+
+
+    public async Task<AppUser?> GetAsync(ISpecification<AppUser> spec,CancellationToken cancellationToken = default)
+    {
+        var query = SpecificationEvaluator.GetQuery(_applicationDbContext.Set<AppUser>().AsQueryable(),spec);
+
+        return await query.FirstOrDefaultAsync(cancellationToken);
     }
 
 }
