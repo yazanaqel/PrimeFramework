@@ -32,15 +32,11 @@ internal class UserIdentity(UserManager<User> userManager,IJwtProvider jwtProvid
     public async Task<IEnumerable<AppUser>> GetAllUsersAsync(CancellationToken cancellationToken)
     {
 
-        return await _userManager.Users
-            .OrderBy(u => u.UserName)
-            .Select(u => AppUser.MapUser
-             (
-                 u.Id,
-                 u.Email,
-                 u.UserName
-             )).ToListAsync();
-
+        return await _applicationDbContext
+            .Set<AppUser>()
+            .AsNoTracking()
+            //.Where(u => u.UserName.Contains("yaza"))
+            .ToListAsync();
     }
 
     public async Task<string> LoginAsync(string email,string password)

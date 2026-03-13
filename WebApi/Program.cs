@@ -1,4 +1,5 @@
 using Application;
+using Hangfire;
 using Infrastructure;
 using Infrastructure.DatabaseSeed;
 using Serilog;
@@ -44,6 +45,8 @@ app.UseSerilogRequestLogging(options =>
 {
     options.IncludeQueryInRequestPath = true;
 });
+
+app.UseHangfireDashboard("/hangfire");
 
 app.UseAuthentication();
 

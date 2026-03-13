@@ -1,19 +1,21 @@
-﻿using Application.Notifications.Email;
+﻿using Application.Abstractions;
+using Application.Notifications.Email;
 using Domain.Entities.Users;
 using MediatR;
 
 namespace Application.Notifications.EventsHandlers.User;
 
-public sealed class RegisterUserEventHandler(IEmailService emailService) : INotificationHandler<UserRegisteredEvent>
+public sealed class RegisterUserEventHandler(IJobScheduler jobScheduler, IEmailService emailService) : INotificationHandler<UserRegisteredEvent>
 {
+    private readonly IJobScheduler _jobScheduler = jobScheduler;
     private readonly IEmailService _emailService = emailService;
 
     public async Task Handle(UserRegisteredEvent notification,CancellationToken ct)
     {
-        await _emailService.SendEmailAsync
+        _jobScheduler.Schedule(() => _emailService.SendEmailAsync
             ("yazan.aqel93@gmail.com",
             "Email Service",
-            $"<h1>New User Registered Event<h1/>");
+            $"<h1>New User Registered Event<h1/>"),TimeSpan.FromMinutes(2));
     }
 
 }

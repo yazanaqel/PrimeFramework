@@ -7,6 +7,7 @@ using Infrastructure.Authentication;
 using Infrastructure.Authentication.IdentityEntities;
 using Infrastructure.DatabaseSeed;
 using Infrastructure.Identity;
+using Infrastructure.Jobs;
 using Infrastructure.Notifications.Email;
 using Infrastructure.Notifications.EventDispatcher;
 using Infrastructure.Repositories;
@@ -34,6 +35,8 @@ public static class InfrastructureRegistration
         //services.AddScoped<IDbContext>(factory => factory.GetRequiredService<ApplicationDbContext>());
 
         services.AddEmail(configuration);
+
+        services.AddJobs(configuration);
 
         services.AddIdentity();
 

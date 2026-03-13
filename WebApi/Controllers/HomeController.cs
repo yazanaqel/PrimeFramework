@@ -18,7 +18,7 @@ public class HomeController(ApplicationDbContext applicationDbContext) : Control
         return await _applicationDbContext
             .Set<AppUser>()
             .AsNoTracking()
-            .Where(u => u.UserName.Contains("yaza"))
+            //.Where(u => u.UserName.Contains("yaza"))
             .ToListAsync();
 
     }

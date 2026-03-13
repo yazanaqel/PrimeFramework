@@ -6,6 +6,6 @@ public sealed class GetUserByIdSpecification : Specification<AppUser>
 {
     public GetUserByIdSpecification(Guid userId)
     {
-        Criteria = u => u.Id == userId;
+        Criteria = (u) => (u.Id == userId);
     }
 }

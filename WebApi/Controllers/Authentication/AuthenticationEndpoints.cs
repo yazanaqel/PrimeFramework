@@ -27,12 +27,12 @@ public static class AuthenticationEndpoints
             return response.IsSuccess ? Results.Ok(response.Value) : Results.NotFound(response.Error);
         });
 
-        //app.MapGet("/Users/GetAllUsers",async (IMediator mediator,CancellationToken cancellationToken) =>
-        //{
-        //    var response = await mediator.Send(new GetAllUsersQuery(cancellationToken));
+        app.MapGet("/Users/GetAllUsers",async (IMediator mediator,CancellationToken cancellationToken) =>
+        {
+            var response = await mediator.Send(new GetAllUsersQuery(cancellationToken));
 
-        //    return response.IsSuccess ? Results.Ok(response.Value) : Results.NotFound(response.Error);
-        //});
+            return response.IsSuccess ? Results.Ok(response.Value) : Results.NotFound(response.Error);
+        });
 
         app.MapGet("/Users/GetUserById/{userId}",async (string userId,IMediator mediator,CancellationToken cancellationToken) =>
         {
