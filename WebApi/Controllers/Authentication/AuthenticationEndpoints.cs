@@ -2,10 +2,12 @@
 using Application.Features.Authentication.RegisterUser;
 using Application.Features.User.GetAllUsers;
 using Application.Features.User.GetUserById;
+using Application.Features.User.RefreshToken;
 using FluentValidation;
 using Infrastructure.Authentication.IdentityEntities;
 using MediatR;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers.Authentication;
 
@@ -23,6 +25,13 @@ public static class AuthenticationEndpoints
         app.MapPost("/Users/Register",async (RegisterUserRequest request,IMediator mediator,CancellationToken cancellationToken) =>
         {
             var response = await mediator.Send(new RegisterUserCommand(request,cancellationToken));
+
+            return response.IsSuccess ? Results.Ok(response.Value) : Results.NotFound(response.Error);
+        });
+
+        app.MapPost("/Users/Refresh",async (RefreshTokenRequest request,IMediator mediator,CancellationToken cancellationToken) =>
+        {
+            var response = await mediator.Send(new RefreshTokenCommand(request,cancellationToken));
 
             return response.IsSuccess ? Results.Ok(response.Value) : Results.NotFound(response.Error);
         });

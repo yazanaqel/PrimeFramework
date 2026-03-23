@@ -32,11 +32,13 @@ internal static class IdentityRegistration
 
         }).AddJwtBearer();
 
+        services.AddAuthorization();
+
         services.ConfigureOptions<JwtOptionsSetup>();
 
         services.ConfigureOptions<JwtBearerOptionsSetup>();
 
-        services.AddAuthorization();
+        services.AddScoped<RefreshTokenGenerator>();
 
         services.AddScoped<IPermissionService,PermissionService>();
 

@@ -6,4 +6,6 @@ public class JwtOptions
     public string Audience { get; init; } = string.Empty;
 
     public string SecretKey { get; init; } = string.Empty;
+    public int AccessTokenMinutes { get; set; }
+    public int RefreshTokenDays { get; set; }
 }

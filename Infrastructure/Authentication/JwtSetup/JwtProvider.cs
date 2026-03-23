@@ -13,7 +13,7 @@ internal class JwtProvider(IOptions<JwtOptions> options,IPermissionService permi
     private readonly JwtOptions _options = options.Value;
     private readonly IPermissionService _permissionService = permissionService;
 
-    public async Task<string> GenerateAsync(User user)
+    public async Task<string> GenerateAccessToken(User user)
     {
         var claims = new List<Claim>
         {
@@ -47,12 +47,12 @@ internal class JwtProvider(IOptions<JwtOptions> options,IPermissionService permi
             SecurityAlgorithms.HmacSha256);
 
         var token = new JwtSecurityToken(
-            _options.Issuer,
-            _options.Audience,
-            claims,
-            null,
-            DateTime.UtcNow.AddHours(1),
-            signingCredentials);
+            issuer: _options.Issuer,
+            audience: _options.Audience,
+            claims: claims,
+            expires: DateTime.UtcNow.AddMinutes(_options.AccessTokenMinutes),
+            signingCredentials: signingCredentials
+        );
 
         string tokenValue = new JwtSecurityTokenHandler()
             .WriteToken(token);
