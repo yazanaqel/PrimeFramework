@@ -2,12 +2,11 @@
 using Application.Features.Authentication.RegisterUser;
 using Application.Features.User.GetAllUsers;
 using Application.Features.User.GetUserById;
+using Application.Features.User.LogoutUser;
 using Application.Features.User.RefreshToken;
 using FluentValidation;
-using Infrastructure.Authentication.IdentityEntities;
 using MediatR;
 using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers.Authentication;
 
@@ -15,13 +14,6 @@ public static class AuthenticationEndpoints
 {
     public static void MapAuthenticationEndpoints(this WebApplication app)
     {
-        app.MapPost("/Users/Login",async (LoginUserRequest request,IMediator mediator,CancellationToken cancellationToken) =>
-        {
-            var response = await mediator.Send(new LoginUserCommand(request,cancellationToken));
-
-            return response.IsSuccess ? Results.Ok(response.Value) : Results.NotFound(response.Error);
-        });
-
         app.MapPost("/Users/Register",async (RegisterUserRequest request,IMediator mediator,CancellationToken cancellationToken) =>
         {
             var response = await mediator.Send(new RegisterUserCommand(request,cancellationToken));
@@ -29,6 +21,25 @@ public static class AuthenticationEndpoints
             return response.IsSuccess ? Results.Ok(response.Value) : Results.NotFound(response.Error);
         });
 
+        app.MapPost("/Users/Login",async (LoginUserRequest request,IMediator mediator,CancellationToken cancellationToken) =>
+        {
+            var response = await mediator.Send(new LoginUserCommand(request,cancellationToken));
+
+            return response.IsSuccess ? Results.Ok(response.Value) : Results.NotFound(response.Error);
+        });
+
+        app.MapPost("/Users/Logout/{userId}",async (string userId,IMediator mediator,CancellationToken cancellationToken) =>
+        {
+            if(Guid.TryParse(userId,out Guid parsedGuid))
+            {
+                var response = await mediator.Send(new LogoutUserCommand(parsedGuid));
+
+                return response.IsSuccess ? Results.Ok() : Results.NotFound(response.Error);
+            }
+
+            return Results.BadRequest(new { valid = false,message = "Invalid GUID format." });
+
+        });
         app.MapPost("/Users/Refresh",async (RefreshTokenRequest request,IMediator mediator,CancellationToken cancellationToken) =>
         {
             var response = await mediator.Send(new RefreshTokenCommand(request,cancellationToken));
@@ -52,7 +63,7 @@ public static class AuthenticationEndpoints
                 return response.IsSuccess ? Results.Ok(response.Value) : Results.NotFound(response.Error);
             }
 
-            return Results.BadRequest(new { valid = false, message = "Invalid GUID format." });
+            return Results.BadRequest(new { valid = false,message = "Invalid GUID format." });
         });
 
         app.UseExceptionHandler(errorApp =>

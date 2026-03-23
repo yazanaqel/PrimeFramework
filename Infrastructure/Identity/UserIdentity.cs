@@ -137,4 +137,13 @@ internal class UserIdentity(
         return new RefreshTokenResponse(accessToken,refreshToken);
 
     }
+
+    public async Task LogoutAsync(Guid userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId.ToString());
+        user.RefreshToken = string.Empty;
+        user.RefreshTokenExpiryTime = null;
+        await _userManager.UpdateAsync(user);
+    }
+
 }
