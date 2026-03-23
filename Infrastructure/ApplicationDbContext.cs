@@ -17,10 +17,15 @@ public class ApplicationDbContext : IdentityDbContext<User,Role,Guid,IdentityUse
     {
         _domainEventDispatcher = domainEventDispatcher;
     }
-    protected override void OnModelCreating(ModelBuilder modelBuilder) =>
-    modelBuilder.ApplyConfigurationsFromAssembly(AssemblyProvider.GetAssembly());
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.ApplyConfigurationsFromAssembly(AssemblyProvider.GetAssembly());
 
+        modelBuilder.Ignore<IdentityUserPasskey<Guid>>();
 
+        modelBuilder.Ignore<IdentityPasskeyData>();
+
+    }
     public override async Task<int> SaveChangesAsync(CancellationToken ct = default)
     {
 
