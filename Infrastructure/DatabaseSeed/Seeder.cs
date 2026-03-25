@@ -55,6 +55,19 @@ public class Seeder(IOptions<SeederOptions> options,UserManager<User> userManage
 
                 await _userManager.AddToRolesAsync(user,roles);
 
+                IEnumerable<Permission> permissions = Enum.GetValues<Permissions>()
+                        .Select
+                        (permission =>
+
+                            new Permission
+                            {
+                                PermissionName = permission.ToString().ToUpper(),
+                                NormalizedName = permission.ToString().ToUpper()
+                            }
+                        ).ToList();
+
+                _dbContext.Set<Permission>().AddRange(permissions);
+
                 //Role Permission Seed
                 var adminRole = await _roleManager.FindByNameAsync(nameof(Roles.ADMIN));
 

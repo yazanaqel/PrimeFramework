@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260325120813_Initial_Create")]
+    [Migration("20260325142257_Initial_Create")]
     partial class Initial_Create
     {
         /// <inheritdoc />
@@ -68,32 +68,6 @@ namespace Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Permissions", "Identity");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            NormalizedName = "READ",
-                            PermissionName = "READ"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            NormalizedName = "WRITE",
-                            PermissionName = "WRITE"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            NormalizedName = "MODIFY",
-                            PermissionName = "MODIFY"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            NormalizedName = "DELETE",
-                            PermissionName = "DELETE"
-                        });
                 });
 
             modelBuilder.Entity("Infrastructure.Authentication.IdentityEntities.Role", b =>

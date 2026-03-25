@@ -3,8 +3,6 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
-
 namespace Infrastructure.Migrations
 {
     /// <inheritdoc />
@@ -190,18 +188,6 @@ namespace Infrastructure.Migrations
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.InsertData(
-                schema: "Identity",
-                table: "Permissions",
-                columns: new[] { "Id", "NormalizedName", "PermissionName" },
-                values: new object[,]
-                {
-                    { 1, "READ", "READ" },
-                    { 2, "WRITE", "WRITE" },
-                    { 3, "MODIFY", "MODIFY" },
-                    { 4, "DELETE", "DELETE" }
                 });
 
             migrationBuilder.CreateIndex(

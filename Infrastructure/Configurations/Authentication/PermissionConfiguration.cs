@@ -15,14 +15,14 @@ internal sealed class PermissionConfiguration : IEntityTypeConfiguration<Permiss
 
         builder.HasKey(x => x.Id);
 
-        IEnumerable<Permission> permissions = Enum.GetValues<Permissions>()
-            .Select
-            (permission =>
+        //IEnumerable<Permission> permissions = Enum.GetValues<Permissions>()
+        //    .Select
+        //    (permission =>
 
-                new Permission { Id = (int)permission, PermissionName = permission.ToString().ToUpper(), NormalizedName = permission.ToString().ToUpper() }
-            );
+        //        new Permission { Id = (int)permission, PermissionName = permission.ToString().ToUpper(), NormalizedName = permission.ToString().ToUpper() }
+        //    );
 
-        builder.HasData(permissions);
+        //builder.HasData(permissions);
     }
 
 }
