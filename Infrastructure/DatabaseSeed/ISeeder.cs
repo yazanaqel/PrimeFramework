@@ -2,6 +2,4 @@
 public interface ISeeder
 {
     Task Initialize();
-    Task SeedPrimeUser();
-
 }

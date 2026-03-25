@@ -14,7 +14,7 @@ internal static class IdentityRegistration
 {
     public static IServiceCollection AddIdentity(this IServiceCollection services)
     {
-        services.AddIdentity<User,Role>(op =>
+        services.AddIdentityCore<User>(op =>
         {
             op.Password.RequireDigit = false;
             op.Password.RequiredLength = 6;
@@ -23,7 +23,10 @@ internal static class IdentityRegistration
             op.Password.RequireNonAlphanumeric = false;
             op.SignIn.RequireConfirmedAccount = false;
             //op.ClaimsIdentity.UserIdClaimType = "UserId";
-        }).AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
+        })
+         .AddRoles<Role>()
+        .AddEntityFrameworkStores<ApplicationDbContext>()
+        .AddDefaultTokenProviders();
 
         services.AddAuthentication(options =>
         {

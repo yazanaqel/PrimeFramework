@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class Initial_Create : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -22,7 +22,7 @@ namespace Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
@@ -97,6 +97,8 @@ namespace Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    RefreshToken = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RefreshTokenExpiryTime = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedOnUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedOnUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -200,29 +202,6 @@ namespace Infrastructure.Migrations
                     { 2, "WRITE", "WRITE" },
                     { 3, "MODIFY", "MODIFY" },
                     { 4, "DELETE", "DELETE" }
-                });
-
-            migrationBuilder.InsertData(
-                schema: "Identity",
-                table: "Roles",
-                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[,]
-                {
-                    { new Guid("11111111-1111-1111-1111-111111111111"), null, "Admin", "ADMIN" },
-                    { new Guid("22222222-2222-2222-2222-222222222222"), null, "User", "USER" }
-                });
-
-            migrationBuilder.InsertData(
-                schema: "Identity",
-                table: "RolePermissions",
-                columns: new[] { "Id", "RoleId", "ClaimType", "ClaimValue" },
-                values: new object[,]
-                {
-                    { 1, new Guid("11111111-1111-1111-1111-111111111111"), "ADMIN", "READ" },
-                    { 2, new Guid("11111111-1111-1111-1111-111111111111"), "ADMIN", "WRITE" },
-                    { 3, new Guid("11111111-1111-1111-1111-111111111111"), "ADMIN", "MODIFY" },
-                    { 4, new Guid("11111111-1111-1111-1111-111111111111"), "ADMIN", "DELETE" },
-                    { 1, new Guid("22222222-2222-2222-2222-222222222222"), "USER", "READ" }
                 });
 
             migrationBuilder.CreateIndex(

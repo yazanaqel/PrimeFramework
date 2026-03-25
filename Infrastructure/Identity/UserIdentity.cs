@@ -140,9 +140,12 @@ internal class UserIdentity(
 
     public async Task LogoutAsync(Guid userId)
     {
-        var user = await _userManager.FindByIdAsync(userId.ToString());
+        string userIdString = userId.ToString();
+        var user = await _userManager.FindByIdAsync(userIdString);
+
         user.RefreshToken = string.Empty;
         user.RefreshTokenExpiryTime = null;
+
         await _userManager.UpdateAsync(user);
     }
 

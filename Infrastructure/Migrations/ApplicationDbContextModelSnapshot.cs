@@ -111,22 +111,6 @@ namespace Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Roles", "Identity");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("11111111-1111-1111-1111-111111111111"),
-                            ConcurrencyStamp = "11111111-1111-1111-1111-111111111111",
-                            Name = "Admin",
-                            NormalizedName = "ADMIN"
-                        },
-                        new
-                        {
-                            Id = new Guid("22222222-2222-2222-2222-222222222222"),
-                            ConcurrencyStamp = "22222222-2222-2222-2222-222222222222",
-                            Name = "User",
-                            NormalizedName = "USER"
-                        });
                 });
 
             modelBuilder.Entity("Infrastructure.Authentication.IdentityEntities.RolePermission", b =>
@@ -148,43 +132,6 @@ namespace Infrastructure.Migrations
                     b.HasIndex("Id");
 
                     b.ToTable("RolePermissions", "Identity");
-
-                    b.HasData(
-                        new
-                        {
-                            RoleId = new Guid("11111111-1111-1111-1111-111111111111"),
-                            Id = 1,
-                            ClaimType = "ADMIN",
-                            ClaimValue = "READ"
-                        },
-                        new
-                        {
-                            RoleId = new Guid("11111111-1111-1111-1111-111111111111"),
-                            Id = 2,
-                            ClaimType = "ADMIN",
-                            ClaimValue = "WRITE"
-                        },
-                        new
-                        {
-                            RoleId = new Guid("11111111-1111-1111-1111-111111111111"),
-                            Id = 3,
-                            ClaimType = "ADMIN",
-                            ClaimValue = "MODIFY"
-                        },
-                        new
-                        {
-                            RoleId = new Guid("11111111-1111-1111-1111-111111111111"),
-                            Id = 4,
-                            ClaimType = "ADMIN",
-                            ClaimValue = "DELETE"
-                        },
-                        new
-                        {
-                            RoleId = new Guid("22222222-2222-2222-2222-222222222222"),
-                            Id = 1,
-                            ClaimType = "USER",
-                            ClaimValue = "READ"
-                        });
                 });
 
             modelBuilder.Entity("Infrastructure.Authentication.IdentityEntities.User", b =>
