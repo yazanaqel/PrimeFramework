@@ -1,7 +1,9 @@
 using Application;
+using Application.Abstractions;
 using Hangfire;
 using Infrastructure;
 using Infrastructure.DatabaseSeed;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 using WebApi.Controllers.Authentication;
 using WebApi.Exceptions;
@@ -28,8 +30,22 @@ builder.Host.UseSerilog((context,config) =>
     config.ReadFrom.Configuration(context.Configuration);
 });
 
+
 var app = builder.Build();
 
+using(var scope = app.Services.CreateAsyncScope())
+{
+    var services = scope.ServiceProvider;
+
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+    db.Database.Migrate();
+
+    var seeder = services.GetRequiredService<ISeeder>();
+
+    await seeder.Initialize();
+
+}
 
 if(app.Environment.IsDevelopment())
 {
@@ -55,14 +71,5 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.MapAuthenticationEndpoints();
-
-using(var scope = app.Services.CreateAsyncScope())
-{
-    var services = scope.ServiceProvider;
-
-    var seeder = services.GetRequiredService<ISeeder>();
-
-    await seeder.Initialize();
-}
 
 app.Run();
