@@ -1,6 +1,5 @@
 ﻿using Application.Features.Authentication.LoginUser;
 using Application.Features.Authentication.RegisterUser;
-using Application.Features.User.GetAllUsers;
 using Application.Features.User.GetUserById;
 using Application.Features.User.LogoutUser;
 using Application.Features.User.RefreshToken;
@@ -43,13 +42,6 @@ public static class AuthenticationEndpoints
         app.MapPost("/Users/Refresh",async (RefreshTokenRequest request,IMediator mediator,CancellationToken cancellationToken) =>
         {
             var response = await mediator.Send(new RefreshTokenCommand(request,cancellationToken));
-
-            return response.IsSuccess ? Results.Ok(response.Value) : Results.NotFound(response.Error);
-        });
-
-        app.MapGet("/Users/GetAllUsers",async (IMediator mediator,CancellationToken cancellationToken) =>
-        {
-            var response = await mediator.Send(new GetAllUsersQuery(cancellationToken));
 
             return response.IsSuccess ? Results.Ok(response.Value) : Results.NotFound(response.Error);
         });

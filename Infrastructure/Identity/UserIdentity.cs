@@ -38,15 +38,7 @@ internal class UserIdentity(
 
         return true;
     }
-    public async Task<IEnumerable<AppUser>> GetAllUsersAsync(CancellationToken cancellationToken)
-    {
 
-        return await _applicationDbContext
-            .Set<AppUser>()
-            .AsNoTracking()
-            //.Where(u => u.UserName.Contains("yaza"))
-            .ToListAsync();
-    }
     public async Task<AppUser?> GetAsync(ISpecification<AppUser> spec,CancellationToken cancellationToken = default)
     {
         var query = SpecificationEvaluator.GetQuery(_applicationDbContext.Set<AppUser>().AsQueryable(),spec);

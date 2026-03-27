@@ -17,13 +17,4 @@ public class AppUser : Primitives.Entity<Guid>
 
         AddDomainEvent(new UserRegisteredEvent(Guid.NewGuid(),Id,email.Value,DateTime.UtcNow));
     }
-    public static AppUser MapUser(Guid userId,string email,string userName)
-    {
-        return new AppUser
-        {
-            Id = userId,
-            Email = Email.Create(email),
-            UserName = userName
-        };
-    }
 }
