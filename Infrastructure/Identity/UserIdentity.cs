@@ -1,8 +1,6 @@
 ﻿using Application.Features.User.RefreshToken;
 using Application.Repositories;
-using Domain.Abstractions;
 using Domain.Entities.Users;
-using Infrastructure.Abstractions;
 using Infrastructure.Authentication.Enums;
 using Infrastructure.Authentication.IdentityEntities;
 using Infrastructure.Authentication.JwtSetup;
@@ -39,13 +37,6 @@ internal class UserIdentity(
         return true;
     }
 
-    public async Task<AppUser?> GetAsync(ISpecification<AppUser> spec,CancellationToken cancellationToken = default)
-    {
-        var query = SpecificationEvaluator.GetQuery(_applicationDbContext.Set<AppUser>().AsQueryable(),spec);
-
-        return await query.FirstOrDefaultAsync(cancellationToken);
-    }
-
     public async Task<RefreshTokenResponse?> LoginAsync(string email,string password)
     {
         var user = await _userManager.FindByEmailAsync(email);
@@ -68,7 +59,7 @@ internal class UserIdentity(
 
             await _userManager.CreateAsync(user,appUser.Password);
 
-            await userManager.AddToRoleAsync(user,nameof(Roles.USER));
+            await _userManager.AddToRoleAsync(user,nameof(Roles.USER));
 
             _applicationDbContext.Set<AppUser>().Add(appUser);
 

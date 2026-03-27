@@ -1,6 +1,5 @@
 ﻿using Application.Features.Authentication.LoginUser;
 using Application.Features.Authentication.RegisterUser;
-using Application.Features.User.GetUserById;
 using Application.Features.User.LogoutUser;
 using Application.Features.User.RefreshToken;
 using FluentValidation;
@@ -44,18 +43,6 @@ public static class AuthenticationEndpoints
             var response = await mediator.Send(new RefreshTokenCommand(request,cancellationToken));
 
             return response.IsSuccess ? Results.Ok(response.Value) : Results.NotFound(response.Error);
-        });
-
-        app.MapGet("/Users/GetUserById/{userId}",async (string userId,IMediator mediator,CancellationToken cancellationToken) =>
-        {
-            if(Guid.TryParse(userId,out Guid parsedGuid))
-            {
-                var response = await mediator.Send(new GetUserByIdQuery(parsedGuid,cancellationToken));
-
-                return response.IsSuccess ? Results.Ok(response.Value) : Results.NotFound(response.Error);
-            }
-
-            return Results.BadRequest(new { valid = false,message = "Invalid GUID format." });
         });
 
         app.UseExceptionHandler(errorApp =>
