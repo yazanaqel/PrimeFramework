@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="Prime.Identity.Application/Prime.Identity.Application.csproj" />
+  <Project Path="Prime.Identity.Domain/Prime.Identity.Domain.csproj" />
+  <Project Path="Prime.Identity.Infrastructure/Prime.Identity.Infrastructure.csproj" />
+  <Project Path="Prime.Identity.WebApi/Prime.Identity.WebApi.csproj" />
+</Solution>
