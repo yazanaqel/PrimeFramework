@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
@@ -17,8 +17,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Application\Application.csproj" />
-    <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
+    <ProjectReference Include="..\Prime.Identity.Application\Prime.Identity.Application.csproj" />
+    <ProjectReference Include="..\Prime.Identity.Infrastructure\Prime.Identity.Infrastructure.csproj" />
   </ItemGroup>
+
 
 </Project>

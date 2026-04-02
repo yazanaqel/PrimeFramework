@@ -1,2 +1,16 @@
 <Solution>
+  <Folder Name="/src/" />
+  <Folder Name="/src/services/" />
+  <Folder Name="/src/services/Prime.Identity.Queries/">
+    <Project Path="src/services/Prime.Identity.Queries/Prime.Identity.Queries.Application/Prime.Identity.Queries.Application.csproj" />
+    <Project Path="src/services/Prime.Identity.Queries/Prime.Identity.Queries.Domain/Prime.Identity.Queries.Domain.csproj" />
+    <Project Path="src/services/Prime.Identity.Queries/Prime.Identity.Queries.Infrastructure/Prime.Identity.Queries.Infrastructure.csproj" />
+    <Project Path="src/services/Prime.Identity.Queries/Prime.Identity.Queries.WebApi/Prime.Identity.Queries.WebApi.csproj" />
+  </Folder>
+  <Folder Name="/src/services/Prime.Identity/">
+    <Project Path="src/services/Prime.Identity/Prime.Identity.Application/Prime.Identity.Application.csproj" />
+    <Project Path="src/services/Prime.Identity/Prime.Identity.Domain/Prime.Identity.Domain.csproj" />
+    <Project Path="src/services/Prime.Identity/Prime.Identity.Infrastructure/Prime.Identity.Infrastructure.csproj" />
+    <Project Path="src/services/Prime.Identity/Prime.Identity.WebApi/Prime.Identity.WebApi.csproj" />
+  </Folder>
 </Solution>

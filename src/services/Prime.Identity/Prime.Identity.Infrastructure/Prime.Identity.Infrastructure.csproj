@@ -26,12 +26,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Application\Application.csproj" />
+    <ProjectReference Include="..\Prime.Identity.Application\Prime.Identity.Application.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Configurations\Read\" />
-    <Folder Include="Configurations\Write\" />
-  </ItemGroup>
 
 </Project>

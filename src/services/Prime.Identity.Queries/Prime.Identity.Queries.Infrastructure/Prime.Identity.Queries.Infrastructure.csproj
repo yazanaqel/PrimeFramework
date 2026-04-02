@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Application\Application.csproj" />
+    <ProjectReference Include="..\Prime.Identity.Queries.Application\Prime.Identity.Queries.Application.csproj" />
   </ItemGroup>
 
 </Project>
