@@ -16,5 +16,15 @@
     <ProjectReference Include="..\Prime.Identity.Queries.Infrastructure\Prime.Identity.Queries.Infrastructure.csproj" />
   </ItemGroup>
 
+  <PropertyGroup>
+    <PublishProfile>DefaultContainer</PublishProfile>
+    <ContainerRepository>Prime-Identity-Queries</ContainerRepository>
+    <ContainerImageTags>latest</ContainerImageTags>
+    <ContainerBaseImage>mcr.microsoft.com/dotnet/aspnet:10.0</ContainerBaseImage>
+    <ContainerPort>8080</ContainerPort>
+    <ContainerEnvironmentVariables>
+      ASPNETCORE_URLS=http://+:8080
+    </ContainerEnvironmentVariables>
+  </PropertyGroup>
 
 </Project>
