@@ -1,5 +1,6 @@
 ﻿using Domain.Primitives;
 using Microsoft.AspNetCore.Identity;
+using Prime.Identity.Infrastructure.Authentication.IdentityEntities;
 
 namespace Infrastructure.Authentication.IdentityEntities;
 
@@ -10,4 +11,5 @@ public class User : IdentityUser<Guid>, IAuditableEntity
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? ModifiedAt { get; set; }
     public ICollection<UserRole>? UserRoles { get; set; }
+    public ICollection<UserPermission>? UserPermissions { get; set; }
 }

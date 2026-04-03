@@ -8,102 +8,41 @@ using WebApi.Constants;
 
 namespace WebApi.Controllers;
 
+[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class WeatherForecastController(ApplicationDbContext applicationDbContext) : ControllerBase
 {
-    private readonly ApplicationDbContext _applicationDbContext = applicationDbContext;
-
 
     [AllowAnonymous]
-    [HttpPost("Insert")]
-    public async Task Insert()
-    {
-        var hasher = new PasswordHasher<IdentityUser>();
-        var user = new IdentityUser();
-        var hash = hasher.HashPassword(user,"YourPassword123!");
-
-
-        for (int i = 0; i < 999_999; i++)
-        {
-
-            Guid guid = Guid.NewGuid();
-
-            GeneratedData data = Generator.Generate();
-
-            string userName = data.FirstName+"."+ data.LastName;
-
-            string email = data.Email;
-
-            await _applicationDbContext.Database.ExecuteSqlRawAsync(@$"INSERT INTO [Identity].[Users] (
-    Id,
-    RefreshToken,
-    CreatedOnUtc,
-    UserName,
-    NormalizedUserName,
-    Email,
-    NormalizedEmail,
-    EmailConfirmed,
-    PasswordHash,
-    SecurityStamp,
-    ConcurrencyStamp,
-    PhoneNumberConfirmed,
-    TwoFactorEnabled,
-    LockoutEnabled,
-    AccessFailedCount
-)
-VALUES (
-    '{guid}',
-    'AQAAAAIAAYagAAAAEJx0uYt3m5r1yQ5gYk1xq2Zp4u2GQ0xkq5x0zFJ6tq7o6k==',
-    SYSUTCDATETIME(),
-    '{userName}',
-    'TEST',
-    '{email}',
-    'TEST@EXAMPLE.COM',
-    1,
-    'AQAAAAIAAYagAAAAEJx0uYt3m5r1yQ5gYk1xq2Zp4u2GQ0xkq5x0zFJ6tq7o6k==',
-    'SEC123STAMP',
-    'CONC123STAMP',
-    0,
-    0,
-    1,
-    0
-)");
-
-
-        }
-
-    }
-
-
-    [AllowAnonymous]
-    [HttpGet("GetAll")]
-    public IEnumerable<WeatherForecast> GetAll()
+    [HttpGet("AllowAnonymous")]
+    public IEnumerable<WeatherForecast> AllowAnonymous()
         => GetAllWeatherForecast();
 
-
-    [Authorize(Roles = nameof(Roles.USER))]
-    [HttpGet("RoleUser")]
-    public IEnumerable<WeatherForecast> RoleUser()
+    [HttpGet("Authorize")]
+    public IEnumerable<WeatherForecast> Authorize()
         => GetAllWeatherForecast();
-
 
     [Authorize(Roles = nameof(Roles.ADMIN))]
-    [HttpGet("RoleAdmin")]
-    public IEnumerable<WeatherForecast> RoleAdmin()
+    [HttpGet("AdminRole")]
+    public IEnumerable<WeatherForecast> AdminRole()
+    => GetAllWeatherForecast();
+
+    [Authorize(Policy = nameof(Permissions.READ))]
+    [HttpGet("ReadPermission")]
+    public IEnumerable<WeatherForecast> ReadPermission()
+        => GetAllWeatherForecast();
+
+    [Authorize(Roles = nameof(Roles.ADMIN), Policy = nameof(Permissions.READ))]
+    [HttpGet("AdminRoleAndReadPermission")]
+    public IEnumerable<WeatherForecast> AdminRoleAndReadPermission()
     => GetAllWeatherForecast();
 
 
-    [Authorize(Policy = nameof(Permissions.READ),Roles = "po")]
-    [HttpGet("PolicyRead")]
-    public IEnumerable<WeatherForecast> PolicyRead()
-        => GetAllWeatherForecast();
-
-
-    [HasPermission(Infrastructure.Authentication.Enums.Permissions.MODIFY)]
-    [HttpGet("PermissionModify")]
-    public IEnumerable<WeatherForecast> PermissionModify()
-        => GetAllWeatherForecast();
+    //[HasPermission(Infrastructure.Authentication.Enums.Permissions.MODIFY)]
+    //[HttpGet("PermissionModify")]
+    //public IEnumerable<WeatherForecast> PermissionModify()
+    //    => GetAllWeatherForecast();
 
 
 

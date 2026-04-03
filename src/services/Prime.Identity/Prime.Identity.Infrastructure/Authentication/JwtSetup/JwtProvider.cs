@@ -21,22 +21,19 @@ internal class JwtProvider(IOptions<JwtOptions> options,IPermissionService permi
             new(JwtRegisteredClaimNames.Email, user.Email.ToString()),
         };
 
-        var rolePermissions = await _permissionService
-            .GetRolePermissionsAsync(user.Id);
+        var accessInfo = await _permissionService
+            .GetUserAccessInfoAsync(user.Id);
 
-        if(rolePermissions.Any())
+        if(accessInfo is not null)
         {
-            foreach(var role in rolePermissions)
+            foreach(var role in accessInfo.Roles)
             {
-                claims.Add(new Claim(ClaimTypes.Role,role.Key.ToUpper()));
+                claims.Add(new Claim(ClaimTypes.Role,role.ToUpper()));
+            }
 
-                if(role.Value.Any())
-                {
-                    foreach(var permission in role.Value)
-                    {
-                        claims.Add(new Claim(CustomClaims.Permissions,permission));
-                    }
-                }
+            foreach(var permission in accessInfo.Permissions)
+            {
+                claims.Add(new Claim(CustomClaims.Permissions,permission.ToUpper()));
             }
         }
 

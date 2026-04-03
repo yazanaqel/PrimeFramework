@@ -3,6 +3,7 @@ using Infrastructure.Authentication.IdentityEntities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Prime.Identity.Infrastructure.Authentication.IdentityEntities;
 using System.Data;
 
 namespace Infrastructure.DatabaseSeed;
@@ -92,6 +93,17 @@ public class Seeder(IOptions<SeederOptions> options,UserManager<User> userManage
                         });
                     }
                 }
+
+                //Add Permissions To Admin User
+                _dbContext.Set<UserPermission>().AddRange(
+                    permissions.Select(permission =>
+                            new UserPermission
+                            {
+                                UserId = user.Id,
+                                ClaimValue = permission.PermissionName,
+                                ClaimType = permission.PermissionName,
+                            }
+                        ).ToList());
 
                 await _dbContext.SaveChangesAsync();
             }

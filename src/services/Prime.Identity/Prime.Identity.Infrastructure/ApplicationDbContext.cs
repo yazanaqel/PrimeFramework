@@ -4,11 +4,12 @@ using Infrastructure.Authentication.IdentityEntities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Prime.Identity.Infrastructure.Authentication.IdentityEntities;
 
 
 namespace Infrastructure;
 
-public class ApplicationDbContext : IdentityDbContext<User,Role,Guid,IdentityUserClaim<Guid>,UserRole,IdentityUserLogin<Guid>,RolePermission,IdentityUserToken<Guid>>, IAppDbContext, IUnitOfWork
+public class ApplicationDbContext : IdentityDbContext<User,Role,Guid,UserPermission,UserRole,IdentityUserLogin<Guid>,RolePermission,IdentityUserToken<Guid>>, IAppDbContext, IUnitOfWork
 
 {
     private readonly IDomainEventDispatcher _domainEventDispatcher;

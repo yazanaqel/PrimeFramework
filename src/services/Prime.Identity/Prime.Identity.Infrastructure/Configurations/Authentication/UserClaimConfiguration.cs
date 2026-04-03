@@ -1,18 +1,21 @@
 ﻿using Domain.Constants;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Prime.Identity.Infrastructure.Authentication.IdentityEntities;
 
 namespace Infrastructure.Configurations.Authentication;
-internal sealed class UserClaimConfiguration : IEntityTypeConfiguration<IdentityUserClaim<Guid>>
+
+internal sealed class UserClaimConfiguration : IEntityTypeConfiguration<UserPermission>
 {
-    public void Configure(EntityTypeBuilder<IdentityUserClaim<Guid>> builder)
+    public void Configure(EntityTypeBuilder<UserPermission> builder)
     {
-        builder.ToTable(TableNames.UserPermissions, SchemaNames.Identity);
+        builder.ToTable(TableNames.UserPermissions,SchemaNames.Identity);
 
-        builder.HasKey(e => new { e.Id, e.UserId });
+        builder.HasKey(ur => new { ur.Id });
 
+        builder.HasOne(ur => ur.User)
+            .WithMany(u => u.UserPermissions)
+            .HasForeignKey(ur => ur.UserId);
 
     }
-
 }
