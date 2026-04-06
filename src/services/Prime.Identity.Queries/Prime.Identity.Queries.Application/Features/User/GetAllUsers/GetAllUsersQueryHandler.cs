@@ -7,11 +7,11 @@ using Domain.Specifications.User;
 
 namespace Application.Features.User.GetAllUsers;
 
-internal sealed class GetAllUsersQueryHandler(IReadRepository<AppUser> userIdentity) : IQueryHandler<GetAllUsersQuery,CursorPageResponse<GetAllUsersQueryResponse>>
+internal sealed class GetAllUsersQueryHandler(IReadRepository<AppUser> userIdentity) : IQueryHandler<GetAllUsersQuery,CursorPageResponse<GetAllUsersResponse>>
 {
     private readonly IReadRepository<AppUser> _userIdentity = userIdentity;
 
-    public async Task<Result<CursorPageResponse<GetAllUsersQueryResponse>>> Handle(GetAllUsersQuery request,CancellationToken ct)
+    public async Task<Result<CursorPageResponse<GetAllUsersResponse>>> Handle(GetAllUsersQuery request,CancellationToken ct)
     {
         UserCursor? after = null;
 
@@ -44,9 +44,9 @@ internal sealed class GetAllUsersQueryHandler(IReadRepository<AppUser> userIdent
             });
         }
 
-        return new CursorPageResponse<GetAllUsersQueryResponse>
+        return new CursorPageResponse<GetAllUsersResponse>
         {
-            Items = pageItems.Select(u => new GetAllUsersQueryResponse(u.Id,u.Email,u.CreatedAt)).ToList(),
+            Items = pageItems.Select(u => new GetAllUsersResponse(u.Id,u.Email,u.CreatedAt)).ToList(),
             HasMore = hasMore,
             NextCursor = nextCursor
         };

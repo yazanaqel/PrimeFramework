@@ -1,10 +1,8 @@
 ﻿using Application.Features.User.GetAllUsers;
 using Application.Features.User.GetUserById;
-using Domain.Entities.User;
 using Infrastructure;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace WebApi.Controllers;
 
@@ -42,7 +40,7 @@ public class HomeController(ReadOnlyDbContext applicationDbContext,IMediator med
 
 
     [HttpGet("GetUserById/{userId}")]
-    public async Task<IActionResult> GetUserById(string userId, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetUserById(string userId,CancellationToken cancellationToken)
     {
         if(Guid.TryParse(userId,out Guid parsedGuid))
         {
@@ -55,7 +53,7 @@ public class HomeController(ReadOnlyDbContext applicationDbContext,IMediator med
     }
 
     [HttpGet("GetAllUsers")]
-    public async Task<IActionResult> GetAllUsers([FromQuery] GetAllUsersQueryRequest request, CancellationToken ct)
+    public async Task<IActionResult> GetAllUsers([FromQuery] GetAllUsersRequest request,CancellationToken ct)
     {
         var response = await _mediator.Send(new GetAllUsersQuery(request,ct));
 

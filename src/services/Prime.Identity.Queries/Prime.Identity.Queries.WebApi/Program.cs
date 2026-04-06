@@ -1,5 +1,7 @@
 using Application;
 using Infrastructure;
+using Prime.Identity.Queries.WebApi.Middlewares;
+using Prime.Identity.Queries.WebApi.Middlewares.Exceptions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +12,8 @@ builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 
 builder.Services.AddControllers();
+
+builder.Services.AddTransient<GlobalExceptionHandlingMiddleware>();
 
 // Swagger / OpenAPI
 builder.Services.AddEndpointsApiExplorer();
@@ -30,6 +34,8 @@ if(app.Environment.IsDevelopment())
     });
 
 }
+
+app.UseGlobalExceptionHandling();
 
 app.UseHttpsRedirection();
 

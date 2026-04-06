@@ -1,6 +1,6 @@
 ﻿namespace Application.Features.User.GetAllUsers;
 
-public sealed record GetAllUsersQueryRequest(
+public sealed record GetAllUsersRequest(
     string? After,
     int Size,
     string? Search,
