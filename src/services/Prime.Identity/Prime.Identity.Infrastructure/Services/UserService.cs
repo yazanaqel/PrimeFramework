@@ -82,7 +82,11 @@ internal class UserService(
     public async Task<(string AccessToken,string RefreshToken)> RefreshTokenAsync(string accessToken,string refreshToken,CancellationToken ct)
     {
         var principal = GetPrincipalFromExpiredToken(accessToken);
+
         var userId = principal.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if(userId is null)
+            return (string.Empty,string.Empty);
 
         var user = await _userManager.FindByIdAsync(userId);
 
