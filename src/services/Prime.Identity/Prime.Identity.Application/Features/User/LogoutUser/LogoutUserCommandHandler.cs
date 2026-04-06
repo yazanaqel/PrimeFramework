@@ -1,16 +1,16 @@
 ﻿using Application.Abstractions.Messaging;
-using Application.Repositories;
 using CSharpFunctionalExtensions;
+using Domain.Repositories;
 
 namespace Application.Features.User.LogoutUser;
 
-internal sealed class LogoutUserCommandHandler(IUserIdentity userIdentity) : ICommandHandler<LogoutUserCommand>
+internal sealed class LogoutUserCommandHandler(IUserService userService) : ICommandHandler<LogoutUserCommand>
 {
-    private readonly IUserIdentity _userIdentity = userIdentity;
+    private readonly IUserService _userService = userService;
 
-    public async Task<Result> Handle(LogoutUserCommand command,CancellationToken cancellationToken)
+    public async Task<Result> Handle(LogoutUserCommand command,CancellationToken ct)
     {
-        await _userIdentity.LogoutAsync(command.UserId);
+        await _userService.LogoutAsync(command.UserId,ct);
 
         return Result.Success();
     }

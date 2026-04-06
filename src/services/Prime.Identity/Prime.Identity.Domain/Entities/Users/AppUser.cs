@@ -1,16 +1,17 @@
 ﻿using Domain.ValueObjects;
+using Prime.Identity.Domain.Entities.Users;
 
 namespace Domain.Entities.Users;
 
-public class AppUser : Primitives.Entity<Guid>
+public class AppUser : Primitives.Entity<UserId>
 {
     public Email Email { get; private set; }
     public string UserName { get; private set; }
     public string Password { get; private set; } = string.Empty;
     private AppUser() { }
-    public AppUser(Email email,string userName,string password)
+    public AppUser(UserId userId, Email email,string userName,string password)
     {
-        Id = Guid.NewGuid();
+        Id = userId;
         Email = email;
         UserName = userName;
         Password = password;

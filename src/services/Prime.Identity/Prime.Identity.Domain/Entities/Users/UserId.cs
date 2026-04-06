@@ -1,0 +1,18 @@
+﻿namespace Prime.Identity.Domain.Entities.Users;
+
+public readonly record struct UserId(Guid Value)
+{
+    public static UserId New() => new(Guid.NewGuid());
+
+    public static bool TryParse(string? input,out UserId userId)
+    {
+        if(Guid.TryParse(input,out var guid))
+        {
+            userId = new UserId(guid);
+            return true;
+        }
+
+        userId = default;
+        return false;
+    }
+}

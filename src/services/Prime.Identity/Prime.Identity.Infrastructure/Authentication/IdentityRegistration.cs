@@ -1,11 +1,11 @@
-﻿using Application.Repositories;
+﻿using Domain.Repositories;
 using Infrastructure.Authentication.IdentityEntities;
 using Infrastructure.Authentication.JwtSetup;
-using Infrastructure.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
+using Prime.Services.Infrastructure.Services;
 using WebApi.JwtSetup;
 
 namespace Infrastructure.Authentication;
@@ -54,7 +54,7 @@ internal static class IdentityRegistration
 
         services.AddSingleton<IAuthorizationPolicyProvider,PermissionAuthorizationPolicyProvider>();
 
-        services.AddScoped<IUserIdentity,UserIdentity>();
+        services.AddScoped<IUserService,UserService>();
 
         return services;
     }

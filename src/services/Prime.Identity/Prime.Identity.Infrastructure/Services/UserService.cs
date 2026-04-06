@@ -1,6 +1,7 @@
 ﻿using Application.Features.User.RefreshToken;
-using Application.Repositories;
 using Domain.Entities.Users;
+using Domain.Repositories;
+using Infrastructure;
 using Infrastructure.Authentication.Enums;
 using Infrastructure.Authentication.IdentityEntities;
 using Infrastructure.Authentication.JwtSetup;
@@ -8,18 +9,19 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Prime.Identity.Domain.Entities.Users;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace Infrastructure.Identity;
+namespace Prime.Services.Infrastructure.Services;
 
-internal class UserIdentity(
+internal class UserService(
     UserManager<User> userManager,
     ApplicationDbContext applicationDbContext,
     IJwtProvider jwtProvider,
     IOptions<JwtOptions> options,
-    RefreshTokenGenerator refreshTokenGenerator) : IUserIdentity
+    RefreshTokenGenerator refreshTokenGenerator) : IUserService
 {
     private readonly UserManager<User> _userManager = userManager;
     private readonly IJwtProvider _jwtProvider = jwtProvider;
@@ -27,7 +29,7 @@ internal class UserIdentity(
     private readonly RefreshTokenGenerator _refreshTokenGenerator = refreshTokenGenerator;
     private readonly ApplicationDbContext _applicationDbContext = applicationDbContext;
 
-    public async Task<bool> IsEmailAvailable(string email,CancellationToken cancellationToken)
+    public async Task<bool> IsEmailAvailable(string email,CancellationToken ct)
     {
         var user = await _userManager.FindByEmailAsync(email);
 
@@ -37,7 +39,7 @@ internal class UserIdentity(
         return true;
     }
 
-    public async Task<RefreshTokenResponse?> LoginAsync(string email,string password)
+    public async Task<RefreshTokenResponse?> LoginAsync(string email,string password,CancellationToken ct)
     {
         var user = await _userManager.FindByEmailAsync(email);
 
@@ -47,23 +49,28 @@ internal class UserIdentity(
         return null;
     }
 
-    public async Task<RefreshTokenResponse?> RegisterAsync(AppUser appUser,CancellationToken cancellationToken)
+    public async Task<RefreshTokenResponse?> RegisterAsync(AppUser appUser,CancellationToken ct)
     {
         var strategy = _applicationDbContext.Database.CreateExecutionStrategy();
 
-        User user = new User { Id = appUser.Id,UserName = appUser.Email.Value,Email = appUser.Email.Value };
+        User user = new User
+        {
+            Id = appUser.Id.Value,
+            UserName = appUser.Email.Value,
+            Email = appUser.Email.Value
+        };
 
         await strategy.ExecuteAsync(async () =>
         {
-            await using var transaction = await _applicationDbContext.Database.BeginTransactionAsync(cancellationToken);
+            await using var transaction = await _applicationDbContext.Database.BeginTransactionAsync(ct);
 
             await _userManager.CreateAsync(user,appUser.Password);
 
             await _userManager.AddToRoleAsync(user,nameof(Roles.USER));
 
-            await _applicationDbContext.SaveChangesAsync(cancellationToken);
+            await _applicationDbContext.SaveChangesAsync(ct);
 
-            await transaction.CommitAsync(cancellationToken);
+            await transaction.CommitAsync(ct);
         });
 
         return await GenerateTokensAsync(user);
@@ -71,7 +78,7 @@ internal class UserIdentity(
 
 
 
-    public async Task<RefreshTokenResponse?> RefreshTokenAsync(string accessToken,string refreshToken)
+    public async Task<RefreshTokenResponse?> RefreshTokenAsync(string accessToken,string refreshToken,CancellationToken ct)
     {
         var principal = GetPrincipalFromExpiredToken(accessToken);
         var userId = principal.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -119,10 +126,13 @@ internal class UserIdentity(
 
     }
 
-    public async Task LogoutAsync(Guid userId)
+    public async Task LogoutAsync(UserId userId,CancellationToken ct)
     {
-        string userIdString = userId.ToString();
+        string userIdString = userId.Value.ToString();
         var user = await _userManager.FindByIdAsync(userIdString);
+
+        if(user is null)
+            return;
 
         user.RefreshToken = string.Empty;
         user.RefreshTokenExpiryTime = null;

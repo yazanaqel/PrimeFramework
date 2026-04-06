@@ -1,15 +1,14 @@
 ﻿using Application.Abstractions.Messaging;
 using Application.Features.User.RefreshToken;
-using Application.Repositories;
 using CSharpFunctionalExtensions;
+using Domain.Repositories;
 
 namespace Application.Features.Authentication.LoginUser;
 
-internal sealed class LoginUserCommandHandler(IUserIdentity userIdentity) : ICommandHandler<LoginUserCommand,RefreshTokenResponse?>
+internal sealed class LoginUserCommandHandler(IUserService userService) : ICommandHandler<LoginUserCommand,RefreshTokenResponse?>
 {
-    private readonly IUserIdentity _userIdentity = userIdentity;
-
-    public async Task<Result<RefreshTokenResponse?>> Handle(LoginUserCommand command,CancellationToken cancellationToken)
-        => Result.Success(await _userIdentity.LoginAsync(command.Request.Email,command.Request.Password));
+    private readonly IUserService _userService = userService;
+    public async Task<Result<RefreshTokenResponse?>> Handle(LoginUserCommand command,CancellationToken ct)
+        => Result.Success(await _userService.LoginAsync(command.Request.Email,command.Request.Password,ct));
 
 }

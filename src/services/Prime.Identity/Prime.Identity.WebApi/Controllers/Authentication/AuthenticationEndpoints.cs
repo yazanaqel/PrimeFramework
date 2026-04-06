@@ -5,6 +5,7 @@ using Application.Features.User.RefreshToken;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Diagnostics;
+using Prime.Identity.Domain.Entities.Users;
 
 namespace WebApi.Controllers.Authentication;
 
@@ -12,23 +13,23 @@ public static class AuthenticationEndpoints
 {
     public static void MapAuthenticationEndpoints(this WebApplication app)
     {
-        app.MapPost("/Users/Register",async (RegisterUserRequest request,IMediator mediator,CancellationToken cancellationToken) =>
+        app.MapPost("/Users/Register",async (RegisterUserRequest request,IMediator mediator,CancellationToken ct) =>
         {
-            var response = await mediator.Send(new RegisterUserCommand(request,cancellationToken));
+            var response = await mediator.Send(new RegisterUserCommand(request,ct));
 
             return response.IsSuccess ? Results.Ok(response.Value) : Results.NotFound(response.Error);
         });
 
-        app.MapPost("/Users/Login",async (LoginUserRequest request,IMediator mediator,CancellationToken cancellationToken) =>
+        app.MapPost("/Users/Login",async (LoginUserRequest request,IMediator mediator,CancellationToken ct) =>
         {
-            var response = await mediator.Send(new LoginUserCommand(request,cancellationToken));
+            var response = await mediator.Send(new LoginUserCommand(request,ct));
 
             return response.IsSuccess ? Results.Ok(response.Value) : Results.NotFound(response.Error);
         });
 
-        app.MapPost("/Users/Logout/{userId}",async (string userId,IMediator mediator,CancellationToken cancellationToken) =>
+        app.MapPost("/Users/Logout/{userId}",async (string userId,IMediator mediator,CancellationToken ct) =>
         {
-            if(Guid.TryParse(userId,out Guid parsedGuid))
+            if(UserId.TryParse(userId,out UserId parsedGuid))
             {
                 var response = await mediator.Send(new LogoutUserCommand(parsedGuid));
 
@@ -38,9 +39,9 @@ public static class AuthenticationEndpoints
             return Results.BadRequest(new { valid = false,message = "Invalid GUID format." });
 
         });
-        app.MapPost("/Users/Refresh",async (RefreshTokenRequest request,IMediator mediator,CancellationToken cancellationToken) =>
+        app.MapPost("/Users/Refresh",async (RefreshTokenRequest request,IMediator mediator,CancellationToken ct) =>
         {
-            var response = await mediator.Send(new RefreshTokenCommand(request,cancellationToken));
+            var response = await mediator.Send(new RefreshTokenCommand(request,ct));
 
             return response.IsSuccess ? Results.Ok(response.Value) : Results.NotFound(response.Error);
         });
