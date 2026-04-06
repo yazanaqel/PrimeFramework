@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Infrastructure.Authentication.IdentityEntities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Authentication;
 
@@ -26,7 +27,7 @@ public class PermissionService(ApplicationDbContext dbContext) : IPermissionServ
 
     public async Task<UserAccessInfo> GetUserAccessInfoAsync(Guid userId)
     {
-        return await _dbContext.Users
+        return await _dbContext.Set<User>()
             .Where(u => u.Id == userId)
             .Select(u => new UserAccessInfo(
                 u.UserPermissions.Select(c => c.ClaimValue).ToList(),

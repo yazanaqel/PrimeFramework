@@ -24,9 +24,12 @@ internal static class IdentityRegistration
             op.SignIn.RequireConfirmedAccount = false;
             //op.ClaimsIdentity.UserIdClaimType = "UserId";
         })
-         .AddRoles<Role>()
+        .AddRoles<Role>()
+        .AddRoleManager<RoleManager<Role>>()
+        .AddSignInManager<SignInManager<User>>()
         .AddEntityFrameworkStores<ApplicationDbContext>()
-        .AddDefaultTokenProviders();
+        .AddDefaultTokenProviders()
+        .AddApiEndpoints();
 
         services.AddAuthentication(options =>
         {
