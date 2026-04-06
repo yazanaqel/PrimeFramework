@@ -3,4 +3,4 @@ using Prime.Identity.Domain.Entities.Users;
 
 namespace Application.Features.User.LogoutUser;
 
-public sealed record LogoutUserCommand(UserId UserId) : ICommand;
+public sealed record LogoutUserCommand(UserId UserId,CancellationToken ct) : ICommand<bool>;

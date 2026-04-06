@@ -1,5 +1,4 @@
-﻿using Application.Features.User.RefreshToken;
-using Domain.Entities.Users;
+﻿using Domain.Entities.Users;
 using Domain.Repositories;
 using Infrastructure;
 using Infrastructure.Authentication.Enums;
@@ -29,28 +28,16 @@ internal class UserService(
     private readonly RefreshTokenGenerator _refreshTokenGenerator = refreshTokenGenerator;
     private readonly ApplicationDbContext _applicationDbContext = applicationDbContext;
 
-    public async Task<bool> IsEmailAvailable(string email,CancellationToken ct)
-    {
-        var user = await _userManager.FindByEmailAsync(email);
 
-        if(user is not null)
+
+    public async Task<bool> RegisterAsync(AppUser appUser,CancellationToken ct)
+    {
+        var userExist = await _userManager.FindByEmailAsync(appUser.Email.Value);
+
+        if(userExist is not null)
             return false;
 
-        return true;
-    }
 
-    public async Task<RefreshTokenResponse?> LoginAsync(string email,string password,CancellationToken ct)
-    {
-        var user = await _userManager.FindByEmailAsync(email);
-
-        if(user is not null && await _userManager.CheckPasswordAsync(user,password))
-            return await GenerateTokensAsync(user);
-
-        return null;
-    }
-
-    public async Task<RefreshTokenResponse?> RegisterAsync(AppUser appUser,CancellationToken ct)
-    {
         var strategy = _applicationDbContext.Database.CreateExecutionStrategy();
 
         User user = new User
@@ -73,12 +60,26 @@ internal class UserService(
             await transaction.CommitAsync(ct);
         });
 
-        return await GenerateTokensAsync(user);
+        return true;
     }
 
+    public async Task<AppUser> LoginAsync(string email,string password,CancellationToken ct)
+    {
+        var user = await _userManager.FindByEmailAsync(email);
 
+        if(user is not null && await _userManager.CheckPasswordAsync(user,password))
+        {
+            UserId.TryParse(user.Id.ToString(),out UserId parsedUserId);
 
-    public async Task<RefreshTokenResponse?> RefreshTokenAsync(string accessToken,string refreshToken,CancellationToken ct)
+            var tokenResult = await GenerateTokensAsync(user);
+
+            return AppUser.AppUserResponse(parsedUserId,user.UserName,tokenResult.AccessToken,tokenResult.RefreshToken);
+        }
+
+        return AppUser.EmptyAppUser();
+    }
+
+    public async Task<(string AccessToken,string RefreshToken)> RefreshTokenAsync(string accessToken,string refreshToken,CancellationToken ct)
     {
         var principal = GetPrincipalFromExpiredToken(accessToken);
         var userId = principal.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -89,10 +90,26 @@ internal class UserService(
             user.RefreshToken != refreshToken ||
             user.RefreshTokenExpiryTime <= DateTime.UtcNow)
         {
-            return null;
+            return (string.Empty,string.Empty);
         }
 
         return await GenerateTokensAsync(user);
+    }
+
+    public async Task<bool> LogoutAsync(UserId userId,CancellationToken ct)
+    {
+        string userIdString = userId.Value.ToString();
+        var user = await _userManager.FindByIdAsync(userIdString);
+
+        if(user is null)
+            return false;
+
+        user.RefreshToken = string.Empty;
+        user.RefreshTokenExpiryTime = null;
+
+        await _userManager.UpdateAsync(user);
+
+        return true;
     }
 
     private ClaimsPrincipal GetPrincipalFromExpiredToken(string accessToken)
@@ -112,7 +129,8 @@ internal class UserService(
         var principal = tokenHandler.ValidateToken(accessToken,tokenValidationParameters,out _);
         return principal;
     }
-    private async Task<RefreshTokenResponse> GenerateTokensAsync(User user)
+
+    private async Task<(string AccessToken,string RefreshToken)> GenerateTokensAsync(User user)
     {
         var accessToken = await _jwtProvider.GenerateAccessToken(user);
         var refreshToken = _refreshTokenGenerator.Generate();
@@ -122,22 +140,10 @@ internal class UserService(
 
         await _userManager.UpdateAsync(user);
 
-        return new RefreshTokenResponse(accessToken,refreshToken);
+        return (accessToken,refreshToken);
 
     }
 
-    public async Task LogoutAsync(UserId userId,CancellationToken ct)
-    {
-        string userIdString = userId.Value.ToString();
-        var user = await _userManager.FindByIdAsync(userIdString);
 
-        if(user is null)
-            return;
-
-        user.RefreshToken = string.Empty;
-        user.RefreshTokenExpiryTime = null;
-
-        await _userManager.UpdateAsync(user);
-    }
 
 }

@@ -4,7 +4,7 @@ public readonly record struct UserId(Guid Value)
 {
     public static UserId New() => new(Guid.NewGuid());
 
-    public static bool TryParse(string? input,out UserId userId)
+    public static bool TryParse(string? input, out UserId userId)
     {
         if(Guid.TryParse(input,out var guid))
         {

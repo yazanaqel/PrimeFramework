@@ -17,33 +17,34 @@ public static class AuthenticationEndpoints
         {
             var response = await mediator.Send(new RegisterUserCommand(request,ct));
 
-            return response.IsSuccess ? Results.Ok(response.Value) : Results.NotFound(response.Error);
+            return response.IsSuccess ? Results.Ok(response.Value) : Results.BadRequest(response.Error);
         });
 
         app.MapPost("/Users/Login",async (LoginUserRequest request,IMediator mediator,CancellationToken ct) =>
         {
             var response = await mediator.Send(new LoginUserCommand(request,ct));
 
-            return response.IsSuccess ? Results.Ok(response.Value) : Results.NotFound(response.Error);
+            return response.IsSuccess ? Results.Ok(response.Value) : Results.BadRequest(response.Error);
         });
 
-        app.MapPost("/Users/Logout/{userId}",async (string userId,IMediator mediator,CancellationToken ct) =>
-        {
-            if(UserId.TryParse(userId,out UserId parsedGuid))
-            {
-                var response = await mediator.Send(new LogoutUserCommand(parsedGuid));
-
-                return response.IsSuccess ? Results.Ok() : Results.NotFound(response.Error);
-            }
-
-            return Results.BadRequest(new { valid = false,message = "Invalid GUID format." });
-
-        });
         app.MapPost("/Users/Refresh",async (RefreshTokenRequest request,IMediator mediator,CancellationToken ct) =>
         {
             var response = await mediator.Send(new RefreshTokenCommand(request,ct));
 
-            return response.IsSuccess ? Results.Ok(response.Value) : Results.NotFound(response.Error);
+            return response.IsSuccess ? Results.Ok(response.Value) : Results.BadRequest(response.Error);
+        });
+
+        app.MapPost("/Users/Logout/{userId}",async (string? userId,IMediator mediator,CancellationToken ct) =>
+        {
+            if(UserId.TryParse(userId,out UserId parsedUserId))
+            {
+                var response = await mediator.Send(new LogoutUserCommand(parsedUserId,ct));
+
+                return response.IsSuccess ? Results.Ok(response.Value) : Results.BadRequest(response.Error);
+            }
+
+            return Results.BadRequest(new { valid = false,message = "Invalid GUID format." });
+
         });
 
         app.UseExceptionHandler(errorApp =>
