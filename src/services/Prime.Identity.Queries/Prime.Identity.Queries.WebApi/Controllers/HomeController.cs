@@ -4,6 +4,7 @@ using Domain.Abstractions;
 using Domain.Entities.User;
 using Infrastructure;
 using Microsoft.AspNetCore.Mvc;
+using Prime.Identity.Queries.Application.Abstractions.Behaviors;
 
 namespace WebApi.Controllers;
 

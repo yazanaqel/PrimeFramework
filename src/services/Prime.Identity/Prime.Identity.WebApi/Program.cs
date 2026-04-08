@@ -1,7 +1,6 @@
 using Application;
 using Hangfire;
 using Infrastructure;
-using Infrastructure.Authentication.IdentityEntities;
 using Infrastructure.DatabaseSeed;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
