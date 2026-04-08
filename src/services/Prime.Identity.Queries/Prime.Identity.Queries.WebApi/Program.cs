@@ -1,6 +1,6 @@
 using Application;
 using Infrastructure;
-using Prime.Identity.Queries.Application.Abstractions.Behaviors;
+using Prime.Identity.Queries.Application.Abstractions.Filters;
 using Prime.Identity.Queries.WebApi.Middlewares;
 using Prime.Identity.Queries.WebApi.Middlewares.Exceptions;
 using Serilog;
@@ -40,14 +40,7 @@ var app = builder.Build();
 if(app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI(options =>
-    {
-        options.SwaggerEndpoint("/swagger/v1/swagger.json","API v1");
-
-        // This makes Swagger UI load at https://localhost:7125/
-        options.RoutePrefix = string.Empty;
-    });
-
+    app.UseSwaggerUI();
 }
 
 app.UseGlobalExceptionHandling();

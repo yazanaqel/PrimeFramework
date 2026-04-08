@@ -3,7 +3,7 @@ using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace Prime.Identity.Queries.Application.Abstractions.Behaviors;
+namespace Prime.Identity.Queries.Application.Abstractions.Filters;
 
 public class ValidationFilter(IServiceProvider provider) : IAsyncActionFilter
 {

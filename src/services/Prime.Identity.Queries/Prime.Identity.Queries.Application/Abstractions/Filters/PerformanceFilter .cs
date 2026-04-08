@@ -1,4 +1,4 @@
-﻿namespace Prime.Identity.Queries.Application.Abstractions.Behaviors;
+﻿namespace Prime.Identity.Queries.Application.Abstractions.Filters;
 
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;

@@ -2,7 +2,7 @@
 using Serilog;
 using System.Diagnostics;
 
-namespace Prime.Identity.Queries.Application.Abstractions.Behaviors;
+namespace Prime.Identity.Queries.Application.Abstractions.Filters;
 
 public class LoggingFilter : IAsyncActionFilter
 {
