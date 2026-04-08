@@ -1,16 +1,18 @@
-﻿using Application.Pagination;
+﻿using Application.Features.User.GetAllUsers;
+using Application.Features.User.GetUserById;
+using Application.Pagination;
 using CSharpFunctionalExtensions;
 using Domain.Abstractions;
 using Domain.Entities.User;
 using Domain.Specifications.User;
 
-namespace Application.Features.User.GetAllUsers;
+namespace Prime.Identity.Queries.Application.Features.User.Service;
 
-public sealed class GetAllUsersQueryHandler(IReadRepository<AppUser> userIdentity)
+public sealed class UserService(IReadRepository<AppUser> userIdentity) : IUserService
 {
     private readonly IReadRepository<AppUser> _userIdentity = userIdentity;
 
-    public async Task<Result<CursorPageResponse<GetAllUsersResponse>>> Handle(GetAllUsersRequest request,CancellationToken ct)
+    public async Task<Result<CursorPageResponse<GetAllUsersResponse>>> GetAllUsersAsync(GetAllUsersRequest request,CancellationToken ct)
     {
         UserCursor? after = null;
 
@@ -49,5 +51,20 @@ public sealed class GetAllUsersQueryHandler(IReadRepository<AppUser> userIdentit
             HasMore = hasMore,
             NextCursor = nextCursor
         };
+    }
+
+
+    public async Task<Result<GetUserByIdResponse>> GetUserByIdAsync(Guid userId,CancellationToken ct)
+    {
+        var spec = new GetUserByIdSpecification(userId);
+
+        var user = await _userIdentity.FirstOrDefaultAsync(spec,ct);
+
+        if(user is null)
+            //throw new NotFoundException(nameof(User),userId);
+            throw new Exception($"User With Id : {userId} Not Found!");
+
+        return Result.Success(new GetUserByIdResponse(user.Id,user.Email,user.UserName));
+
     }
 }

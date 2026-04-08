@@ -4,15 +4,17 @@ using Domain.Abstractions;
 using Domain.Entities.User;
 using Infrastructure;
 using Microsoft.AspNetCore.Mvc;
+using Prime.Identity.Queries.Application.Features.User.Service;
+using System.ComponentModel.DataAnnotations;
 
 namespace WebApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class HomeController(ReadOnlyDbContext applicationDbContext,IReadRepository<AppUser> readRepository) : Controller
+public class HomeController(ReadOnlyDbContext applicationDbContext,IUserService userService) : Controller
 {
     private readonly ReadOnlyDbContext _applicationDbContext = applicationDbContext;
-    private readonly IReadRepository<AppUser> _readRepository = readRepository;
+    private readonly IUserService _userService = userService;
 
     //[HttpGet("GetAllUsersAsync")]
     //public async Task<IEnumerable<AppUser>> GetAllUsersAsync()
@@ -41,27 +43,23 @@ public class HomeController(ReadOnlyDbContext applicationDbContext,IReadReposito
 
 
     [HttpGet("GetUserById/{userId}")]
-    public async Task<IActionResult> GetUserById(string userId,CancellationToken ct)
+    public async Task<IActionResult> GetUserById([Required] string userId,CancellationToken ct)
     {
         if(Guid.TryParse(userId,out Guid parsedGuid))
         {
-            var queryHandler = new GetUserByIdQueryHandler(_readRepository);
-
-            var response = await queryHandler.Handle(new GetUserByIdRequest(parsedGuid),ct);
+            var response = await _userService.GetUserByIdAsync(parsedGuid,ct);
 
             return response.IsSuccess ? Ok(response.Value) : NotFound(response.Error);
         }
 
         return BadRequest(new { valid = false,message = "Invalid GUID format." });
     }
-
     [HttpGet("GetAllUsers")]
-    public async Task<IActionResult> GetAllUsers([FromQuery] GetAllUsersRequest request,CancellationToken ct)
+    public async Task<IActionResult> GetAllUsers([FromQuery] GetAllUsersRequest request, CancellationToken ct)
     {
-        var queryHandler = new GetAllUsersQueryHandler(_readRepository);
-
-        var response = await queryHandler.Handle(request,ct);
+        var response = await _userService.GetAllUsersAsync(request,ct);
 
         return response.IsSuccess ? Ok(response.Value) : NotFound(response.Error);
     }
+
 }

@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace Prime.Identity.Queries.Application.Features.User.GetAllUsers;
 
-public sealed class GetAllUsersQueryValidation: AbstractValidator<GetAllUsersRequest>
+public sealed class GetAllUsersRequestValidation: AbstractValidator<GetAllUsersRequest>
 {
-    public GetAllUsersQueryValidation()
+    public GetAllUsersRequestValidation()
     {
         RuleFor(x => x.Size)
             .InclusiveBetween(10,50)
