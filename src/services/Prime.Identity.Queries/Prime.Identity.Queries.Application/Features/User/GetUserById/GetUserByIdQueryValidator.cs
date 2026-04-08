@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace Prime.Identity.Queries.Application.Features.User.GetUserById;
 
-public sealed class GetUserByIdQueryValidator : AbstractValidator<GetUserByIdQuery>
+public sealed class GetUserByIdQueryValidator : AbstractValidator<GetUserByIdRequest>
 {
     public GetUserByIdQueryValidator()
     {

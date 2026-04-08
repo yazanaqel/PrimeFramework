@@ -5,5 +5,4 @@ public sealed record GetAllUsersRequest(
     int Size,
     string? Search,
     string? SortBy,
-    bool Descending,
-    CancellationToken cancellationToken);
+    bool Descending);

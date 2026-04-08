@@ -1,5 +1,6 @@
 using Application;
 using Infrastructure;
+using Prime.Identity.Queries.Application.Abstractions.Behaviors;
 using Prime.Identity.Queries.WebApi.Middlewares;
 using Prime.Identity.Queries.WebApi.Middlewares.Exceptions;
 
@@ -11,7 +12,10 @@ builder.Services.AddApplication();
 
 builder.Services.AddInfrastructure(builder.Configuration);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<ValidationFilter>();
+});
 
 builder.Services.AddTransient<GlobalExceptionHandlingMiddleware>();
 
