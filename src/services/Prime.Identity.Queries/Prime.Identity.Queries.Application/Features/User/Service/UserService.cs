@@ -5,12 +5,14 @@ using CSharpFunctionalExtensions;
 using Domain.Abstractions;
 using Domain.Entities.User;
 using Domain.Specifications.User;
+using Prime.Identity.Queries.Application.Abstractions.Cache;
 
 namespace Prime.Identity.Queries.Application.Features.User.Service;
 
-public sealed class UserService(IReadRepository<AppUser> userIdentity) : IUserService
+public sealed class UserService(IReadRepository<AppUser> userIdentity,ICacheService cacheService) : IUserService
 {
     private readonly IReadRepository<AppUser> _userIdentity = userIdentity;
+    private readonly ICacheService _cacheService = cacheService;
 
     public async Task<Result<CursorPageResponse<GetAllUsersResponse>>> GetAllUsersAsync(GetAllUsersRequest request,CancellationToken ct)
     {
@@ -56,6 +58,13 @@ public sealed class UserService(IReadRepository<AppUser> userIdentity) : IUserSe
 
     public async Task<Result<GetUserByIdResponse>> GetUserByIdAsync(Guid userId,CancellationToken ct)
     {
+        var cacheKey = $"user:{userId}";
+
+        var cached = await _cacheService.GetAsync<GetUserByIdResponse>(cacheKey, ct);
+
+        if(cached is not null)
+            return cached;
+
         var spec = new GetUserByIdSpecification(userId);
 
         var user = await _userIdentity.FirstOrDefaultAsync(spec,ct);
@@ -64,7 +73,10 @@ public sealed class UserService(IReadRepository<AppUser> userIdentity) : IUserSe
             //throw new NotFoundException(nameof(User),userId);
             throw new Exception($"User With Id : {userId} Not Found!");
 
-        return Result.Success(new GetUserByIdResponse(user.Id,user.Email,user.UserName));
+        var response = new GetUserByIdResponse(user.Id,user.Email,user.UserName);
 
+        await _cacheService.SetAsync(cacheKey,response,TimeSpan.FromMinutes(5),ct);
+
+        return Result.Success(response);
     }
 }

@@ -7,6 +7,6 @@ namespace Prime.Identity.Queries.Application.Features.User.Service;
 
 public interface IUserService
 {
-    Task<Result<CursorPageResponse<GetAllUsersResponse>>> GetAllUsersAsync(GetAllUsersRequest request,CancellationToken ct);
-    Task<Result<GetUserByIdResponse>> GetUserByIdAsync(Guid userId,CancellationToken ct);
+    Task<Result<CursorPageResponse<GetAllUsersResponse>>> GetAllUsersAsync(GetAllUsersRequest request,CancellationToken ct = default);
+    Task<Result<GetUserByIdResponse>> GetUserByIdAsync(Guid userId,CancellationToken ct = default);
 }
