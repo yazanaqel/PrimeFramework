@@ -58,7 +58,7 @@ public sealed class UserService(IReadRepository<AppUser> userIdentity,ICacheServ
 
     public async Task<Result<GetUserByIdResponse>> GetUserByIdAsync(Guid userId,CancellationToken ct)
     {
-        var cacheKey = $"user:{userId}";
+        var cacheKey = $"_user_:{userId}";
 
         var cached = await _cacheService.GetAsync<GetUserByIdResponse>(cacheKey, ct);
 
