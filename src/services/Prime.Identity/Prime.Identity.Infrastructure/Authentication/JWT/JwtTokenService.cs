@@ -24,7 +24,7 @@ public class JwtTokenService(IOptions<JwtOptions> options,IPermissionService per
         var claims = new List<Claim>
         {
             new(JwtRegisteredClaimNames.Sub, accessInfo.UserInfo.Id.ToString()),
-            new(JwtRegisteredClaimNames.Email, accessInfo.UserInfo.Email.ToString()),
+            new(JwtRegisteredClaimNames.Email, accessInfo.UserInfo.Email),
         };
 
 
