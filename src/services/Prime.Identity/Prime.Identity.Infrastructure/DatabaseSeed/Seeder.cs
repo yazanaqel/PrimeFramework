@@ -94,7 +94,7 @@ public class Seeder(IOptions<SeederOptions> options,UserManager<User> userManage
                     }
                 }
 
-                //Add Permissions To Admin User
+                //Add Permissions To Admin
                 _dbContext.Set<UserPermission>().AddRange(
                     permissions.Select(permission =>
                             new UserPermission
