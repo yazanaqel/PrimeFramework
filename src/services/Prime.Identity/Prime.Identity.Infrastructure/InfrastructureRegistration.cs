@@ -18,7 +18,7 @@ public static class InfrastructureRegistration
 
         services.AddDbContext<ApplicationDbContext>(options =>
         {
-            options.UseSqlServer(configuration.GetConnectionString(AppSettingsSections.DefaultConnection));
+            options.UseSqlite(configuration.GetConnectionString(AppSettingsSections.DefaultConnection));
             options.EnableDetailedErrors();
             //options.EnableSensitiveDataLogging(); // Only in development
         });
