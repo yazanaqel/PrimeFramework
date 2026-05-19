@@ -1,30 +1,34 @@
 ﻿using Domain.Constants;
-using Infrastructure.Authentication.IdentityEntities;
+using Domain.Entities.Users;
+using Infrastructure.Authentication;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Prime.Identity.Application.Abstractions.Auth;
+using Prime.Identity.Domain.Entities.Users;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace Infrastructure.Authentication.JwtSetup;
+namespace Prime.Identity.Infrastructure.Authentication.JWT;
 
-internal class JwtProvider(IOptions<JwtOptions> options,IPermissionService permissionService) : IJwtProvider
+public class JwtTokenService(IOptions<JwtOptions> options,IPermissionService permissionService) : IJwtTokenService
 {
     private readonly JwtOptions _options = options.Value;
     private readonly IPermissionService _permissionService = permissionService;
 
-    public async Task<string> GenerateAccessToken(User user)
+    public async Task<string> GenerateAccessToken(UserId userId)
     {
+
+        var accessInfo = await _permissionService.GetUserAccessInfoAsync(userId);
+
         var claims = new List<Claim>
         {
-            new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-            new(JwtRegisteredClaimNames.Email, user.Email.ToString()),
+            new(JwtRegisteredClaimNames.Sub, accessInfo.UserInfo.Id.ToString()),
+            new(JwtRegisteredClaimNames.Email, accessInfo.UserInfo.Email.ToString()),
         };
 
-        var accessInfo = await _permissionService
-            .GetUserAccessInfoAsync(user.Id);
 
-        if(accessInfo is not null)
+        if(accessInfo is not null) 
         {
             foreach(var role in accessInfo.Roles)
             {

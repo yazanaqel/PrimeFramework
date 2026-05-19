@@ -3,8 +3,9 @@ using Hangfire;
 using Infrastructure;
 using Infrastructure.DatabaseSeed;
 using Microsoft.EntityFrameworkCore;
+using Prime.Identity.WebApi;
+using Prime.Identity.WebApi.Endpoints.Auth;
 using Serilog;
-using WebApi.Controllers.Authentication;
 using WebApi.Exceptions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +14,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddApplication();
 
 builder.Services.AddInfrastructure(builder.Configuration);
+
+builder.Services.AddLocalIdentity();
 
 builder.Services.AddControllers();
 
@@ -71,6 +74,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.MapAuthenticationEndpoints();
+app.MapAuthEndpoints();
 
 app.Run();

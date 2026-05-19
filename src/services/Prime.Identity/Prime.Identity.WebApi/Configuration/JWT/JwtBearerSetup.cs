@@ -1,16 +1,16 @@
-﻿using Infrastructure.Authentication.JwtSetup;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Prime.Identity.Infrastructure.Authentication.JWT;
 using System.Text;
 
-namespace WebApi.JwtSetup;
+namespace Prime.Identity.WebApi.Configuration.JWT;
 
-public class JwtBearerOptionsSetup : IPostConfigureOptions<JwtBearerOptions>
+public class JwtBearerSetup : IPostConfigureOptions<JwtBearerOptions>
 {
     private readonly JwtOptions _jwtOptions;
 
-    public JwtBearerOptionsSetup(IOptions<JwtOptions> jwtOptions)
+    public JwtBearerSetup(IOptions<JwtOptions> jwtOptions)
     {
         _jwtOptions = jwtOptions.Value;
     }

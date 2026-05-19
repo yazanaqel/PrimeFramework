@@ -1,5 +1,6 @@
 ﻿using Infrastructure.Authentication.IdentityEntities;
 using Microsoft.EntityFrameworkCore;
+using Prime.Identity.Domain.Entities.Users;
 
 namespace Infrastructure.Authentication;
 
@@ -25,11 +26,12 @@ public class PermissionService(ApplicationDbContext dbContext) : IPermissionServ
     //    return rolePermissions;
     //}
 
-    public async Task<UserAccessInfo> GetUserAccessInfoAsync(Guid userId)
+    public async Task<UserAccessInfo> GetUserAccessInfoAsync(UserId userId)
     {
         return await _dbContext.Set<User>()
-            .Where(u => u.Id == userId)
+            .Where(u => u.Id == userId.Value)
             .Select(u => new UserAccessInfo(
+                u,
                 u.UserPermissions.Select(c => c.ClaimValue).ToList(),
                 u.UserRoles.Select(r => r.Role.Name).ToList()
             )).FirstAsync();
@@ -37,5 +39,6 @@ public class PermissionService(ApplicationDbContext dbContext) : IPermissionServ
 
 }
 public record UserAccessInfo(
+    User UserInfo,
     IReadOnlyList<string> Permissions,
     IReadOnlyList<string> Roles);

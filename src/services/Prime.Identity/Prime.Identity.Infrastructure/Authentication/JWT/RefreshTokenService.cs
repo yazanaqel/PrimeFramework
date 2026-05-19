@@ -1,8 +1,9 @@
-﻿using System.Security.Cryptography;
+﻿using Prime.Identity.Application.Abstractions.Auth;
+using System.Security.Cryptography;
 
-namespace Infrastructure.Authentication.JwtSetup;
+namespace Prime.Identity.Infrastructure.Authentication.JWT;
 
-public class RefreshTokenGenerator
+public class RefreshTokenService : IRefreshTokenService
 {
     public string Generate()
     {

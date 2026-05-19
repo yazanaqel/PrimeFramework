@@ -1,4 +1,5 @@
-﻿namespace Infrastructure.Authentication.JwtSetup;
+﻿namespace Prime.Identity.Infrastructure.Authentication.JWT;
+
 public class JwtOptions
 {
     public string Issuer { get; init; } = string.Empty;

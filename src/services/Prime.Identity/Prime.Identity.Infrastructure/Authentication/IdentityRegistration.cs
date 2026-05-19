@@ -1,12 +1,9 @@
 ﻿using Domain.Repositories;
-using Infrastructure.Authentication.IdentityEntities;
-using Infrastructure.Authentication.JwtSetup;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
+using Prime.Identity.Application.Abstractions.Auth;
+using Prime.Identity.Infrastructure.Authentication.JWT;
 using Prime.Services.Infrastructure.Services;
-using WebApi.JwtSetup;
 
 namespace Infrastructure.Authentication;
 
@@ -14,41 +11,12 @@ internal static class IdentityRegistration
 {
     public static IServiceCollection AddIdentity(this IServiceCollection services)
     {
-        services.AddIdentityCore<User>(op =>
-        {
-            op.Password.RequireDigit = false;
-            op.Password.RequiredLength = 6;
-            op.Password.RequireUppercase = false;
-            op.Password.RequireLowercase = false;
-            op.Password.RequireNonAlphanumeric = false;
-            op.SignIn.RequireConfirmedAccount = false;
-            //op.ClaimsIdentity.UserIdClaimType = "UserId";
-        })
-        .AddRoles<Role>()
-        .AddRoleManager<RoleManager<Role>>()
-        .AddSignInManager<SignInManager<User>>()
-        .AddEntityFrameworkStores<ApplicationDbContext>()
-        .AddDefaultTokenProviders()
-        .AddApiEndpoints();
 
-        services.AddAuthentication(options =>
-        {
-            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        services.AddScoped<IJwtTokenService,JwtTokenService>();
 
-        }).AddJwtBearer();
-
-        services.AddAuthorization();
-
-        services.ConfigureOptions<JwtOptionsSetup>();
-
-        services.ConfigureOptions<JwtBearerOptionsSetup>();
-
-        services.AddScoped<RefreshTokenGenerator>();
+        services.AddScoped<IRefreshTokenService,RefreshTokenService>();
 
         services.AddScoped<IPermissionService,PermissionService>();
-
-        services.AddScoped<IJwtProvider,JwtProvider>();
 
         services.AddSingleton<IAuthorizationHandler,PermissionAuthorizationHandler>();
 

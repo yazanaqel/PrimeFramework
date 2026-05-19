@@ -7,11 +7,11 @@ using MediatR;
 using Microsoft.AspNetCore.Diagnostics;
 using Prime.Identity.Domain.Entities.Users;
 
-namespace WebApi.Controllers.Authentication;
+namespace Prime.Identity.WebApi.Endpoints.Auth;
 
-public static class AuthenticationEndpoints
+public static class AuthEndpoints
 {
-    public static void MapAuthenticationEndpoints(this WebApplication app)
+    public static void MapAuthEndpoints(this WebApplication app)
     {
         app.MapPost("/Users/Register",async (RegisterUserRequest request,IMediator mediator,CancellationToken ct) =>
         {
@@ -69,4 +69,5 @@ public static class AuthenticationEndpoints
         });
 
     }
+
 }

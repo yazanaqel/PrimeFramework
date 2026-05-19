@@ -3,12 +3,13 @@ using Domain.Repositories;
 using Infrastructure;
 using Infrastructure.Authentication.Enums;
 using Infrastructure.Authentication.IdentityEntities;
-using Infrastructure.Authentication.JwtSetup;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Prime.Identity.Application.Abstractions.Auth;
 using Prime.Identity.Domain.Entities.Users;
+using Prime.Identity.Infrastructure.Authentication.JWT;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -18,14 +19,14 @@ namespace Prime.Services.Infrastructure.Services;
 internal class UserService(
     UserManager<User> userManager,
     ApplicationDbContext applicationDbContext,
-    IJwtProvider jwtProvider,
+    IJwtTokenService jwtTokenService,
     IOptions<JwtOptions> options,
-    RefreshTokenGenerator refreshTokenGenerator) : IUserService
+    IRefreshTokenService refreshTokenService) : IUserService
 {
     private readonly UserManager<User> _userManager = userManager;
-    private readonly IJwtProvider _jwtProvider = jwtProvider;
     private readonly JwtOptions _jwtOptions = options.Value;
-    private readonly RefreshTokenGenerator _refreshTokenGenerator = refreshTokenGenerator;
+    private readonly IJwtTokenService _jwtTokenService = jwtTokenService;
+    private readonly IRefreshTokenService _refreshTokenService = refreshTokenService;
     private readonly ApplicationDbContext _applicationDbContext = applicationDbContext;
 
 
@@ -136,8 +137,10 @@ internal class UserService(
 
     private async Task<(string AccessToken,string RefreshToken)> GenerateTokensAsync(User user)
     {
-        var accessToken = await _jwtProvider.GenerateAccessToken(user);
-        var refreshToken = _refreshTokenGenerator.Generate();
+        UserId.TryParse(user.Id.ToString(),out UserId parsedUserId);
+
+        var accessToken = await _jwtTokenService.GenerateAccessToken(parsedUserId);
+        var refreshToken = _refreshTokenService.Generate();
 
         user.RefreshToken = refreshToken;
         user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(_jwtOptions.RefreshTokenDays);
