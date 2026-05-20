@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using MudBlazor.Services;
 
 namespace InsideMarket.MAUI;
 
@@ -7,6 +8,9 @@ public static class MauiProgram
     public static MauiApp CreateMauiApp()
     {
         var builder = MauiApp.CreateBuilder();
+
+        builder.Services.AddMudServices();
+
         builder
             .UseMauiApp<App>()
             .ConfigureFonts(fonts =>

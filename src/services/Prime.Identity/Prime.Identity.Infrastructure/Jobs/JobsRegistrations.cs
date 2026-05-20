@@ -1,6 +1,7 @@
 ﻿using Application.Abstractions;
 using Domain.Constants;
 using Hangfire;
+using Hangfire.SQLite;
 using Infrastructure.Jobs.HangfireAdapter;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,7 +15,11 @@ internal static class JobsRegistrations
 
         services.AddHangfire(config =>
         {
-            config.UseSqlServerStorage(configuration.GetConnectionString(AppSettingsSections.DefaultConnection));
+            config.UseSimpleAssemblyNameTypeSerializer()
+          .UseRecommendedSerializerSettings()
+          .UseSQLiteStorage("Data Source=InsideMarket.db;",
+        new SQLiteStorageOptions{ PrepareSchemaIfNecessary = true });
+        
         });
 
         services.AddHangfireServer();

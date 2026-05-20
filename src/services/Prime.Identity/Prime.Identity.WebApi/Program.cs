@@ -66,7 +66,7 @@ app.UseSerilogRequestLogging(options =>
     options.IncludeQueryInRequestPath = true;
 });
 
-app.UseHangfireDashboard("/hangfire");
+//app.UseHangfireDashboard("/hangfire");
 
 app.UseAuthentication();
 

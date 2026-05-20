@@ -20,7 +20,6 @@ public static class InfrastructureRegistration
         {
             options.UseSqlite(configuration.GetConnectionString(AppSettingsSections.DefaultConnection));
             options.EnableDetailedErrors();
-            //options.EnableSensitiveDataLogging(); // Only in development
         });
 
         services.AddEmail(configuration);

@@ -14,7 +14,9 @@
     <Project Path="src/services/Prime.Identity/Prime.Identity.WebApi/Prime.Identity.WebApi.csproj" />
   </Folder>
   <Folder Name="/src/UI/">
-    <Project Path="InsideMarket.MAUI/InsideMarket.MAUI.csproj" Id="44de27a9-a079-4bea-8e16-2d74b22faa52" />
-    <Project Path="InsideMarket.WebUI/InsideMarket.WebUI.csproj" Id="ad7cf53a-059e-42d6-8496-37607e1551c6" />
+    <Project Path="InsideMarket.MAUI/InsideMarket.MAUI.csproj" Id="44de27a9-a079-4bea-8e16-2d74b22faa52">
+      <Deploy Solution="Debug|*" />
+    </Project>
+    <Project Path="InsideMarket.Web/InsideMarket.Web.csproj" Id="8311a95d-66cc-4876-b983-017a341cfe3b" />
   </Folder>
 </Solution>
