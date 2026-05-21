@@ -17,7 +17,7 @@ internal sealed class RefreshTokenCommandHandler(IUserService userService) : ICo
             return Result.Failure<TokenResponse?>("Invalid token");
         }
 
-        return new TokenResponse(result.AccessToken,result.RefreshToken);
+        return new TokenResponse(result.AccessToken,result.RefreshToken,DateTime.UtcNow,DateTime.UtcNow);
     }
 
 }

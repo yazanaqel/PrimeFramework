@@ -20,13 +20,11 @@ internal class UserService(
     UserManager<User> userManager,
     ApplicationDbContext applicationDbContext,
     IJwtTokenService jwtTokenService,
-    IOptions<JwtOptions> options,
-    IRefreshTokenService refreshTokenService) : IUserService
+    IOptions<JwtOptions> options) : IUserService
 {
     private readonly UserManager<User> _userManager = userManager;
     private readonly JwtOptions _jwtOptions = options.Value;
     private readonly IJwtTokenService _jwtTokenService = jwtTokenService;
-    private readonly IRefreshTokenService _refreshTokenService = refreshTokenService;
     private readonly ApplicationDbContext _applicationDbContext = applicationDbContext;
 
 
@@ -72,9 +70,7 @@ internal class UserService(
         {
             UserId.TryParse(user.Id.ToString(),out UserId parsedUserId);
 
-            var tokenResult = await GenerateTokensAsync(user);
-
-            return AppUser.AppUserResponse(parsedUserId,user.UserName,tokenResult.AccessToken,tokenResult.RefreshToken);
+            return AppUser.AppUserResponse(parsedUserId,user.UserName);
         }
 
         return AppUser.EmptyAppUser();
@@ -98,7 +94,11 @@ internal class UserService(
             return (string.Empty,string.Empty);
         }
 
-        return await GenerateTokensAsync(user);
+        UserId.TryParse(user.Id.ToString(),out UserId parsedUserId);
+
+        var tokenResponse = await _jwtTokenService.GenerateAccessToken(parsedUserId);
+
+        return (tokenResponse.AccessToken, tokenResponse.RefreshToken);
     }
 
     public async Task<bool> LogoutAsync(UserId userId,CancellationToken ct)
@@ -134,23 +134,5 @@ internal class UserService(
         var principal = tokenHandler.ValidateToken(accessToken,tokenValidationParameters,out _);
         return principal;
     }
-
-    private async Task<(string AccessToken,string RefreshToken)> GenerateTokensAsync(User user)
-    {
-        UserId.TryParse(user.Id.ToString(),out UserId parsedUserId);
-
-        var accessToken = await _jwtTokenService.GenerateAccessToken(parsedUserId);
-        var refreshToken = _refreshTokenService.Generate();
-
-        user.RefreshToken = refreshToken;
-        user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(_jwtOptions.RefreshTokenDays);
-
-        await _userManager.UpdateAsync(user);
-
-        return (accessToken,refreshToken);
-
-    }
-
-
 
 }

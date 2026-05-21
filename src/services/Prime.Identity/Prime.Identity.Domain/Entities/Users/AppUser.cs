@@ -26,14 +26,12 @@ public class AppUser : Primitives.Entity<UserId>
         return new AppUser();
     }
 
-    public static AppUser AppUserResponse(UserId userId,string userName,string accessToken, string refreshToken)
+    public static AppUser AppUserResponse(UserId userId,string userName)
     {
         return new AppUser
         {
             Id = userId,
-            UserName = userName,
-            AccessToken = accessToken,
-            RefreshToken = refreshToken
+            UserName = userName
         };
 
     }

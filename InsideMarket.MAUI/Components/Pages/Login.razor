@@ -1,0 +1,70 @@
+﻿@page "/login"
+@layout LoginLayout
+@inject IAuthService AuthService
+@inject NavigationManager Nav
+
+<MudPaper Class="pa-6 mx-auto mt-10" Elevation="8" MaxWidth="400px">
+
+    <MudText Typo="Typo.h5" Class="mb-4">Login</MudText>
+
+    @if(!string.IsNullOrEmpty(ErrorMessage))
+    {
+        <MudAlert Severity="Severity.Error" Dense="true" Class="mb-3">
+            @ErrorMessage
+        </MudAlert>
+    }
+
+    <EditForm Model="@_model" OnValidSubmit="@LoginAsync">
+        <DataAnnotationsValidator />
+
+        <MudTextField @bind-Value="_model.Email"
+                      Label="Email"
+                      Variant="Variant.Outlined"
+                      Required="true"
+                      For="@(() => _model.Email)" />
+
+        <MudTextField @bind-Value="_model.Password"
+                      Label="Password"
+                      Variant="Variant.Outlined"
+                      InputType="InputType.Password"
+                      Required="true"
+                      For="@(() => _model.Password)" />
+
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   Class="mt-4"
+                   FullWidth="true"
+                   Disabled="@_isBusy"
+                   OnClick="LoginAsync">
+            @(_isBusy ? "Signing in..." : "Login")
+        </MudButton>
+
+    </EditForm>
+
+</MudPaper>
+
+@code {
+    private LoginRequest _model = new();
+    private bool _isBusy = false;
+    private string? ErrorMessage;
+
+    private async Task LoginAsync()
+    {
+        ErrorMessage = null;
+        _isBusy = true;
+
+        var success = await AuthService.LoginAsync(_model.Email,_model.Password);
+
+        _isBusy = false;
+
+        if(success)
+        {
+            Nav.NavigateTo("/",true);
+        }
+        else
+        {
+            ErrorMessage = "Invalid username or password.";
+        }
+    }
+
+}

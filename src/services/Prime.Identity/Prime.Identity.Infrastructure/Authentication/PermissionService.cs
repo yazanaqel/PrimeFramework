@@ -39,6 +39,6 @@ public class PermissionService(ApplicationDbContext dbContext) : IPermissionServ
 
 }
 public record UserAccessInfo(
-    User UserInfo,
+    User User,
     IReadOnlyList<string> Permissions,
     IReadOnlyList<string> Roles);

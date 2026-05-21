@@ -1,25 +1,80 @@
 ﻿@inherits LayoutComponentBase
+@inject IAuthService AuthService
+@inject IDialogService DialogService
+@inject NavigationManager Nav
 
 <MudThemeProvider />
 <MudDialogProvider />
 <MudSnackbarProvider />
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+<MudLayout>
 
-    <main>
-        <div class="top-row px-4">
-            <MudText Typo="Typo.h6">Inside‑Market</MudText>
-            <MudSpacer />
-            <MudButton Variant="Variant.Text" Href="https://learn.microsoft.com/aspnet/core/" Target="_blank">
-                About
-            </MudButton>
-        </div>
+    <!-- Top App Bar -->
+    <MudAppBar Elevation="4" Color="Color.Primary">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" OnClick="@ToggleDrawer" />
+        <MudText Typo="Typo.h6">Inside-Market</MudText>
+    </MudAppBar>
 
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
-</div>
+    <!-- Left Drawer -->
+    <MudDrawer @bind-Open="_drawerOpen" Elevation="4" ClipMode="DrawerClipMode.Always">
+        <MudNavMenu>
+            <MudNavLink Href="/" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
+            <MudNavLink Href="/counter" Icon="@Icons.Material.Filled.Store">Markets</MudNavLink>
+            <MudNavLink Href="/weather" Icon="@Icons.Material.Filled.Person">Profile</MudNavLink>
+            <MudNavLink Icon="@Icons.Material.Filled.Logout" OnClick="ConfirmLogout">Logout</MudNavLink>
+        </MudNavMenu>
+    </MudDrawer>
+
+    <!-- Main Content -->
+    <MudMainContent Class="content-with-bottom-nav">
+        @Body
+    </MudMainContent>
+
+    <!-- Bottom Navigation -->
+    <MudPaper Elevation="8"
+              Class="bottom-nav d-flex justify-space-around pa-2">
+
+        <MudIconButton Icon="@Icons.Material.Filled.Home"
+                       Color="Color.Primary"
+                       Size="Size.Large"
+                       Href="/" />
+
+        <MudIconButton Icon="@Icons.Material.Filled.Store"
+                       Color="Color.Primary"
+                       Size="Size.Large"
+                       Href="/counter" />
+
+        <MudIconButton Icon="@Icons.Material.Filled.Person"
+                       Color="Color.Primary"
+                       Size="Size.Large"
+                       Href="/weather" />
+
+    </MudPaper>
+
+</MudLayout>
+
+@code {
+    bool _drawerOpen = false;
+    void ToggleDrawer() => _drawerOpen = !_drawerOpen;
+
+    private async Task ConfirmLogout()
+    {
+        bool? result = await DialogService.ShowMessageBoxAsync(
+            title: "Confirm Logout",
+            markupMessage: (MarkupString)"Are you sure you want to logout?",
+            yesText: "Logout",
+            cancelText: "Cancel",
+            options: new DialogOptions
+            {
+                CloseButton = true,
+                MaxWidth = MaxWidth.ExtraSmall,
+                FullWidth = true
+            });
+
+        if(result == true)
+        {
+            await AuthService.LogoutAsync();
+            Nav.NavigateTo("/login",true);
+        }
+    }
+}

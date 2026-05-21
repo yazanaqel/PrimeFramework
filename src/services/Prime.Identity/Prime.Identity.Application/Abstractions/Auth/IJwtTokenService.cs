@@ -1,9 +1,10 @@
-﻿using Prime.Identity.Domain.Entities.Users;
+﻿using Application.Features.User.RefreshToken;
+using Prime.Identity.Domain.Entities.Users;
 
 namespace Prime.Identity.Application.Abstractions.Auth;
 
 public interface IJwtTokenService
 {
-    Task<string> GenerateAccessToken(UserId userId);
+    Task<TokenResponse> GenerateAccessToken(UserId userId);
 
 }

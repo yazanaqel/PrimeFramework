@@ -99,3 +99,16 @@ h1:focus {
         padding-left: env(safe-area-inset-left);
     }
 }
+
+
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+}
+
+.content-with-bottom-nav {
+    padding-bottom: 80px; /* ensures content never hides behind bottom nav */
+}

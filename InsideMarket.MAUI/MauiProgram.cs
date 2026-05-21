@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using InsideMarket.MAUI.Components.Auth;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.Extensions.Logging;
 using MudBlazor.Services;
 
 namespace InsideMarket.MAUI;
@@ -11,6 +13,25 @@ public static class MauiProgram
 
         builder.Services.AddMudServices();
 
+        builder.Services.AddScoped<ITokenStore,PreferencesTokenStore>();
+        builder.Services.AddScoped<AuthenticationStateProvider,CustomAuthStateProvider>();
+        builder.Services.AddScoped<IAuthService,AuthService>();
+
+        builder.Services.AddAuthorizationCore();
+
+        builder.Services.AddScoped<TokenMessageHandler>();
+
+        builder.Services.AddHttpClient("ApiClient",client =>
+        {
+            client.BaseAddress = new Uri("https://localhost:7104/");
+        })
+        .AddHttpMessageHandler<TokenMessageHandler>();
+
+        // Default HttpClient (optional but safe)
+        builder.Services.AddHttpClient();
+
+
+
         builder
             .UseMauiApp<App>()
             .ConfigureFonts(fonts =>
@@ -21,8 +42,8 @@ public static class MauiProgram
         builder.Services.AddMauiBlazorWebView();
 
 #if DEBUG
-		builder.Services.AddBlazorWebViewDeveloperTools();
-		builder.Logging.AddDebug();
+        builder.Services.AddBlazorWebViewDeveloperTools();
+        builder.Logging.AddDebug();
 #endif
 
         return builder.Build();

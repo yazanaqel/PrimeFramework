@@ -1,9 +1,5 @@
-using Infrastructure;
-using Infrastructure.Authentication;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using WebApi.Constants;
 
 namespace WebApi.Controllers;
@@ -11,8 +7,11 @@ namespace WebApi.Controllers;
 [Authorize]
 [Route("api/[controller]")]
 [ApiController]
-public class WeatherForecastController(ApplicationDbContext applicationDbContext) : ControllerBase
+public class WeatherForecastController : ControllerBase
 {
+    [AllowAnonymous]
+    [HttpGet("ServerTime")]
+    public DateTime GetServerTime() => DateTime.UtcNow;
 
     [AllowAnonymous]
     [HttpGet("AllowAnonymous")]
@@ -33,7 +32,7 @@ public class WeatherForecastController(ApplicationDbContext applicationDbContext
     public IEnumerable<WeatherForecast> ReadPermission()
         => GetAllWeatherForecast();
 
-    [Authorize(Roles = nameof(Roles.ADMIN), Policy = nameof(Permissions.READ))]
+    [Authorize(Roles = nameof(Roles.ADMIN),Policy = nameof(Permissions.READ))]
     [HttpGet("AdminRoleAndReadPermission")]
     public IEnumerable<WeatherForecast> AdminRoleAndReadPermission()
     => GetAllWeatherForecast();

@@ -1,6 +1,8 @@
-﻿using Domain.Constants;
-using Domain.Entities.Users;
+﻿using Application.Features.User.RefreshToken;
+using Domain.Constants;
 using Infrastructure.Authentication;
+using Infrastructure.Authentication.IdentityEntities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Prime.Identity.Application.Abstractions.Auth;
@@ -11,36 +13,42 @@ using System.Text;
 
 namespace Prime.Identity.Infrastructure.Authentication.JWT;
 
-public class JwtTokenService(IOptions<JwtOptions> options,IPermissionService permissionService) : IJwtTokenService
+public class JwtTokenService(
+    IOptions<JwtOptions> options,
+     UserManager<User> userManager,
+    IPermissionService permissionService,
+    IRefreshTokenService refreshTokenService) : IJwtTokenService
 {
     private readonly JwtOptions _options = options.Value;
+    private readonly UserManager<User> _userManager = userManager;
     private readonly IPermissionService _permissionService = permissionService;
+    private readonly IRefreshTokenService _refreshTokenService = refreshTokenService;
 
-    public async Task<string> GenerateAccessToken(UserId userId)
+    public async Task<TokenResponse> GenerateAccessToken(UserId userId)
     {
 
         var accessInfo = await _permissionService.GetUserAccessInfoAsync(userId);
 
-        var claims = new List<Claim>
+        if(accessInfo is null)
         {
-            new(JwtRegisteredClaimNames.Sub, accessInfo.UserInfo.Id.ToString()),
-            new(JwtRegisteredClaimNames.Email, accessInfo.UserInfo.Email),
-        };
-
-
-        if(accessInfo is not null) 
-        {
-            foreach(var role in accessInfo.Roles)
-            {
-                claims.Add(new Claim(ClaimTypes.Role,role.ToUpper()));
-            }
-
-            foreach(var permission in accessInfo.Permissions)
-            {
-                claims.Add(new Claim(CustomClaims.Permissions,permission.ToUpper()));
-            }
+            return new TokenResponse(string.Empty,string.Empty,DateTime.UtcNow,DateTime.UtcNow);
         }
 
+        var claims = new List<Claim>
+        {
+            new(JwtRegisteredClaimNames.Sub, accessInfo.User.Id.ToString()),
+            new(JwtRegisteredClaimNames.Email, accessInfo.User.Email),
+        };
+
+        foreach(var role in accessInfo.Roles)
+        {
+            claims.Add(new Claim(ClaimTypes.Role,role.ToUpper()));
+        }
+
+        foreach(var permission in accessInfo.Permissions)
+        {
+            claims.Add(new Claim(CustomClaims.Permissions,permission.ToUpper()));
+        }
 
         var signingCredentials = new SigningCredentials(
             new SymmetricSecurityKey(
@@ -55,9 +63,19 @@ public class JwtTokenService(IOptions<JwtOptions> options,IPermissionService per
             signingCredentials: signingCredentials
         );
 
-        string tokenValue = new JwtSecurityTokenHandler()
+        string accessToken = new JwtSecurityTokenHandler()
             .WriteToken(token);
 
-        return tokenValue;
+
+        var refreshToken = _refreshTokenService.Generate();
+
+        accessInfo.User.RefreshToken = refreshToken;
+        accessInfo.User.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(_options.RefreshTokenDays);
+
+        await _userManager.UpdateAsync(accessInfo.User);
+
+        return new TokenResponse(accessToken,refreshToken,
+            DateTime.UtcNow.AddMinutes(_options.AccessTokenMinutes),
+            DateTime.UtcNow.AddDays(_options.RefreshTokenDays));
     }
 }
