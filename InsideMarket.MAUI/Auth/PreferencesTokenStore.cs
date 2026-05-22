@@ -1,4 +1,4 @@
-﻿namespace InsideMarket.MAUI.Components.Auth;
+﻿namespace InsideMarket.MAUI.Auth;
 
 public class PreferencesTokenStore : ITokenStore
 {
@@ -48,5 +48,4 @@ public class PreferencesTokenStore : ITokenStore
         Preferences.Remove(RefreshTokenExpiresAt);
         return Task.CompletedTask;
     }
-
 }

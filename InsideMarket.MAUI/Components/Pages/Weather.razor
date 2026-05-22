@@ -1,61 +1,78 @@
 ﻿@page "/weather"
+@using System.IdentityModel.Tokens.Jwt
+@attribute [Authorize]
 
-<h1>Weather</h1>
+<p><strong>Access Token Expires At:</strong> @AccessTokenExpiry</p>
 
-<p>This component demonstrates showing data.</p>
+<h3>Token Test Page</h3>
 
-@if (forecasts == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th aria-label="Temperature in Celsius">Temp. (C)</th>
-                <th aria-label="Temperature in Fahrenheit">Temp. (F)</th>
-                <th>Summary</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var forecast in forecasts)
-            {
-                <tr>
-                    <td>@forecast.Date.ToShortDateString()</td>
-                    <td>@forecast.TemperatureC</td>
-                    <td>@forecast.TemperatureF</td>
-                    <td>@forecast.Summary</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
+<button @onclick="CallAnonymous">Call AllowAnonymous</button>
+<button @onclick="CallAuthorized">Call Authorize</button>
+
+<p><strong>Anonymous Result:</strong> @AnonymousResult</p>
+<p><strong>Authorized Result:</strong> @AuthorizedResult</p>
 
 @code {
-    private WeatherForecast[]? forecasts;
+    private string AnonymousResult = "";
+    private string AuthorizedResult = "";
+
+    // Inject your HttpClients
+    [Inject] public IHttpClientFactory ClientFactory { get; set; }
+    private HttpClient AuthHttp => ClientFactory.CreateClient("ApiClient");
+    public DateTime AccessTokenExpiry { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        // Simulate asynchronous loading to demonstrate a loading indicator
-        await Task.Delay(500);
-
-        var startDate = DateOnly.FromDateTime(DateTime.Now);
-        var summaries = new[] { "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching" };
-        forecasts = Enumerable.Range(1, 5).Select(index => new WeatherForecast
-        {
-            Date = startDate.AddDays(index),
-            TemperatureC = Random.Shared.Next(-20, 55),
-            Summary = summaries[Random.Shared.Next(summaries.Length)]
-        }).ToArray();
+        AccessTokenExpiry = await GetAccessTokenExpiry();
     }
 
-    private class WeatherForecast
+    private async Task CallAnonymous()
+    {
+        try
+        {
+            var result = await AuthHttp.GetFromJsonAsync<IEnumerable<WeatherForecast>>(
+                "api/WeatherForecast/AllowAnonymous");
+
+            AnonymousResult = $"Success: {result.Count()} items";
+        }
+        catch(Exception ex)
+        {
+            AnonymousResult = $"Error: {ex.Message}";
+        }
+    }
+
+    private async Task CallAuthorized()
+    {
+        try
+        {
+            var result = await AuthHttp.GetFromJsonAsync<IEnumerable<WeatherForecast>>(
+                "api/WeatherForecast/Authorize");
+
+            AuthorizedResult = $"Success: {result.Count()} items";
+        }
+        catch(Exception ex)
+        {
+            AuthorizedResult = $"Error: {ex.Message}";
+        }
+    }
+    private async Task<DateTime> GetAccessTokenExpiry()
+    {
+        var token = Preferences.Get("access_token",null);
+        if(string.IsNullOrEmpty(token))
+            return DateTime.MinValue;
+
+        var jwt = new JwtSecurityTokenHandler().ReadJwtToken(token);
+        return jwt.ValidTo.ToLocalTime();
+    }
+
+    public class WeatherForecast
     {
         public DateOnly Date { get; set; }
+
         public int TemperatureC { get; set; }
-        public string? Summary { get; set; }
+
         public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+
+        public string? Summary { get; set; }
     }
 }

@@ -16,7 +16,7 @@ internal sealed class LoginUserCommandHandler(IUserService userService,IJwtToken
     {
         var user = await _userService.LoginAsync(command.Request.Email,command.Request.Password,ct);
 
-        TokenResponse tokenResponse = await _jwtTokenService.GenerateAccessToken(user.Id);
+        TokenResponse tokenResponse = await _jwtTokenService.GenerateAccessTokenAsync(user.Id, ct);
 
         return Result.Success(new LoginUserResponse
         (

@@ -1,11 +1,12 @@
-﻿@page "/login"
+﻿@page "/register"
 @layout LoginLayout
 @inject IAuthService AuthService
 @inject NavigationManager Nav
 
+
 <MudPaper Class="pa-6 mx-auto mt-10" Elevation="8" MaxWidth="400px">
 
-    <MudText Typo="Typo.h5" Class="mb-4">Login</MudText>
+    <MudText Typo="Typo.h5" Class="mb-4">Create Account</MudText>
 
     @if(!string.IsNullOrEmpty(ErrorMessage))
     {
@@ -14,43 +15,50 @@
         </MudAlert>
     }
 
-    <EditForm Model="@_loginRequest" OnValidSubmit="@LoginAsync">
+    <EditForm Model="@_registerRequest" OnValidSubmit="@RegisterAsync">
         <DataAnnotationsValidator />
 
-        <MudTextField @bind-Value="_loginRequest.Email"
+        <MudTextField @bind-Value="_registerRequest.Email"
                       Label="Email"
                       Variant="Variant.Outlined"
                       Required="true"
-                      For="@(() => _loginRequest.Email)" />
+                      For="@(() => _registerRequest.Email)" />
 
-        <MudTextField @bind-Value="_loginRequest.Password"
+        <MudTextField @bind-Value="_registerRequest.Password"
                       Label="Password"
                       Variant="Variant.Outlined"
                       InputType="InputType.Password"
                       Required="true"
-                      For="@(() => _loginRequest.Password)" />
+                      For="@(() => _registerRequest.Password)" />
+                      
+        <MudTextField @bind-Value="_registerRequest.ConfirmPassword"
+                      Label="Confirm Password"
+                      Variant="Variant.Outlined"
+                      InputType="InputType.Password"
+                      Required="true"
+                      For="@(() => _registerRequest.ConfirmPassword)" />
 
         <MudButton Variant="Variant.Filled"
                    Color="Color.Primary"
                    Class="mt-4"
                    FullWidth="true"
                    Disabled="@_isBusy"
-                   OnClick="LoginAsync">
+                   OnClick="RegisterAsync">
             @if(_isBusy)
             {
                 <MudProgressCircular Color="Color.Primary" Size="Size.Small" Indeterminate="true" />
             }
             else
             {
-                <MudText>Login</MudText>
+                <MudText>Register</MudText>
             }
         </MudButton>
 
     </EditForm>
     
     <MudText Class="mt-4 text-center">
-        Don't have an account?
-        <MudLink Href="/register">Register</MudLink>
+        Already have an account?
+        <MudLink Href="/login">Login</MudLink>
     </MudText>
 
 </MudPaper>
@@ -58,26 +66,26 @@
 
 @code {
 
-    private LoginRequest _loginRequest = new();
+    private RegisterRequest _registerRequest = new();
     private bool _isBusy = false;
     private string? ErrorMessage;
 
-    private async Task LoginAsync()
+    private async Task RegisterAsync()
     {
         ErrorMessage = null;
         _isBusy = true;
 
-        var success = await AuthService.LoginAsync(_loginRequest);
+        var success = await AuthService.RegisterAsync(_registerRequest);
 
         _isBusy = false;
 
         if(success)
         {
-            Nav.NavigateTo("/",true);
+            Nav.NavigateTo("/login",true);
         }
         else
         {
-            ErrorMessage = "Invalid username or password.";
+            ErrorMessage = "Invalid Inputs.";
         }
     }
 

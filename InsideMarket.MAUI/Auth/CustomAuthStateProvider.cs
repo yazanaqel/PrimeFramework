@@ -2,7 +2,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
-namespace InsideMarket.MAUI.Components.Auth;
+namespace InsideMarket.MAUI.Auth;
 
 public class CustomAuthStateProvider : AuthenticationStateProvider
 {

@@ -1,4 +1,4 @@
-﻿namespace InsideMarket.MAUI.Components.Auth;
+﻿namespace InsideMarket.MAUI.Auth;
 
 public interface ITokenStore
 {

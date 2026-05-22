@@ -5,26 +5,15 @@ using Infrastructure.Authentication.Enums;
 using Infrastructure.Authentication.IdentityEntities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using Prime.Identity.Application.Abstractions.Auth;
 using Prime.Identity.Domain.Entities.Users;
-using Prime.Identity.Infrastructure.Authentication.JWT;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 
 namespace Prime.Services.Infrastructure.Services;
 
 internal class UserService(
     UserManager<User> userManager,
-    ApplicationDbContext applicationDbContext,
-    IJwtTokenService jwtTokenService,
-    IOptions<JwtOptions> options) : IUserService
+    ApplicationDbContext applicationDbContext) : IUserService
 {
     private readonly UserManager<User> _userManager = userManager;
-    private readonly JwtOptions _jwtOptions = options.Value;
-    private readonly IJwtTokenService _jwtTokenService = jwtTokenService;
     private readonly ApplicationDbContext _applicationDbContext = applicationDbContext;
 
 
@@ -76,30 +65,7 @@ internal class UserService(
         return AppUser.EmptyAppUser();
     }
 
-    public async Task<(string AccessToken,string RefreshToken)> RefreshTokenAsync(string accessToken,string refreshToken,CancellationToken ct)
-    {
-        var principal = GetPrincipalFromExpiredToken(accessToken);
 
-        var userId = principal.FindFirstValue(ClaimTypes.NameIdentifier);
-
-        if(userId is null)
-            return (string.Empty,string.Empty);
-
-        var user = await _userManager.FindByIdAsync(userId);
-
-        if(user == null ||
-            user.RefreshToken != refreshToken ||
-            user.RefreshTokenExpiryTime <= DateTime.UtcNow)
-        {
-            return (string.Empty,string.Empty);
-        }
-
-        UserId.TryParse(user.Id.ToString(),out UserId parsedUserId);
-
-        var tokenResponse = await _jwtTokenService.GenerateAccessToken(parsedUserId);
-
-        return (tokenResponse.AccessToken, tokenResponse.RefreshToken);
-    }
 
     public async Task<bool> LogoutAsync(UserId userId,CancellationToken ct)
     {
@@ -117,22 +83,6 @@ internal class UserService(
         return true;
     }
 
-    private ClaimsPrincipal GetPrincipalFromExpiredToken(string accessToken)
-    {
-        var tokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateAudience = true,
-            ValidateIssuer = true,
-            ValidIssuer = _jwtOptions.Issuer,
-            ValidAudience = _jwtOptions.Audience,
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.SecretKey)),
-            ValidateLifetime = false
-        };
 
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var principal = tokenHandler.ValidateToken(accessToken,tokenValidationParameters,out _);
-        return principal;
-    }
 
 }

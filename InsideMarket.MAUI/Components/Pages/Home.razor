@@ -1,6 +1,5 @@
 ﻿@page "/"
-@using System.IdentityModel.Tokens.Jwt
-@attribute [Authorize]
+
 
 <MudText Typo="Typo.h5" Class="mt-4 ml-2">Welcome to Inside‑Market</MudText>
 
@@ -10,77 +9,3 @@
     </MudCardContent>
 </MudCard>
 
-<p><strong>Access Token Expires At:</strong> @AccessTokenExpiry</p>
-
-<h3>Token Test Page</h3>
-
-<button @onclick="CallAnonymous">Call AllowAnonymous</button>
-<button @onclick="CallAuthorized">Call Authorize</button>
-
-<p><strong>Anonymous Result:</strong> @AnonymousResult</p>
-<p><strong>Authorized Result:</strong> @AuthorizedResult</p>
-
-@code {
-    private string AnonymousResult = "";
-    private string AuthorizedResult = "";
-
-    // Inject your HttpClients
-    [Inject] public IHttpClientFactory ClientFactory { get; set; }
-    private HttpClient AuthHttp => ClientFactory.CreateClient("ApiClient");
-    public DateTime AccessTokenExpiry { get; set; }
-
-    protected override async Task OnInitializedAsync()
-    {
-        AccessTokenExpiry = await GetAccessTokenExpiry();
-    }
-
-    private async Task CallAnonymous()
-    {
-        try
-        {
-            var result = await AuthHttp.GetFromJsonAsync<IEnumerable<WeatherForecast>>(
-                "api/WeatherForecast/AllowAnonymous");
-
-            AnonymousResult = $"Success: {result.Count()} items";
-        }
-        catch(Exception ex)
-        {
-            AnonymousResult = $"Error: {ex.Message}";
-        }
-    }
-
-    private async Task CallAuthorized()
-    {
-        try
-        {
-            var result = await AuthHttp.GetFromJsonAsync<IEnumerable<WeatherForecast>>(
-                "api/WeatherForecast/Authorize");
-
-            AuthorizedResult = $"Success: {result.Count()} items";
-        }
-        catch(Exception ex)
-        {
-            AuthorizedResult = $"Error: {ex.Message}";
-        }
-    }
-    private async Task<DateTime> GetAccessTokenExpiry()
-    {
-        var token = Preferences.Get("access_token",null);
-        if(string.IsNullOrEmpty(token))
-            return DateTime.MinValue;
-
-        var jwt = new JwtSecurityTokenHandler().ReadJwtToken(token);
-        return jwt.ValidTo.ToLocalTime();
-    }
-
-    public class WeatherForecast
-    {
-        public DateOnly Date { get; set; }
-
-        public int TemperatureC { get; set; }
-
-        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-
-        public string? Summary { get; set; }
-    }
-}

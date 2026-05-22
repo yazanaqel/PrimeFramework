@@ -1,23 +1,23 @@
 ﻿using Application.Abstractions.Messaging;
 using CSharpFunctionalExtensions;
-using Domain.Repositories;
+using Prime.Identity.Application.Abstractions.Auth;
 
 namespace Application.Features.User.RefreshToken;
 
-internal sealed class RefreshTokenCommandHandler(IUserService userService) : ICommandHandler<RefreshTokenCommand,TokenResponse?>
+internal sealed class RefreshTokenCommandHandler(IJwtTokenService jwtTokenService) : ICommandHandler<RefreshTokenCommand,TokenResponse?>
 {
-    private readonly IUserService _userService = userService;
+    private readonly IJwtTokenService _jwtTokenService = jwtTokenService;
 
     public async Task<Result<TokenResponse?>> Handle(RefreshTokenCommand command,CancellationToken ct)
     {
-        var result = await _userService.RefreshTokenAsync(command.Request.AccessToken,command.Request.RefreshToken,ct);
+        var result = await _jwtTokenService.RefreshTokenAsync(command.Request.AccessToken,command.Request.RefreshToken,ct);
 
-        if (string.IsNullOrEmpty(result.RefreshToken))
+        if(string.IsNullOrEmpty(result.RefreshToken))
         {
             return Result.Failure<TokenResponse?>("Invalid token");
         }
 
-        return new TokenResponse(result.AccessToken,result.RefreshToken,DateTime.UtcNow,DateTime.UtcNow);
+        return Result.Success<TokenResponse?>(result);
     }
 
 }

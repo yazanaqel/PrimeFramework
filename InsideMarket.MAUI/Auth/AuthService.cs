@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components.Authorization;
 using System.Net.Http.Json;
 
-namespace InsideMarket.MAUI.Components.Auth;
+namespace InsideMarket.MAUI.Auth;
 
 
 public class AuthService : IAuthService
@@ -20,15 +20,10 @@ public class AuthService : IAuthService
         _authStateProvider = (CustomAuthStateProvider)authStateProvider;
     }
 
-    public async Task<bool> LoginAsync(string email,string password)
+    public async Task<bool> LoginAsync(LoginRequest loginRequest)
     {
-        var request = new LoginRequest
-        {
-            Email = email,
-            Password = password
-        };
 
-        var response = await _http.PostAsJsonAsync("Users/Login",request);
+        var response = await _http.PostAsJsonAsync("Users/Login",loginRequest);
 
         if(!response.IsSuccessStatusCode)
             return false;
@@ -45,6 +40,16 @@ public class AuthService : IAuthService
         return true;
     }
 
+    public async Task<bool> RegisterAsync(RegisterRequest registerRequest)
+    {
+
+        var response = await _http.PostAsJsonAsync("Users/Register",registerRequest);
+
+        if(!response.IsSuccessStatusCode)
+            return false;
+
+        return true;
+    }
 
     public async Task LogoutAsync()
     {

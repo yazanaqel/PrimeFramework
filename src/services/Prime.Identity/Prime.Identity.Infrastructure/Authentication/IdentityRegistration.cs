@@ -14,8 +14,6 @@ internal static class IdentityRegistration
 
         services.AddScoped<IJwtTokenService,JwtTokenService>();
 
-        services.AddScoped<IRefreshTokenService,RefreshTokenService>();
-
         services.AddScoped<IPermissionService,PermissionService>();
 
         services.AddSingleton<IAuthorizationHandler,PermissionAuthorizationHandler>();

@@ -1,4 +1,4 @@
-﻿using InsideMarket.MAUI.Components.Auth;
+﻿using InsideMarket.MAUI.Auth;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Logging;
 using MudBlazor.Services;
