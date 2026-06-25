@@ -38,6 +38,17 @@
                       Required="true"
                       For="@(() => _registerRequest.ConfirmPassword)" />
 
+        <MudTextField @bind-Value="_registerRequest.PhoneNumber"
+                      Label="Phone Number"
+                      Variant="Variant.Outlined"
+                      Required="true"
+                      For="@(() => _registerRequest.PhoneNumber)" />
+
+        <MudSwitch @bind-Value="_registerRequest.IsStoreAccount"
+                   Color="Color.Primary"
+                   Label="Is this a store account?" />
+
+
         <MudButton Variant="Variant.Filled"
                    Color="Color.Primary"
                    Class="mt-4"

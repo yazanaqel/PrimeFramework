@@ -42,6 +42,10 @@ public class AuthService : IAuthService
 
     public async Task<bool> RegisterAsync(RegisterRequest registerRequest)
     {
+        if (registerRequest.IsStoreAccount)
+        {
+            registerRequest.Role = "Merchant";
+        }
 
         var response = await _http.PostAsJsonAsync("Users/Register",registerRequest);
 
