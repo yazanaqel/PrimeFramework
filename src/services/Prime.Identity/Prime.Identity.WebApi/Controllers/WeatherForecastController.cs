@@ -27,6 +27,14 @@ public class WeatherForecastController : ControllerBase
     public IEnumerable<WeatherForecast> AdminRole()
     => GetAllWeatherForecast();
 
+    [Authorize(Roles = nameof(Roles.USER))]
+    [HttpGet("UserRole")]
+    public string UserRole() => "UserRole";
+
+    [Authorize(Roles = nameof(Roles.MERCHANT))]
+    [HttpGet("MerchantRole")]
+    public string MerchantRole() => "MerchantRole";
+
     [Authorize(Policy = nameof(Permissions.READ))]
     [HttpGet("ReadPermission")]
     public IEnumerable<WeatherForecast> ReadPermission()

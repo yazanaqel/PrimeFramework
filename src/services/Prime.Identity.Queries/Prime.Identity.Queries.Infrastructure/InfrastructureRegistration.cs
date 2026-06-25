@@ -16,7 +16,7 @@ public static class InfrastructureRegistration
         var connectionString = configuration.GetConnectionString("DefaultConnection");
 
         services.AddDbContext<ReadOnlyDbContext>(options =>
-            options.UseSqlite(connectionString)
+            options.UseSqlServer(connectionString)
                    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
 
         services.AddStackExchangeRedisCache(options =>

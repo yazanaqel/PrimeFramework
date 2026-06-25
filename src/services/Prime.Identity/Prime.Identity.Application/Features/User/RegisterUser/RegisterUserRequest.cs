@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
 namespace Application.Features.Authentication.RegisterUser;
-public sealed record RegisterUserRequest(string Email,string Password,string ConfirmPassword);
+public sealed record RegisterUserRequest(string Email,string Password,string ConfirmPassword,string PhoneNumber,string Role);
 
 
 

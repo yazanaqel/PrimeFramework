@@ -32,7 +32,8 @@ internal class UserService(
         {
             Id = appUser.Id.Value,
             UserName = appUser.Email.Value,
-            Email = appUser.Email.Value
+            Email = appUser.Email.Value,
+            PhoneNumber = appUser.PhoneNumber.Value,
         };
 
         await strategy.ExecuteAsync(async () =>
@@ -41,7 +42,14 @@ internal class UserService(
 
             await _userManager.CreateAsync(user,appUser.Password);
 
-            await _userManager.AddToRoleAsync(user,nameof(Roles.USER));
+            if(appUser.Role.ToUpper() == nameof(Roles.MERCHANT))
+            {
+                await _userManager.AddToRoleAsync(user,nameof(Roles.MERCHANT));
+            }
+            else
+            {
+                await _userManager.AddToRoleAsync(user,nameof(Roles.USER));
+            }
 
             await _applicationDbContext.SaveChangesAsync(ct);
 

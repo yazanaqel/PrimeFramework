@@ -17,13 +17,15 @@ internal sealed class RegisterUserCommandHandler(IUserService userService,IDomai
     public async Task<Result<bool>> Handle(RegisterUserCommand command,CancellationToken ct)
     {
 
-        if(Email.TryCreate(command.Request.Email,out var email))
+        if(Email.TryCreate(command.Request.Email,out var email) && PhoneNumber.TryCreate(command.Request.PhoneNumber, out var phoneNumber))
         {
             AppUser appUser = new AppUser(
                 UserId.New(),
-                email,
+                email,                
                 command.Request.Email,
-                command.Request.Password);
+                command.Request.Password,
+                command.Request.Role,
+                phoneNumber);
 
             bool result = await _userService.RegisterAsync(appUser: appUser,ct);
 
