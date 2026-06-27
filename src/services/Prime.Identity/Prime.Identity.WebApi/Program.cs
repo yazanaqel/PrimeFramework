@@ -5,6 +5,7 @@ using Infrastructure.DatabaseSeed;
 using Microsoft.EntityFrameworkCore;
 using Prime.Identity.WebApi;
 using Prime.Identity.WebApi.Endpoints.Auth;
+using Prime.Identity.WebApi.Endpoints.Business;
 using Serilog;
 using WebApi.Exceptions;
 
@@ -75,5 +76,6 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.MapAuthEndpoints();
+app.MapCategoryEndpoints();
 
 app.Run();

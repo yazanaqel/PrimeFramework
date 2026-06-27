@@ -10,4 +10,10 @@ internal static class TableNames
     public const string UserTokens = nameof(UserTokens);
     public const string UserLogins = nameof(UserLogins);
     public const string UserRoles = nameof(UserRoles);
+
+    public const string Categories = nameof(Categories);
+    public const string Stores = nameof(Stores);
+    public const string Orders = nameof(Orders);
+    public const string Products = nameof(Products);
+    public const string OrderItems = nameof(OrderItems);
 }

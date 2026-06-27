@@ -8,6 +8,8 @@ using Infrastructure.Notifications.EventDispatcher;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Prime.Identity.Application.Abstractions;
+using Prime.Identity.Infrastructure.Abstractions;
 
 namespace Infrastructure;
 
@@ -33,6 +35,8 @@ public static class InfrastructureRegistration
         services.AddScoped<IDomainEventDispatcher,DomainEventDispatcher>();
 
         services.AddScoped<IUnitOfWork,ApplicationDbContext>();
+
+        services.AddScoped(typeof(IRepository<>),typeof(Repository<>));
 
         return services;
     }

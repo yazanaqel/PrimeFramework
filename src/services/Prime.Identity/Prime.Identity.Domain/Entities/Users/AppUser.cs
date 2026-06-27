@@ -1,9 +1,11 @@
-﻿using Domain.ValueObjects;
+﻿using Domain.Primitives;
+using Domain.ValueObjects;
 using Prime.Identity.Domain.Entities.Users;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Entities.Users;
 
-public class AppUser : Primitives.Entity<UserId>
+public class AppUser : Entity<UserId>
 {
     public Email Email { get; private set; }
     public PhoneNumber PhoneNumber { get; private set; }
@@ -12,6 +14,7 @@ public class AppUser : Primitives.Entity<UserId>
     public string Role { get; private set; }
     public string AccessToken { get; private set; } = string.Empty;
     public string RefreshToken { get; private set; } = string.Empty;
+
     private AppUser() { }
     public AppUser(UserId userId,Email email,string userName,string password,string role,PhoneNumber phoneNumber)
     {
