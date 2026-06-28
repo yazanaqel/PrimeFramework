@@ -1,5 +1,6 @@
 ﻿using Domain.Entities.User;
 using Microsoft.EntityFrameworkCore;
+using Prime.Identity.Queries.Domain.Entities.Business;
 
 namespace Infrastructure;
 
@@ -11,6 +12,8 @@ public class ReadOnlyDbContext : DbContext
     }
 
     public DbSet<AppUser> Users { get; set; }
+    public DbSet<Category> Categories { get; set; }
+    public DbSet<Store> Stores { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -19,6 +22,16 @@ public class ReadOnlyDbContext : DbContext
         builder.Entity<AppUser>(entity =>
         {
             entity.ToTable("Users","Identity");
+        });
+
+        builder.Entity<Category>(entity =>
+        {
+            entity.ToTable("Categories","Business");
+        });
+
+        builder.Entity<Store>(entity =>
+        {
+            entity.ToTable("Stores","Business");
         });
     }
 

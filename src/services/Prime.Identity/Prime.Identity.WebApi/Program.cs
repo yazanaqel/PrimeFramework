@@ -13,7 +13,6 @@ using WebApi.Exceptions;
 var builder = WebApplication.CreateBuilder(args);
 
 
-builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddApplication();
 
@@ -30,6 +29,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
 builder.Services.AddProblemDetails();
+
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddScoped<ICurrentUserService,CurrentUserService>();
 

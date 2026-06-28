@@ -3,9 +3,11 @@ using Application.Features.User.GetUserById;
 using Domain.Abstractions;
 using Domain.Entities.User;
 using Infrastructure;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Prime.Identity.Queries.Application.Features.User.Service;
 using System.ComponentModel.DataAnnotations;
+using System.Data;
 
 namespace WebApi.Controllers;
 
@@ -54,6 +56,8 @@ public class HomeController(ReadOnlyDbContext applicationDbContext,IUserService 
 
         return BadRequest(new { valid = false,message = "Invalid GUID format." });
     }
+
+
     [HttpGet("GetAllUsers")]
     public async Task<IActionResult> GetAllUsers([FromQuery] GetAllUsersRequest request, CancellationToken ct)
     {

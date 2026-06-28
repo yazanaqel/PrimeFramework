@@ -1,6 +1,8 @@
 using Application;
 using Infrastructure;
+using Prime.Identity.Queries.Application.Abstractions.Auth;
 using Prime.Identity.Queries.Application.Abstractions.Filters;
+using Prime.Identity.Queries.WebApi.Configuration.Jwt;
 using Prime.Identity.Queries.WebApi.Middlewares;
 using Prime.Identity.Queries.WebApi.Middlewares.Exceptions;
 using Serilog;
@@ -9,9 +11,15 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
+builder.Services.AddLocalIdentity();
+
 builder.Services.AddApplication();
 
 builder.Services.AddInfrastructure(builder.Configuration);
+
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddScoped<ICurrentUserService,CurrentUserService>();
 
 builder.Services.AddControllers(options =>
 {
@@ -51,6 +59,8 @@ app.UseSerilogRequestLogging(options =>
 {
     options.IncludeQueryInRequestPath = true;
 });
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

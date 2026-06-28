@@ -1,0 +1,18 @@
+﻿using Prime.Identity.Queries.Domain.Entities.Enums;
+
+namespace Prime.Identity.Queries.Application.Features.Store.GetAllStores;
+
+public record GetAllStoresResponse(
+    Guid Id,
+    Guid UserId,
+    Guid CategoryId,
+    string Name,
+    string ImageCover,
+    string Image,
+    string Description,
+    string Address,
+    bool IsShippingAvailable,
+    City City,
+    StoreStatus StoreStatus,
+    DateTime CreatedAt,
+    DateTime? ModifiedAt);
