@@ -2,6 +2,7 @@
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+using Prime.Identity.Application.Behaviors;
 
 namespace Application;
 public static class ApplicationRegistration
@@ -18,6 +19,7 @@ public static class ApplicationRegistration
         services.AddTransient(typeof(IPipelineBehavior<,>),typeof(ValidationBehavior<,>));
         services.AddTransient(typeof(IPipelineBehavior<,>),typeof(LoggingBehavior<,>));
         services.AddTransient(typeof(IPipelineBehavior<,>),typeof(UnitOfWorkBehavior<,>));
+        //services.AddTransient(typeof(IPipelineBehavior<,>),typeof(CurrentUserBehavior<,>));
 
         return services;
     }

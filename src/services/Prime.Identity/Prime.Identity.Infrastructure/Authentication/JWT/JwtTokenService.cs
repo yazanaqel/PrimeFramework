@@ -37,8 +37,10 @@ public class JwtTokenService(
 
         var claims = new List<Claim>
         {
-            new(JwtRegisteredClaimNames.Sub, accessInfo.User.Id.ToString()),
-            new(JwtRegisteredClaimNames.Email, accessInfo.User.Email),
+            new Claim(ClaimTypes.NameIdentifier, accessInfo.User.Id.ToString()),
+            new Claim(JwtRegisteredClaimNames.Sub, accessInfo.User.Id.ToString()),
+            new Claim(JwtRegisteredClaimNames.Email, accessInfo.User.Email!),
+
         };
 
         foreach(var role in accessInfo.Roles)

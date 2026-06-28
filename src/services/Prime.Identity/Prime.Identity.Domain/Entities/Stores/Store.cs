@@ -1,11 +1,9 @@
-﻿using Domain.Entities.Users;
-using Domain.Primitives;
+﻿using Domain.Primitives;
 using Prime.Identity.Domain.Entities.Categories;
 using Prime.Identity.Domain.Entities.Enums;
 using Prime.Identity.Domain.Entities.Orders;
 using Prime.Identity.Domain.Entities.Products;
 using Prime.Identity.Domain.Entities.Users;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Prime.Identity.Domain.Entities.Stores;
 
@@ -36,4 +34,32 @@ public class Store : Entity<StoreId>, IAuditableEntity
     //public AppUser AppUser { get; private set; }
     public UserId UserId { get; private set; }
 
+
+    public static Store Create(
+        UserId userId,
+        CategoryId categoryId,
+    string name,
+    string description,
+    string imageCover,
+    string image,
+    string address,
+    bool isShippingAvailable,
+    City city)
+    {
+
+        return new Store
+        {
+            Id = StoreId.New(),
+            UserId = userId,
+            CategoryId = categoryId,
+            Name = name,
+            Description = description,
+            ImageCover = imageCover,
+            Image = image,
+            Address = address,
+            IsShippingAvailable = isShippingAvailable,
+            City = city,
+            StoreStatus = StoreStatus.Suspended
+        };
+    }
 }

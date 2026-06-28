@@ -7,7 +7,7 @@ public static class CategoryEndpoints
 {
     public static void MapCategoryEndpoints(this WebApplication app)
     {
-        app.MapPost("/Category/Create",async (CreateCategoryRequest request,IMediator mediator,CancellationToken ct) =>
+        app.MapPost("/Category/CreateCategory",async (CreateCategoryRequest request,IMediator mediator,CancellationToken ct) =>
         {
             var response = await mediator.Send(new CreateCategoryCommand(request,ct));
 

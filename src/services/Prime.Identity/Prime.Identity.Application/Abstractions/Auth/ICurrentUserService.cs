@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿namespace Prime.Identity.Application.Abstractions.Auth;
 
-namespace Prime.Identity.Application.Abstractions.Auth;
-
-internal interface ICurrentUserService
+public interface ICurrentUserService
 {
+    string? UserId { get; }
+    bool IsAuthenticated { get; }
 }

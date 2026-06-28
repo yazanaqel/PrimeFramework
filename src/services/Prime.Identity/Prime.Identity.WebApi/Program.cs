@@ -1,8 +1,9 @@
 using Application;
-using Hangfire;
 using Infrastructure;
 using Infrastructure.DatabaseSeed;
 using Microsoft.EntityFrameworkCore;
+using Prime.Identity.Application.Abstractions.Auth;
+using Prime.Identity.Infrastructure.Services;
 using Prime.Identity.WebApi;
 using Prime.Identity.WebApi.Endpoints.Auth;
 using Prime.Identity.WebApi.Endpoints.Business;
@@ -11,6 +12,8 @@ using WebApi.Exceptions;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddApplication();
 
@@ -27,6 +30,9 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
 builder.Services.AddProblemDetails();
+
+builder.Services.AddScoped<ICurrentUserService,CurrentUserService>();
+
 
 builder.Host.UseSerilog((context,config) =>
 {
