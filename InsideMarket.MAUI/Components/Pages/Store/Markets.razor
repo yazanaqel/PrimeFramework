@@ -1,14 +1,22 @@
 ﻿@page "/markets"
+@using InsideMarket.MAUI.Components.Pages.Store
 @inject IStoreService StoreService
+@inject NavigationManager Nav
 
-<h3>Welcome</h3>
+
+
+
 
 @if(stores is not null && stores.Count > 0)
 {
-    foreach(var store in stores)
+    @foreach(var store in stores)
     {
-        <p>@store.Name</p>
+        <a href="/markets/@store.Id">
+            <p>@store.Name</p>
+        </a>
     }
+
+
 }
 else
 {
@@ -27,5 +35,10 @@ else
             stores = response.ToList();
         }
             
+    }
+
+    private void NavigateToMarket(Guid id)
+    {
+        Nav.NavigateTo($"/markets/{id}");
     }
 }

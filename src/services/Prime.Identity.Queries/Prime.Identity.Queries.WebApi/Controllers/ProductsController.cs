@@ -18,4 +18,13 @@ public class ProductsController(IProductService productService) : ControllerBase
 
         return response.IsSuccess ? Ok(response.Value) : NotFound(response.Error);
     }
+
+    [AllowAnonymous]
+    [HttpGet("GetStoreProductsById/{storeId:guid}")]
+    public async Task<IActionResult> GetStoreProductsById(Guid storeId,CancellationToken ct)
+    {
+        var response = await _productService.GetStoreProductsById(storeId,ct);
+
+        return response.IsSuccess ? Ok(response.Value) : NotFound(response.Error);
+    }
 }

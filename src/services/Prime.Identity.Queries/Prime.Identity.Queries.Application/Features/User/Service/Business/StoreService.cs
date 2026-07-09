@@ -68,4 +68,35 @@ public class StoreService(IReadRepository<Domain.Entities.Business.Store> storeR
         return Result.Success(response);
     }
 
+    public async Task<Result<GetOwnerStoreResponse>> GetStoreById(Guid storeId,CancellationToken ct = default)
+    {
+
+        var storeIdParsed = Guid.TryParse(storeId.ToString(), out var parsedStoreId)
+? parsedStoreId : throw new InvalidOperationException("Invalid Store ID");
+        
+        var spec = new GetStoreByIdSpecification(storeIdParsed);
+
+        var store = await _storeRepository.FirstOrDefaultAsync(spec,ct);
+
+        if(store is null)
+            return Result.Failure<GetOwnerStoreResponse>("Store not found for the current user.");
+
+        var response = new GetOwnerStoreResponse(
+            store.Id,
+            store.UserId,
+            store.CategoryId,
+            store.Name,
+            store.ImageCover,
+            store.Image,
+            store.Description,
+            store.Address,
+            store.IsShippingAvailable,
+            store.City,
+            store.StoreStatus,
+            store.CreatedAt,
+            store.ModifiedAt
+        );
+
+        return Result.Success(response);
+    }
 }

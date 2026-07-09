@@ -38,9 +38,13 @@ public class ProductService(IHttpClientFactory httpClientFactory) : IProductServ
         }
     }
 
-    public async Task<List<Product>> GetStoreProducts()
+    public async Task<List<Product>> GetStoreProducts(Guid? storeId)
     {
-        var response = await _httpRead.GetAsync(ProductRouteGate.GetStoreProducts);
+        var url = storeId is null
+            ? $"{ProductRouteGate.GetStoreProducts}"
+            : $"{ProductRouteGate.GetStoreProductsById}/{storeId}";
+
+        var response = await _httpRead.GetAsync(url);
 
         if(response.IsSuccessStatusCode)
         {

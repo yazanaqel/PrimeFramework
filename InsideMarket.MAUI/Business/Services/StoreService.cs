@@ -39,9 +39,15 @@ public class StoreService(IHttpClientFactory httpClientFactory) : IStoreService
         }
     }
 
-    public async Task<Store> GetOwnerStore()
+    public async Task<Store> GetStore(Guid? storeId)
     {
-        var response = await _httpRead.GetAsync(StoreRouteGate.GetOwnerStore);
+
+        var url = storeId is null
+    ? $"{StoreRouteGate.GetOwnerStore}"
+    : $"{StoreRouteGate.GetStoreById}/{storeId}";
+
+
+        var response = await _httpRead.GetAsync(url);
 
         if(response.IsSuccessStatusCode)
         {

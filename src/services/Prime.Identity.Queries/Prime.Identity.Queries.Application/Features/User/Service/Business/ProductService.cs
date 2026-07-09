@@ -36,5 +36,28 @@ public class ProductService(IReadRepository<Domain.Entities.Business.Product> pr
 
         return Result.Success(response);
     }
+    public async Task<Result<List<GetStoreProductsResponse>>> GetStoreProductsById(Guid storeId, CancellationToken ct = default)
+    {
+        var spec = new GetStoreProductsByStoreIdSpecification(storeId);
+
+        var products = await _productRepository.ListAsync(spec,ct);
+
+        if(products is null || !products.Any())
+            return Result.Failure<List<GetStoreProductsResponse>>("No products found for the current user.");
+
+        var response = products.Select(product => new GetStoreProductsResponse(
+            product.Id,
+            product.StoreId,
+            product.CategoryId,
+            product.Name,
+            product.Image,
+            product.Description,
+            product.CreatedAt,
+            product.ModifiedAt
+        )).ToList();
+
+        return Result.Success(response);
+    }
+
 
 }

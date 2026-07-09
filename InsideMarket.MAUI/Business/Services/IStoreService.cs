@@ -5,7 +5,7 @@ namespace InsideMarket.MAUI.Business.Services;
 
 public interface IStoreService
 {
-    Task<Store> GetOwnerStore();
+    Task<Store> GetStore(Guid? storeId = null);
     Task<IEnumerable<Store>> GetAllStores(GetAllStoresRequest getAllStoresRequest);
     Task<bool> CreateStore(Store store);
 

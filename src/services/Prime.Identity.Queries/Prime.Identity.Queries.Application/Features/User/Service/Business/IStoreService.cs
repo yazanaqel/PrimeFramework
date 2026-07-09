@@ -9,4 +9,5 @@ public interface IStoreService
 {
     Task<Result<IEnumerable<GetAllStoresResponse>>> GetAllStores(GetAllStoresRequest request,CancellationToken ct = default);
     Task<Result<GetOwnerStoreResponse>> GetOwnerStoreAsync(CancellationToken ct = default);
+    Task<Result<GetOwnerStoreResponse>> GetStoreById(Guid storeId, CancellationToken ct = default);
 }

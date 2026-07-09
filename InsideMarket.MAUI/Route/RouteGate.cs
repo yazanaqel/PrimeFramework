@@ -24,6 +24,7 @@ public class RouteGate
     {
         private const string ControllerName = "api/Stores/";
         public const string GetOwnerStore = $"{ControllerName}GetOwnerStore";
+        public const string GetStoreById = $"{ControllerName}GetStoreById";
         public const string GetAllStores = $"{ControllerName}GetAllStores";
         public const string CreateStore = $"{ControllerName}CreateStore";
 
@@ -33,6 +34,7 @@ public class RouteGate
         private const string ControllerName = "api/Products/";
         public const string GetProductById = $"{ControllerName}GetProductById";
         public const string GetStoreProducts = $"{ControllerName}GetStoreProducts";
+        public const string GetStoreProductsById = $"{ControllerName}GetStoreProductsById";
         public const string CreateProduct = $"{ControllerName}CreateProduct";
 
     }

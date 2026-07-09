@@ -1,12 +1,8 @@
-﻿@page "/store/get"
-@attribute [Authorize(Roles = "MERCHANT")]
+﻿@page "/markets/{id:guid}"
 @inject IStoreService StoreService
-@inject ICategoryService CategoryService
 @inject IProductService ProductService
-@inject NavigationManager Nav
 
-<h3>MERCHANT Page</h3>
-
+<h3>MarketDetails</h3>
 @if(store is not null)
 {
     <p>@store.Name</p>
@@ -28,29 +24,18 @@ else
     <MudProgressCircular Color="Color.Primary" Size="Size.Small" Indeterminate="true" />
 }
 
-<MudText Class="mt-4 text-center">
-    <MudLink Href="/product/create">Add New Product</MudLink>
-</MudText>
-
 @code {
+
+    [Parameter] public Guid Id { get; set; }
 
     private InsideMarket.MAUI.Business.Models.Store? store = new();
     private List<InsideMarket.MAUI.Business.Models.Product>? products = new();
 
     protected override async Task OnInitializedAsync()
     {
-        store = await StoreService.GetStore();
+        store = await StoreService.GetStore(Id);
 
-        if(store is null)
-        {
-            Nav.NavigateTo("/store/create",true);
-        }
-        else
-        {
-            products = await ProductService.GetStoreProducts();
-        }
+        products = await ProductService.GetStoreProducts(Id);
             
     }
 }
-
-

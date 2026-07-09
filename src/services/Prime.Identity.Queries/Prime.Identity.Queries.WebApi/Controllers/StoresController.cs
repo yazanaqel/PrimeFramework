@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Azure.Core;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Prime.Identity.Queries.Application.Features.Store.GetAllStores;
 using Prime.Identity.Queries.Application.Features.User.Service.Business;
@@ -29,4 +30,14 @@ public class StoresController(IStoreService storeService) : ControllerBase
 
         return response.IsSuccess ? Ok(response.Value) : NotFound(response.Error);
     }
+
+    [AllowAnonymous]
+    [HttpGet("GetStoreById/{storeId:guid}")]
+    public async Task<IActionResult> GetStoreById(Guid storeId,CancellationToken ct)
+    {
+        var response = await _storeService.GetStoreById(storeId, ct);
+
+        return response.IsSuccess ? Ok(response.Value) : NotFound(response.Error);
+    }
+
 }
