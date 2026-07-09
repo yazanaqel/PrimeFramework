@@ -1,3 +1,3 @@
 ﻿namespace Prime.Identity.Queries.Application.Features.Store.GetAllStores;
 
-public record GetAllStoresRequest();
+public record GetAllStoresRequest(string? Search);
