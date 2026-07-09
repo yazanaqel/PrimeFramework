@@ -18,7 +18,7 @@
 
     // Inject your HttpClients
     [Inject] public IHttpClientFactory ClientFactory { get; set; }
-    private HttpClient AuthHttp => ClientFactory.CreateClient("ApiClient");
+    private HttpClient AuthHttp => ClientFactory.CreateClient("Write");
     public DateTime AccessTokenExpiry { get; set; }
 
     protected override async Task OnInitializedAsync()

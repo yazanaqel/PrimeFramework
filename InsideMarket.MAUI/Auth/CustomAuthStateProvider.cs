@@ -46,9 +46,15 @@ public class CustomAuthStateProvider : AuthenticationStateProvider
     private ClaimsIdentity CreateIdentityFromJwt(string jwt)
     {
         var handler = new JwtSecurityTokenHandler();
+
         var token = handler.ReadJwtToken(jwt);
 
+        var role = token.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+
+        _tokenStore.SaveRoleAsync(role);
+
         var claims = token.Claims;
+
         return new ClaimsIdentity(claims,"jwt");
     }
 }

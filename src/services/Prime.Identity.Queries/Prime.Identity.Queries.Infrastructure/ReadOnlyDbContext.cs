@@ -14,6 +14,7 @@ public class ReadOnlyDbContext : DbContext
     public DbSet<AppUser> Users { get; set; }
     public DbSet<Category> Categories { get; set; }
     public DbSet<Store> Stores { get; set; }
+    public DbSet<Product> Products { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -32,6 +33,11 @@ public class ReadOnlyDbContext : DbContext
         builder.Entity<Store>(entity =>
         {
             entity.ToTable("Stores","Business");
+        });
+
+        builder.Entity<Product>(entity =>
+        {
+            entity.ToTable("Products","Business");
         });
     }
 

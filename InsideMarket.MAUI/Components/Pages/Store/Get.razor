@@ -1,0 +1,56 @@
+﻿@page "/store/get"
+@attribute [Authorize(Roles = "MERCHANT")]
+@inject IStoreService StoreService
+@inject ICategoryService CategoryService
+@inject IProductService ProductService
+@inject NavigationManager Nav
+
+<h3>MERCHANT Page</h3>
+
+@if(store is not null)
+{
+    <p>@store.Name</p>
+
+    @if(products is not null && products.Count > 0)
+    {
+        foreach(var product in products)
+        {
+            <p>@product.Name</p>
+        }
+    }
+    else
+    {
+        <MudProgressCircular Color="Color.Primary" Size="Size.Small" Indeterminate="true" />
+    }
+}
+else
+{
+    <MudProgressCircular Color="Color.Primary" Size="Size.Small" Indeterminate="true" />
+}
+
+<MudText Class="mt-4 text-center">
+    <MudLink Href="/product/create">Add New Product</MudLink>
+</MudText>
+
+@code {
+
+    private InsideMarket.MAUI.Business.Models.Store? store = new();
+    private List<InsideMarket.MAUI.Business.Models.Product>? products = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        store = await StoreService.GetOwnerStore();
+
+        if(store is null)
+        {
+            Nav.NavigateTo("/store/create",true);
+        }
+        else
+        {
+            products = await ProductService.GetStoreProducts();
+        }
+            
+    }
+}
+
+

@@ -9,13 +9,10 @@ public class TokenMessageHandler : DelegatingHandler
     private readonly ITokenStore _tokenStore;
     private readonly IServiceProvider _serviceProvider;
 
-    //private readonly HttpClient _http;
-
     public TokenMessageHandler(ITokenStore tokenStore,IServiceProvider serviceProvider)
     {
         _tokenStore = tokenStore;
         _serviceProvider = serviceProvider;
-        //_http = httpClientFactory.CreateClient("ApiClient");
     }
 
     protected override async Task<HttpResponseMessage> SendAsync(
@@ -60,7 +57,7 @@ public class TokenMessageHandler : DelegatingHandler
         };
 
         var factory = _serviceProvider.GetRequiredService<IHttpClientFactory>();
-        var http = factory.CreateClient("ApiClient");
+        var http = factory.CreateClient("Write");
 
         var response = await http.PostAsJsonAsync("Users/Refresh",refreshRequest);
 

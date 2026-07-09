@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components.Authorization;
 using System.Net.Http.Json;
+using static InsideMarket.MAUI.Route.RouteGate;
 
 namespace InsideMarket.MAUI.Auth;
 
@@ -15,7 +16,7 @@ public class AuthService : IAuthService
         ITokenStore tokenStore,
         AuthenticationStateProvider authStateProvider)
     {
-        _http = httpClientFactory.CreateClient("ApiClient");
+        _http = httpClientFactory.CreateClient("Write");
         _tokenStore = tokenStore;
         _authStateProvider = (CustomAuthStateProvider)authStateProvider;
     }
@@ -23,7 +24,7 @@ public class AuthService : IAuthService
     public async Task<bool> LoginAsync(LoginRequest loginRequest)
     {
 
-        var response = await _http.PostAsJsonAsync("Users/Login",loginRequest);
+        var response = await _http.PostAsJsonAsync(UsersRouteGate.Login,loginRequest);
 
         if(!response.IsSuccessStatusCode)
             return false;
@@ -47,7 +48,7 @@ public class AuthService : IAuthService
             registerRequest.Role = "Merchant";
         }
 
-        var response = await _http.PostAsJsonAsync("Users/Register",registerRequest);
+        var response = await _http.PostAsJsonAsync(UsersRouteGate.Register,registerRequest);
 
         if(!response.IsSuccessStatusCode)
             return false;
@@ -64,7 +65,7 @@ public class AuthService : IAuthService
         if(!string.IsNullOrWhiteSpace(userId))
         {
             // 2. Call your API logout endpoint
-            await _http.PostAsync($"Users/Logout/{userId}",null);
+            await _http.PostAsync($"{UsersRouteGate.Logout}/{userId}",null);
         }
 
         // 3. Clear tokens from SecureStorage

@@ -12,7 +12,7 @@ internal sealed class CreateCategoryCommandHandler(IRepository<Domain.Entities.C
     {
         var category = Domain.Entities.Categories.Category.Create(command.Request.Name,command.Request.Description,command.Request.ParentCategoryId);
 
-        var result = await _repository.AddAsync(category,ct);
+        await _repository.AddAsync(category,ct);
 
         return Result.Success(true);
     }

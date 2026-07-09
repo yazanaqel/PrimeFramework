@@ -6,13 +6,14 @@ public class PreferencesTokenStore : ITokenStore
     private const string RefreshTokenKey = "refresh_token";
     private const string AccessTokenExpiresAt = "access_token_expires_at";
     private const string RefreshTokenExpiresAt = "refresh_token_expires_at";
+    private const string RoleKey = "role";
 
     public Task SaveTokensAsync(TokenResponse tokenResponse)
     {
-        Preferences.Set(AccessTokenKey, tokenResponse.AccessToken);
-        Preferences.Set(RefreshTokenKey, tokenResponse.RefreshToken);
-        Preferences.Set(AccessTokenExpiresAt, tokenResponse.AccessTokenExpiresAt.ToString("O"));
-        Preferences.Set(RefreshTokenExpiresAt, tokenResponse.RefreshTokenExpiresAt.ToString("O"));
+        Preferences.Set(AccessTokenKey,tokenResponse.AccessToken);
+        Preferences.Set(RefreshTokenKey,tokenResponse.RefreshToken);
+        Preferences.Set(AccessTokenExpiresAt,tokenResponse.AccessTokenExpiresAt.ToString("O"));
+        Preferences.Set(RefreshTokenExpiresAt,tokenResponse.RefreshTokenExpiresAt.ToString("O"));
         return Task.CompletedTask;
     }
 
@@ -46,6 +47,13 @@ public class PreferencesTokenStore : ITokenStore
         Preferences.Remove(RefreshTokenKey);
         Preferences.Remove(AccessTokenExpiresAt);
         Preferences.Remove(RefreshTokenExpiresAt);
+        return Task.CompletedTask;
+    }
+
+    public Task SaveRoleAsync(string role)
+    {
+        Preferences.Set(RoleKey,role);
+
         return Task.CompletedTask;
     }
 }

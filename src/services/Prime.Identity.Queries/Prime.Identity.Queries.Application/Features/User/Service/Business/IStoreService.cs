@@ -7,6 +7,6 @@ namespace Prime.Identity.Queries.Application.Features.User.Service.Business;
 
 public interface IStoreService
 {
-    Task<Result<CursorPageResponse<GetAllStoresResponse>>> GetAllStoresAsync(GetAllStoresRequest request,CancellationToken ct = default);
+    Task<Result<IEnumerable<GetAllStoresResponse>>> GetAllStores(GetAllStoresRequest request,CancellationToken ct = default);
     Task<Result<GetOwnerStoreResponse>> GetOwnerStoreAsync(CancellationToken ct = default);
 }

@@ -1,11 +1,27 @@
 ﻿@page "/"
+@attribute [Authorize]
+@inject AuthenticationStateProvider AuthProvider
+@inject NavigationManager Nav
 
+<MudProgressCircular Color="Color.Primary" Size="Size.Small" Indeterminate="true" />
 
-<MudText Typo="Typo.h5" Class="mt-4 ml-2">Welcome to Inside‑Market</MudText>
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
 
-<MudCard Class="ma-3">
-    <MudCardContent>
-        <MudText Typo="Typo.body1">Browse nearby markets and shops</MudText>
-    </MudCardContent>
-</MudCard>
+        if(user.Identity?.IsAuthenticated == true)
+        {
+            if(user.IsInRole("MERCHANT"))
+                Nav.NavigateTo("/store/get",true);
 
+            else if(user.IsInRole("USER"))
+                Nav.NavigateTo("/user/get",true);
+        }
+        else
+        {
+            Nav.NavigateTo("/login",true);
+        }
+    }
+}

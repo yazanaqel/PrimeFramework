@@ -1,0 +1,121 @@
+﻿@page "/store/create"
+@attribute [Authorize(Roles ="MERCHANT")]
+@inject ICategoryService CategoryService
+@inject IStoreService StoreService
+@inject NavigationManager Nav
+
+
+
+<MudPaper Class="pa-6 mx-auto mt-10" Elevation="8" MaxWidth="400px">
+
+    <MudText Typo="Typo.h5" Class="mb-4">Create Store</MudText>
+
+    @if(!string.IsNullOrEmpty(ErrorMessage))
+    {
+        <MudAlert Severity="Severity.Error" Dense="true" Class="mb-3">
+            @ErrorMessage
+        </MudAlert>
+    }
+
+    <EditForm Model="@_store" OnValidSubmit="@CreateStore">
+        <DataAnnotationsValidator />
+
+        <MudTextField @bind-Value="_store.Name"
+                      Label="Store Name"
+                      Variant="Variant.Outlined"
+                      Required="true"
+                      For="@(() => _store.Name)" />
+
+        <MudTextField @bind-Value="_store.Description"
+                      Label="Store Description"
+                      Variant="Variant.Outlined"
+                      Required="true"
+                      For="@(() => _store.Description)" />
+
+        <MudTextField @bind-Value="_store.Address"
+                      Label="Store Address"
+                      Variant="Variant.Outlined"
+                      Required="true"
+                      For="@(() => _store.Address)" />
+
+        <MudSwitch @bind-Value="_store.IsShippingAvailable"
+                   Color="Color.Primary"
+                   Label="Shipping Available?" />
+
+
+@*         @if(categories is not null && categories.Count > 0)
+        {
+            <MudSelect T="Guid"
+                       Label="Category"
+                       @bind-Value="_store.CategoryId"
+                       Dense="true"
+                       Clearable="true">
+
+                @foreach(var cat in categories)
+                {
+                    <MudSelectItem Value="@cat.Id">@cat.Name</MudSelectItem>
+                }
+            </MudSelect>
+        }
+        else
+        {
+            <MudProgressCircular Color="Color.Primary"
+                                 Size="Size.Small"
+                                 Indeterminate="true" />
+        } *@
+
+
+
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   Class="mt-4"
+                   FullWidth="true"
+                   Disabled="@_isBusy"
+                   OnClick="CreateStore">
+
+            @if(_isBusy)
+            {
+                <MudProgressCircular Color="Color.Primary" Size="Size.Small" Indeterminate="true" />
+            }
+            else
+            {
+                <MudText>Create</MudText>
+            }
+        </MudButton>
+
+    </EditForm>
+
+</MudPaper>
+
+
+
+
+@code {
+
+    private InsideMarket.MAUI.Business.Models.Category? SelectedCategory { get; set; }
+    private InsideMarket.MAUI.Business.Models.Store _store = new();
+    private bool _isBusy = false;
+    private string? ErrorMessage;
+
+    private async Task CreateStore()
+    {
+        ErrorMessage = null;
+        _isBusy = true;
+
+        var success = await StoreService.CreateStore(_store);
+
+        _isBusy = false;
+
+    }
+
+    private List<InsideMarket.MAUI.Business.Models.Category>? categories = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        categories = await CategoryService.GetAllCategories();
+
+    }
+
+
+}

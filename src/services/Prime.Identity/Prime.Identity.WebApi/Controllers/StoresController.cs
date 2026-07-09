@@ -1,12 +1,8 @@
-﻿using Infrastructure.Authentication.Enums;
+﻿using WebApi.Constants;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Prime.Identity.Application.Abstractions.Auth;
 using Prime.Identity.Application.Features.Store.Create;
-using Prime.Identity.Domain.Entities.Users;
-using System.Security.Claims;
 
 namespace Prime.Identity.WebApi.Controllers;
 

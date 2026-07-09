@@ -1,0 +1,83 @@
+﻿@page "/product/create"
+@attribute [Authorize(Roles = "MERCHANT")]
+@inject ICategoryService CategoryService
+@inject IProductService ProductService
+@inject IStoreService StoreService
+@inject NavigationManager Nav
+
+<MudPaper Class="pa-6 mx-auto mt-10" Elevation="8" MaxWidth="400px">
+
+    <MudText Typo="Typo.h5" Class="mb-4">Create Product</MudText>
+    @if(!string.IsNullOrEmpty(ErrorMessage))
+    {
+        <MudAlert Severity="Severity.Error" Dense="true" Class="mb-3">
+            @ErrorMessage
+        </MudAlert>
+    }
+
+    <EditForm Model="@_product" OnValidSubmit="@CreateProduct">
+        <DataAnnotationsValidator />
+
+        <MudTextField @bind-Value="_product.Name"
+                      Label="Product Name"
+                      Variant="Variant.Outlined"
+                      Required="true"
+                      For="@(() => _product.Name)" />
+
+        <MudTextField @bind-Value="_product.Description"
+                      Label="Product Description"
+                      Variant="Variant.Outlined"
+                      Required="true"
+                      For="@(() => _product.Description)" />
+
+        <MudNumericField @bind-Value="_product.StockQuantity"
+                         Label="Stock Quantity"
+                         Variant="Variant.Outlined"
+                         Required="true"
+                         For="@(() => _product.StockQuantity)" />
+                  
+        <MudNumericField @bind-Value="_product.UnitPrice"
+                         Label="Product Unit Price"
+                         Variant="Variant.Outlined"
+                         Required="true"
+                         For="@(() => _product.UnitPrice)" />
+
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   Class="mt-4"
+                   FullWidth="true"
+                   Disabled="@_isBusy"
+                   OnClick="CreateProduct">
+
+            @if(_isBusy)
+            {
+                <MudProgressCircular Color="Color.Primary" Size="Size.Small" Indeterminate="true" />
+            }
+            else
+            {
+                <MudText>Create</MudText>
+            }
+        </MudButton>
+
+    </EditForm>
+
+</MudPaper>
+
+
+
+@code {
+    private MAUI.Business.Models.Product _product = new();
+    private bool _isBusy = false;
+    private string? ErrorMessage;
+
+    private async Task CreateProduct()
+    {
+        ErrorMessage = null;
+        _isBusy = true;
+
+        var success = await ProductService.CreateProduct(_product);
+
+        _isBusy = false;
+
+    }
+}

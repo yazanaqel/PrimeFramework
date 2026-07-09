@@ -14,6 +14,7 @@ public static class ApplicationRegistration
         services.AddScoped<IUserService,UserService>();
         services.AddScoped<ICategoryService,CategoryService>();
         services.AddScoped<IStoreService,StoreService>();
+        services.AddScoped<IProductService,ProductService>();
 
 
         return services;

@@ -1,6 +1,8 @@
 ﻿using Domain.Primitives;
 using Prime.Identity.Domain.Entities.Categories;
+using Prime.Identity.Domain.Entities.Enums;
 using Prime.Identity.Domain.Entities.Stores;
+using Prime.Identity.Domain.Entities.Users;
 
 namespace Prime.Identity.Domain.Entities.Products;
 
@@ -21,4 +23,29 @@ public class Product : Entity<ProductId>, IAuditableEntity
     public CategoryId CategoryId { get; private set; }
     public Category Category { get; private set; }
 
+
+
+    public static Product Create(
+    StoreId storeId,
+    CategoryId categoryId,
+string name,
+string description,
+string image,
+int stockQuantity,
+decimal unitPrice)
+    {
+
+        return new Product
+        {
+            Id = ProductId.New(),
+            StoreId = storeId,
+            CategoryId = categoryId,
+            Name = name,
+            Description = description,
+            Image = image,
+            StockQuantity = stockQuantity,
+            UnitPrice = unitPrice
+        };
+    }
 }
+     

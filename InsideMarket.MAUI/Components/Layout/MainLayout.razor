@@ -19,7 +19,7 @@
     <MudDrawer @bind-Open="_drawerOpen" Elevation="4" ClipMode="DrawerClipMode.Always">
         <MudNavMenu>
             <MudNavLink Href="/" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
-            <MudNavLink Href="/counter" Icon="@Icons.Material.Filled.Store">Markets</MudNavLink>
+            <MudNavLink Href="/markets" Icon="@Icons.Material.Filled.Store">Markets</MudNavLink>
             <MudNavLink Href="/weather" Icon="@Icons.Material.Filled.Person">Profile</MudNavLink>
             <MudNavLink Icon="@Icons.Material.Filled.Logout" OnClick="ConfirmLogout">Logout</MudNavLink>
         </MudNavMenu>
@@ -42,7 +42,7 @@
         <MudIconButton Icon="@Icons.Material.Filled.Store"
                        Color="Color.Primary"
                        Size="Size.Large"
-                       Href="/counter" />
+                       Href="/markets" />
 
         <MudIconButton Icon="@Icons.Material.Filled.Person"
                        Color="Color.Primary"

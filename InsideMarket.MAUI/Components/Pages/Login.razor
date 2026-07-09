@@ -2,6 +2,8 @@
 @layout LoginLayout
 @inject IAuthService AuthService
 @inject NavigationManager Nav
+@inject AuthenticationStateProvider AuthProvider
+
 
 <MudPaper Class="pa-6 mx-auto mt-10" Elevation="8" MaxWidth="400px">
 
@@ -73,7 +75,22 @@
 
         if(success)
         {
-            Nav.NavigateTo("/",true);
+            var authState = await AuthProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+
+            switch (user)
+            {
+                case var _ when user.IsInRole("MERCHANT"):
+                    Nav.NavigateTo("/store/get", true);
+                    break;
+                case var _ when user.IsInRole("USER"):
+                    Nav.NavigateTo("/user/get", true);
+                    break;
+                // default:
+                //     Nav.NavigateTo("/", true);
+                //     break;
+            }
+
         }
         else
         {

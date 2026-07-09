@@ -28,7 +28,7 @@ internal sealed class CreateStoreCommandHandler(IRepository<Domain.Entities.Stor
             command.Request.IsShippingAvailable,
             command.Request.City);
 
-        var result = await _repository.AddAsync(store,ct);
+        await _repository.AddAsync(store,ct);
 
         return Result.Success(true);
     }

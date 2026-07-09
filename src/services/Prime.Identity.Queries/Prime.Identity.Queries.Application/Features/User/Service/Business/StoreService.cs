@@ -1,10 +1,6 @@
-﻿using Application.Features.User.GetUserById;
-using Application.Pagination;
-using CSharpFunctionalExtensions;
+﻿using CSharpFunctionalExtensions;
 using Domain.Abstractions;
-using Domain.Specifications.User;
 using Prime.Identity.Queries.Application.Abstractions.Auth;
-using Prime.Identity.Queries.Application.Abstractions.Cache;
 using Prime.Identity.Queries.Application.Features.Store.GetAllStores;
 using Prime.Identity.Queries.Application.Features.Store.GetOwnerStore;
 using Prime.Identity.Queries.Domain.Specifications.Business;
@@ -16,10 +12,30 @@ public class StoreService(IReadRepository<Domain.Entities.Business.Store> storeR
     private readonly IReadRepository<Domain.Entities.Business.Store> _storeRepository = storeRepository;
     private readonly ICurrentUserService _currentUserService = currentUserService;
 
-    public Task<Result<CursorPageResponse<GetAllStoresResponse>>> GetAllStoresAsync(GetAllStoresRequest request,CancellationToken ct = default)
+    public async Task<Result<IEnumerable<GetAllStoresResponse>>> GetAllStores(GetAllStoresRequest request,CancellationToken ct = default)
     {
-        throw new NotImplementedException();
+
+        var spec = new GetAllStoresSpec(request.Search);
+
+        var stores = await _storeRepository.ListAsync(spec,ct);
+
+        return Result.Success(stores.Select(s => new GetAllStoresResponse(
+            s.Id,
+            s.UserId,
+            s.CategoryId,
+            s.Name,
+            s.ImageCover,
+            s.Image,
+            s.Description,
+            s.Address,
+            s.IsShippingAvailable,
+            s.City,
+            s.StoreStatus,
+            s.CreatedAt,
+            s.ModifiedAt
+        )));
     }
+
 
     public async Task<Result<GetOwnerStoreResponse>> GetOwnerStoreAsync(CancellationToken ct = default)
     {
@@ -31,7 +47,7 @@ public class StoreService(IReadRepository<Domain.Entities.Business.Store> storeR
         var store = await _storeRepository.FirstOrDefaultAsync(spec,ct);
 
         if(store is null)
-            throw new Exception($"Store With User Id : {parsedUserId} Not Found!");
+            return Result.Failure<GetOwnerStoreResponse>("Store not found for the current user.");
 
         var response = new GetOwnerStoreResponse(
             store.Id,

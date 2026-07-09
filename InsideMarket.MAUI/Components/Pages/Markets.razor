@@ -1,0 +1,31 @@
+﻿@page "/markets"
+@inject IStoreService StoreService
+
+<h3>Welcome</h3>
+
+@if(stores is not null && stores.Count > 0)
+{
+    foreach(var store in stores)
+    {
+        <p>@store.Name</p>
+    }
+}
+else
+{
+    <MudProgressCircular Color="Color.Primary" Size="Size.Small" Indeterminate="true" />
+}
+
+@code {
+    private List<InsideMarket.MAUI.Business.Models.Store>? stores = new();
+    
+    protected override async Task OnInitializedAsync()
+    {
+        var response = await StoreService.GetAllStores(new GetAllStoresRequest { Search = string.Empty });
+
+        if(response.Any())
+        {
+            stores = response.ToList();
+        }
+            
+    }
+}
