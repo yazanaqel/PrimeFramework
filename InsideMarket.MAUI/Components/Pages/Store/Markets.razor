@@ -6,18 +6,7 @@
 
 @if(stores is null || !stores.Any())
 {
-    <MudGrid>
-        <MudItem xs="12">
-        </MudItem>
-        <MudItem xs="12">
-        </MudItem>
-        <MudItem xs="12">
-        </MudItem>
-        <MudItem xs="12">
-            <MudProgressLinear Color="Color.Primary" Size="Size.Small" Indeterminate="true" />
-        </MudItem>
-    </MudGrid>
-
+    <Loading />
 }
 else
 {
@@ -40,7 +29,7 @@ else
             somthing here
         </MudItem>
 
-        @if(stores is not null && stores.Any() && string.IsNullOrEmpty(SearchText))
+        @if(string.IsNullOrEmpty(SearchText))
         {
             @foreach(var store in stores)
             {
@@ -61,7 +50,7 @@ else
                 </MudItem>
             }
         }
-        else if(searchList is not null && searchList.Any() && !string.IsNullOrEmpty(SearchText))
+        else if(!string.IsNullOrEmpty(SearchText))
         {
             @foreach(var store in searchList)
             {

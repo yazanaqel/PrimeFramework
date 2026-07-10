@@ -21,6 +21,8 @@
     <MudDrawer @bind-Open="_drawerOpen" Elevation="4" ClipMode="DrawerClipMode.Always">
         <MudNavMenu>
 
+            <MudNavLink Href="/settings" Icon="@Icons.Material.Filled.Settings">Settings</MudNavLink>
+
             @if(IsUserAuthenticated)
             {
                 <MudNavLink Href="/user/get" Icon="@Icons.Material.Filled.Person">Profile</MudNavLink>
@@ -30,6 +32,8 @@
             {
                 <MudNavLink Icon="@Icons.Material.Filled.Login" OnClick="@(() => Nav.NavigateTo("/login",true))">Login</MudNavLink>
             }
+
+            <MudNavLink Href="/about-us" Icon="@Icons.Material.Filled.Info">About Us</MudNavLink>
 
         </MudNavMenu>
     </MudDrawer>

@@ -4,41 +4,104 @@
 @inject ICategoryService CategoryService
 @inject IProductService ProductService
 @inject NavigationManager Nav
+@inject HttpClient httpClient
 
-<h3>MERCHANT Page</h3>
-
-@if(store is not null)
+@if(store is null)
 {
-    <p>@store.Name</p>
-
-    @if(products is not null && products.Count > 0)
-    {
-        foreach(var product in products)
-        {
-            <p>@product.Name</p>
-        }
-    }
-    else
-    {
-        <MudProgressCircular Color="Color.Primary" Size="Size.Small" Indeterminate="true" />
-    }
+    <Loading />
 }
 else
 {
-    <MudProgressCircular Color="Color.Primary" Size="Size.Small" Indeterminate="true" />
+    <MudGrid Spacing="0">
+
+        <MudItem xs="12">
+            <div style="aspect-ratio: 16 / 9; width: 100%;">
+                <MudImage Src="images/mug.png" Style="width:100%; height:100%; object-fit:cover;" />
+            </div>
+        </MudItem>
+
+        <MudItem xs="4">
+            <div style="aspect-ratio: 1 / 1; width: 100%;">
+                <MudImage Src="images/mug.png" Style="width:100%; height:100%; object-fit:cover;" />
+            </div>
+        </MudItem>
+
+        <MudItem xs="6">
+            <MudText Typo="Typo.h4" Class="m-3">
+                @store.Name
+            </MudText>
+        </MudItem>
+
+        <MudItem xs="2">
+
+        </MudItem>
+
+        <MudItem xs="2">
+            <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Primary" OnClick="@GoToCreate" />
+        </MudItem>
+
+
+
+    </MudGrid>
+
+    @if(products is null || !products.Any())
+    {
+        <Loading />
+    }
+    else
+    {
+
+        <MudTable Items="@products" Dense="false" Hover="false" Bordered="true" Striped="true" Filter="new Func<Product,bool>(FilterFunc)">
+
+            <ToolBarContent>
+                <MudTextField Immediate="true" @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+            </ToolBarContent>
+
+            <HeaderContent>
+                <MudTh>Name</MudTh>
+                <MudTh>Description</MudTh>
+                <MudTh>Unit Price</MudTh>
+                <MudTh>Stock Quantity</MudTh>
+            </HeaderContent>
+
+            <RowTemplate>
+                <MudTd DataLabel="Name">@context.Name</MudTd>
+                <MudTd DataLabel="Description">@context.Description</MudTd>
+                <MudTd DataLabel="Unit Price">@context.UnitPrice</MudTd>
+                <MudTd DataLabel="Stock Quantity">@context.StockQuantity</MudTd>
+
+                
+                <MudTd>
+                    <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                   Color="@Color.Info"
+                                   OnClick="@(() => GoToEdit(context))" />
+                </MudTd>
+
+
+            </RowTemplate>
+
+
+        </MudTable>
+    }
+
+
 }
 
-<MudText Class="mt-4 text-center">
-    <MudLink Href="/product/create">Add New Product</MudLink>
-</MudText>
+
+
+
 
 @code {
 
     private InsideMarket.MAUI.Business.Models.Store? store = new();
     private List<InsideMarket.MAUI.Business.Models.Product>? products = new();
 
+    private string searchString = "";
+
+
     protected override async Task OnInitializedAsync()
     {
+
         store = await StoreService.GetStore();
 
         if(store is null)
@@ -50,6 +113,30 @@ else
             products = await ProductService.GetStoreProducts();
         }
             
+    }
+
+
+    private bool FilterFunc(Product product) => FilterFunc(product,searchString);
+
+    private bool FilterFunc(Product product,string searchString)
+    {
+        if(string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if(product.Name.Contains(searchString,StringComparison.OrdinalIgnoreCase))
+            return true;
+        if(product.Description.Contains(searchString,StringComparison.OrdinalIgnoreCase))
+            return true;
+        return false;
+    }
+
+    private void GoToCreate()
+    {
+        Nav.NavigateTo("/product/create");
+    }
+
+    private void GoToEdit(Product product)
+    {
+        // Nav.NavigateTo($"/product/edit/{product.Id}");
     }
 }
 
