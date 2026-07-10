@@ -1,9 +1,8 @@
 ﻿@page "/"
-@attribute [Authorize]
 @inject AuthenticationStateProvider AuthProvider
 @inject NavigationManager Nav
 
-<MudProgressCircular Color="Color.Primary" Size="Size.Small" Indeterminate="true" />
+<MudProgressLinear Color="Color.Primary" Size="Size.Small" Indeterminate="true" />
 
 @code {
     protected override async Task OnInitializedAsync()
@@ -11,13 +10,13 @@
         var authState = await AuthProvider.GetAuthenticationStateAsync();
         var user = authState.User;
 
-        if(user.Identity?.IsAuthenticated == true)
+        if(user.Identity?.IsAuthenticated == true && user.IsInRole("MERCHANT"))
         {
-            if(user.IsInRole("MERCHANT"))
-                Nav.NavigateTo("/store/get",true);
-
-            else if(user.IsInRole("USER"))
-                Nav.NavigateTo("/user/get",true);
+            Nav.NavigateTo("/store/get",true);
+        }
+        else if(user.Identity?.IsAuthenticated == true && user.IsInRole("USER"))
+        {
+            Nav.NavigateTo("/markets",true);
         }
         else
         {

@@ -2,6 +2,8 @@
 @inject IAuthService AuthService
 @inject IDialogService DialogService
 @inject NavigationManager Nav
+@inject AuthenticationStateProvider AuthProvider
+@attribute [AllowAnonymous]
 
 <MudThemeProvider />
 <MudDialogProvider />
@@ -18,10 +20,17 @@
     <!-- Left Drawer -->
     <MudDrawer @bind-Open="_drawerOpen" Elevation="4" ClipMode="DrawerClipMode.Always">
         <MudNavMenu>
-            <MudNavLink Href="/" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
-            <MudNavLink Href="/markets" Icon="@Icons.Material.Filled.Store">Markets</MudNavLink>
-            <MudNavLink Href="/weather" Icon="@Icons.Material.Filled.Person">Profile</MudNavLink>
-            <MudNavLink Icon="@Icons.Material.Filled.Logout" OnClick="ConfirmLogout">Logout</MudNavLink>
+
+            @if(IsUserAuthenticated)
+            {
+                <MudNavLink Href="/user/get" Icon="@Icons.Material.Filled.Person">Profile</MudNavLink>
+                <MudNavLink Icon="@Icons.Material.Filled.Logout" OnClick="ConfirmLogout">Logout</MudNavLink>
+            }
+            else
+            {
+                <MudNavLink Icon="@Icons.Material.Filled.Login" OnClick="@(() => Nav.NavigateTo("/login",true))">Login</MudNavLink>
+            }
+
         </MudNavMenu>
     </MudDrawer>
 
@@ -34,20 +43,37 @@
     <MudPaper Elevation="8"
               Class="bottom-nav d-flex justify-space-around pa-2">
 
-        <MudIconButton Icon="@Icons.Material.Filled.Home"
-                       Color="Color.Primary"
-                       Size="Size.Large"
-                       Href="/" />
-
         <MudIconButton Icon="@Icons.Material.Filled.Store"
                        Color="Color.Primary"
                        Size="Size.Large"
                        Href="/markets" />
 
-        <MudIconButton Icon="@Icons.Material.Filled.Person"
+        <MudIconButton Icon="@Icons.Material.Filled.Search"
                        Color="Color.Primary"
                        Size="Size.Large"
-                       Href="/weather" />
+                       Href="/products-search" />
+
+                       
+        @if(IsUserAuthenticated && IsMerchantUser)
+        {
+            <MudIconButton Icon="@Icons.Material.Filled.Storefront"
+                           Color="Color.Primary"
+                           Size="Size.Large"
+                           Href="/store/get" />
+
+            <MudIconButton Icon="@Icons.Material.Filled.AddChart"
+                           Color="Color.Primary"
+                           Size="Size.Large"
+                           Href="/weather" />
+        }
+        else if(IsUserAuthenticated)
+        {
+            <MudIconButton Icon="@Icons.Material.Filled.AddChart"
+                           Color="Color.Primary"
+                           Size="Size.Large"
+                           Href="/weather" />
+        }
+
 
     </MudPaper>
 
@@ -56,6 +82,20 @@
 @code {
     bool _drawerOpen = false;
     void ToggleDrawer() => _drawerOpen = !_drawerOpen;
+    bool IsUserAuthenticated = false;
+    bool IsMerchantUser = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        IsUserAuthenticated = user.Identity?.IsAuthenticated == true;
+
+        if(user.IsInRole("MERCHANT"))
+        {
+            IsMerchantUser = true;
+        }
+    }
 
     private async Task ConfirmLogout()
     {
