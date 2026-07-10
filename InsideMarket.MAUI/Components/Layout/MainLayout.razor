@@ -60,22 +60,27 @@
                        
         @if(IsUserAuthenticated && IsMerchantUser)
         {
-            <MudIconButton Icon="@Icons.Material.Filled.Storefront"
+            <MudIconButton Icon="@Icons.Material.Filled.Shop"
                            Color="Color.Primary"
                            Size="Size.Large"
                            Href="/store/get" />
 
-            <MudIconButton Icon="@Icons.Material.Filled.AddChart"
+            <MudIconButton Icon="@Icons.Material.Filled.Settings"
                            Color="Color.Primary"
                            Size="Size.Large"
-                           Href="/weather" />
+                           Href="/store-edit" />
+
+            <MudIconButton Icon="@Icons.Material.Filled.ShoppingBasket"
+                           Color="Color.Primary"
+                           Size="Size.Large"
+                           Href="/shopping-basket" />
         }
         else if(IsUserAuthenticated)
         {
-            <MudIconButton Icon="@Icons.Material.Filled.AddChart"
+            <MudIconButton Icon="@Icons.Material.Filled.ShoppingBasket"
                            Color="Color.Primary"
                            Size="Size.Large"
-                           Href="/weather" />
+                           Href="/shopping-basket" />
         }
 
 
