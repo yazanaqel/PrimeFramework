@@ -35,12 +35,30 @@
                          Variant="Variant.Outlined"
                          Required="true"
                          For="@(() => _product.StockQuantity)" />
-                  
+
         <MudNumericField @bind-Value="_product.UnitPrice"
                          Label="Product Unit Price"
                          Variant="Variant.Outlined"
                          Required="true"
                          For="@(() => _product.UnitPrice)" />
+        <MudItem>
+            @if (categories is not null)
+            {
+                <InputSelect TValue="string" class="form-select" @bind-Value="_product.CategoryId">
+                    @foreach (var category in categories)
+                    {
+                        <option value="@category.CategoryId">@category.Name</option>
+                    }
+                </InputSelect>
+            }
+        </MudItem>
+
+        <MudItem>
+            <MudText>Product Image</MudText>
+            <MudIconButton Icon="@Icons.Material.Filled.Image"
+                           Color="@Color.Info"
+                           OnClick="@(() => PickImage())" />
+        </MudItem>
 
         <MudButton Variant="Variant.Filled"
                    Color="Color.Primary"
@@ -65,10 +83,22 @@
 
 
 
+
 @code {
     private MAUI.Business.Models.Product _product = new();
+    private List<InsideMarket.MAUI.Business.Models.Category> categories = new();
+
     private bool _isBusy = false;
     private string? ErrorMessage;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        categories = await CategoryService.GetAllCategories();
+
+    }
+
 
     private async Task CreateProduct()
     {
@@ -77,7 +107,34 @@
 
         var success = await ProductService.CreateProduct(_product);
 
-        _isBusy = false;
+        if(success)
+        {
+            _isBusy = false;
+            Nav.NavigateTo("/store/get");
+        }
+        else
+        {
+            ErrorMessage = "Failed to create product. Please try again.";
+            _isBusy = false;
+        }
 
     }
+
+    private async Task PickImage()
+    {
+        var result = await FilePicker.PickAsync(new PickOptions
+        {
+            PickerTitle = "Select an image",
+            FileTypes = FilePickerFileType.Images
+        });
+
+        if(result != null)
+        {
+            var stream = await result.OpenReadAsync();
+
+            _product.ImageStream = stream;
+            _product.ImageFileName = result.FileName;
+        }
+    }
+
 }

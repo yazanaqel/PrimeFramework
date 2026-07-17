@@ -3,7 +3,7 @@
 namespace Prime.Identity.Queries.Application.Features.Store.GetAllStores;
 
 public record GetAllStoresResponse(
-    Guid Id,
+    Guid StoreId,
     Guid UserId,
     Guid CategoryId,
     string Name,

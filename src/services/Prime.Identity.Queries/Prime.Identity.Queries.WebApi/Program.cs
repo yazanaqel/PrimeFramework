@@ -55,6 +55,8 @@ app.UseGlobalExceptionHandling();
 
 app.UseHttpsRedirection();
 
+app.UseStaticFiles();
+
 app.UseSerilogRequestLogging(options =>
 {
     options.IncludeQueryInRequestPath = true;

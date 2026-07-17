@@ -47,15 +47,15 @@
     <MudPaper Elevation="8"
               Class="bottom-nav d-flex justify-space-around pa-2">
 
-        <MudIconButton Icon="@Icons.Material.Filled.Store"
+        <MudIconButton Icon="@Icons.Material.Rounded.LocalMall"
                        Color="Color.Primary"
                        Size="Size.Large"
-                       Href="/markets" />
+                       Href="/house/all-stores" />
 
-        <MudIconButton Icon="@Icons.Material.Filled.Search"
+        <MudIconButton Icon="@Icons.Material.Rounded.Category"
                        Color="Color.Primary"
                        Size="Size.Large"
-                       Href="/products-search" />
+                       Href="/product/search" />
 
                        
         @if(IsUserAuthenticated && IsMerchantUser)
@@ -68,16 +68,13 @@
             <MudIconButton Icon="@Icons.Material.Filled.Settings"
                            Color="Color.Primary"
                            Size="Size.Large"
-                           Href="/store-edit" />
+                           Href="/store/edit" />
 
-            <MudIconButton Icon="@Icons.Material.Filled.ShoppingBasket"
-                           Color="Color.Primary"
-                           Size="Size.Large"
-                           Href="/shopping-basket" />
         }
-        else if(IsUserAuthenticated)
+
+        @if(IsUserAuthenticated)
         {
-            <MudIconButton Icon="@Icons.Material.Filled.ShoppingBasket"
+            <MudIconButton Icon="@Icons.Material.Outlined.ShoppingBasket"
                            Color="Color.Primary"
                            Size="Size.Large"
                            Href="/shopping-basket" />

@@ -57,7 +57,7 @@
 
     <MudText Class="mt-4 text-center">
         Guest?
-        <MudLink Href="/markets">Continue as Guest</MudLink>
+        <MudLink Href="/house/all-stores">Continue as Guest</MudLink>
     </MudText>
 
 </MudPaper>
@@ -89,7 +89,7 @@
                     Nav.NavigateTo("/store/get", true);
                     break;
                 case var _ when user.IsInRole("USER"):
-                    Nav.NavigateTo("/markets", true);
+                    Nav.NavigateTo("/house/all-stores",true);
                     break;
                 // default:
                 //     Nav.NavigateTo("/", true);

@@ -1,4 +1,5 @@
-﻿using Prime.Identity.Domain.Entities.Categories;
+﻿using Microsoft.AspNetCore.Http;
+using Prime.Identity.Domain.Entities.Categories;
 using Prime.Identity.Domain.Entities.Enums;
 
 namespace Prime.Identity.Application.Features.Store.Create;
@@ -6,9 +7,9 @@ namespace Prime.Identity.Application.Features.Store.Create;
 public record CreateStoreRequest(
     string Name,
     string Description,
-    string ImageCover,
-    string Image,
     string Address,
+    CategoryId CategoryId,
     bool IsShippingAvailable,
     City City,
-    CategoryId CategoryId);
+    IFormFile Image,
+    IFormFile ImageCover);

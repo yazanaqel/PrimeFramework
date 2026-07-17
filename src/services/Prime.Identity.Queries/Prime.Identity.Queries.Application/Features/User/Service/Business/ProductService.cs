@@ -10,7 +10,7 @@ public class ProductService(IReadRepository<Domain.Entities.Business.Product> pr
 {
     private readonly IReadRepository<Domain.Entities.Business.Product> _productRepository = productRepository;
     private readonly ICurrentUserService _currentUserService = currentUserService;
-
+    private const string baseUrl = "https://localhost:7104/";
     public async Task<Result<List<GetStoreProductsResponse>>> GetStoreProductsAsync(CancellationToken ct = default)
     {
         var userId = Guid.TryParse(_currentUserService.UserId,out var parsedUserId)
@@ -28,7 +28,7 @@ public class ProductService(IReadRepository<Domain.Entities.Business.Product> pr
             product.StoreId,
             product.CategoryId,
             product.Name,
-            product.Image,
+            baseUrl + product.Image,
             product.Description,
             product.CreatedAt,
             product.ModifiedAt
@@ -36,7 +36,7 @@ public class ProductService(IReadRepository<Domain.Entities.Business.Product> pr
 
         return Result.Success(response);
     }
-    public async Task<Result<List<GetStoreProductsResponse>>> GetStoreProductsById(Guid storeId, CancellationToken ct = default)
+    public async Task<Result<List<GetStoreProductsResponse>>> GetStoreProductsById(Guid storeId,CancellationToken ct = default)
     {
         var spec = new GetStoreProductsByStoreIdSpecification(storeId);
 
@@ -50,7 +50,7 @@ public class ProductService(IReadRepository<Domain.Entities.Business.Product> pr
             product.StoreId,
             product.CategoryId,
             product.Name,
-            product.Image,
+            baseUrl + product.Image,
             product.Description,
             product.CreatedAt,
             product.ModifiedAt

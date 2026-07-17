@@ -1,9 +1,15 @@
-﻿using InsideMarket.MAUI.Auth;
-using InsideMarket.MAUI.Business.Models;
+﻿using InsideMarket.MAUI.Business.Models;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using static InsideMarket.MAUI.Route.RouteGate;
 
 namespace InsideMarket.MAUI.Business.Services;
+
+public class Person
+{
+    public string Name { get; set; } = string.Empty;
+    public int Age { get; set; } = 0;
+}
 
 public class StoreService(IHttpClientFactory httpClientFactory) : IStoreService
 {
@@ -12,12 +18,35 @@ public class StoreService(IHttpClientFactory httpClientFactory) : IStoreService
 
     public async Task<bool> CreateStore(Store store)
     {
-        var response = await _httpWrite.PostAsJsonAsync(StoreRouteGate.CreateStore,store);
+
+        using var form = new MultipartFormDataContent();
+
+        // Add normal fields
+        form.Add(new StringContent(store.Name),"Name");
+        form.Add(new StringContent(store.Description),"Description");
+        form.Add(new StringContent(store.Address),"Address");
+        form.Add(new StringContent(store.CategoryId),"CategoryId");
+        form.Add(new StringContent(store.IsShippingAvailable.ToString()),"IsShippingAvailable");
+        form.Add(new StringContent(((int)store.City).ToString()),"City");
+
+        //Add files
+        var fileContent = new StreamContent(store.ImageStream);
+        fileContent.Headers.ContentType = new MediaTypeHeaderValue("image/*");
+        form.Add(fileContent,"Image",store.ImageFileName);
+
+        var fileCoverContent = new StreamContent(store.ImageCoverStream);
+        fileCoverContent.Headers.ContentType = new MediaTypeHeaderValue("image/*");
+        form.Add(fileCoverContent,"ImageCover",store.ImageCoverFileName);
+
+        var response = await _httpWrite.PostAsync(StoreRouteGate.CreateStore,form);
+        response.EnsureSuccessStatusCode();
+
 
         if(!response.IsSuccessStatusCode)
             return false;
 
-        else return true;
+        else
+            return true;
     }
 
     public async Task<IEnumerable<Store>> GetAllStores(GetAllStoresRequest getAllStoresRequest)

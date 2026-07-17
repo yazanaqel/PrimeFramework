@@ -1,4 +1,4 @@
-﻿@page "/markets/{id:guid}"
+﻿@page "/store/details/{id:guid}"
 @inject IStoreService StoreService
 @inject IProductService ProductService
 
@@ -13,13 +13,13 @@ else
 
         <MudItem xs="12">
             <div style="aspect-ratio: 16 / 9; width: 100%;">
-                <MudImage Src="images/mug.png" Style="width:100%; height:100%; object-fit:cover;" />
+                <MudImage Src="@store.ImageCover" Style="width:100%; height:100%; object-fit:cover;" />
             </div>
         </MudItem>
 
         <MudItem xs="4">
             <div style="aspect-ratio: 1 / 1; width: 100%;">
-                <MudImage Src="images/mug.png" Style="width:100%; height:100%; object-fit:cover;" />
+                <MudImage Src="@store.Image" Style="width:100%; height:100%; object-fit:cover;" />
             </div>
         </MudItem>
 
@@ -54,7 +54,7 @@ else
             {
                 <MudItem xs="6">
                     <MudCard>
-                        <MudImage Src="images/mug.png" Alt="Mug" Elevation="25" />
+                        <MudImage Src="@product.Image" Alt="Mug" Elevation="25" />
                         <MudCardContent>
                             <MudText Typo="Typo.h5">@product.Name</MudText>
                             <MudText Typo="Typo.body2">@product.Description</MudText>
@@ -103,7 +103,7 @@ else
         store = await StoreService.GetStore(Id);
 
         products = await ProductService.GetStoreProducts(Id);
-            
+
     }
 
     private string? _searchText;

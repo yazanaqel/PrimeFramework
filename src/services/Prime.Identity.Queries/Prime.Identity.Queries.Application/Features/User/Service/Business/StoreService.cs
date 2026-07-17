@@ -11,7 +11,7 @@ public class StoreService(IReadRepository<Domain.Entities.Business.Store> storeR
 {
     private readonly IReadRepository<Domain.Entities.Business.Store> _storeRepository = storeRepository;
     private readonly ICurrentUserService _currentUserService = currentUserService;
-
+    private const string baseUrl = "https://localhost:7104/";
     public async Task<Result<IEnumerable<GetAllStoresResponse>>> GetAllStores(GetAllStoresRequest request,CancellationToken ct = default)
     {
 
@@ -24,8 +24,8 @@ public class StoreService(IReadRepository<Domain.Entities.Business.Store> storeR
             s.UserId,
             s.CategoryId,
             s.Name,
-            s.ImageCover,
-            s.Image,
+            $"{baseUrl}{s.ImageCover}",
+            $"{baseUrl}{s.Image}",
             s.Description,
             s.Address,
             s.IsShippingAvailable,
@@ -54,8 +54,8 @@ public class StoreService(IReadRepository<Domain.Entities.Business.Store> storeR
             store.UserId,
             store.CategoryId,
             store.Name,
-            store.ImageCover,
-            store.Image,
+            $"{baseUrl}{store.ImageCover}",
+            $"{baseUrl}{store.Image}",
             store.Description,
             store.Address,
             store.IsShippingAvailable,
@@ -86,8 +86,8 @@ public class StoreService(IReadRepository<Domain.Entities.Business.Store> storeR
             store.UserId,
             store.CategoryId,
             store.Name,
-            store.ImageCover,
-            store.Image,
+            $"{baseUrl}{store.ImageCover}",
+            $"{baseUrl}{store.Image}",
             store.Description,
             store.Address,
             store.IsShippingAvailable,

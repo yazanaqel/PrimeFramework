@@ -1,5 +1,5 @@
 ﻿@page "/store/create"
-@attribute [Authorize(Roles ="MERCHANT")]
+@attribute [Authorize(Roles = "MERCHANT")]
 @inject ICategoryService CategoryService
 @inject IStoreService StoreService
 @inject NavigationManager Nav
@@ -26,11 +26,37 @@
                       Required="true"
                       For="@(() => _store.Name)" />
 
+        <MudItem>
+            @if(categories is not null)
+            {
+                <InputSelect TValue="string" class="form-select" @bind-Value="_store.CategoryId">
+                    @foreach(var category in categories)
+                    {
+                        <option value="@category.CategoryId">@category.Name</option>
+                    }
+                </InputSelect>
+            }
+        </MudItem>
+
+        <MudText>
+            CategoryId:
+            @_store.CategoryId
+        </MudText>
+
         <MudTextField @bind-Value="_store.Description"
                       Label="Store Description"
                       Variant="Variant.Outlined"
                       Required="true"
                       For="@(() => _store.Description)" />
+
+        <MudItem>
+            <InputSelect class="form-select" @bind-Value="_store.City">
+                @foreach(var value in Enum.GetValues<InsideMarket.MAUI.Enums.City>())
+                {
+                    <option value="@value">@value</option>
+                }
+            </InputSelect>
+        </MudItem>
 
         <MudTextField @bind-Value="_store.Address"
                       Label="Store Address"
@@ -38,31 +64,24 @@
                       Required="true"
                       For="@(() => _store.Address)" />
 
+        <MudItem>
+            <MudText>Store Image</MudText>
+            <MudIconButton Icon="@Icons.Material.Filled.Image"
+                           Color="@Color.Info"
+                           OnClick="@(() => PickImage())" />
+        </MudItem>
+
+        <MudItem>
+            <MudText>Store Cover Image</MudText>
+            <MudIconButton Icon="@Icons.Material.Filled.Image"
+                           Color="@Color.Info"
+                           OnClick="@(() => PickCoverImage())" />
+        </MudItem>
+
         <MudSwitch @bind-Value="_store.IsShippingAvailable"
                    Color="Color.Primary"
                    Label="Shipping Available?" />
 
-
-@*         @if(categories is not null && categories.Count > 0)
-        {
-            <MudSelect T="Guid"
-                       Label="Category"
-                       @bind-Value="_store.CategoryId"
-                       Dense="true"
-                       Clearable="true">
-
-                @foreach(var cat in categories)
-                {
-                    <MudSelectItem Value="@cat.Id">@cat.Name</MudSelectItem>
-                }
-            </MudSelect>
-        }
-        else
-        {
-            <MudProgressCircular Color="Color.Primary"
-                                 Size="Size.Small"
-                                 Indeterminate="true" />
-        } *@
 
 
 
@@ -92,7 +111,6 @@
 
 @code {
 
-    private InsideMarket.MAUI.Business.Models.Category? SelectedCategory { get; set; }
     private InsideMarket.MAUI.Business.Models.Store _store = new();
     private bool _isBusy = false;
     private string? ErrorMessage;
@@ -104,7 +122,16 @@
 
         var success = await StoreService.CreateStore(_store);
 
-        _isBusy = false;
+        if(success)
+        {
+            _isBusy = false;
+            Nav.NavigateTo("/store/get");
+        }
+        else
+        {
+            ErrorMessage = "Failed to create store. Please try again.";
+            _isBusy = false;
+        }
 
     }
 
@@ -115,7 +142,47 @@
 
         categories = await CategoryService.GetAllCategories();
 
+        if(categories is null || !categories.Any())
+        {
+            ErrorMessage = "No categories available. Please create a category first.";
+            return;
+        }
+
+        _store.CategoryId = categories.FirstOrDefault()?.CategoryId;
     }
 
+    private async Task PickImage()
+    {
+        var result = await FilePicker.PickAsync(new PickOptions
+        {
+            PickerTitle = "Select an image",
+            FileTypes = FilePickerFileType.Images
+        });
+
+        if(result != null)
+        {
+            var stream = await result.OpenReadAsync();
+
+            _store.ImageStream = stream;
+            _store.ImageFileName = result.FileName;
+        }
+    }
+
+    private async Task PickCoverImage()
+    {
+        var result = await FilePicker.PickAsync(new PickOptions
+        {
+            PickerTitle = "Select an image",
+            FileTypes = FilePickerFileType.Images
+        });
+
+        if(result != null)
+        {
+            var stream = await result.OpenReadAsync();
+
+            _store.ImageCoverStream = stream;
+            _store.ImageCoverFileName = result.FileName;
+        }
+    }
 
 }

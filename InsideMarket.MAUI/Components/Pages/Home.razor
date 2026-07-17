@@ -16,7 +16,7 @@
         }
         else if(user.Identity?.IsAuthenticated == true && user.IsInRole("USER"))
         {
-            Nav.NavigateTo("/markets",true);
+            Nav.NavigateTo("/house/all-stores",true);
         }
         else
         {

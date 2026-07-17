@@ -20,5 +20,10 @@
     <ProjectReference Include="..\Prime.Identity.Infrastructure\Prime.Identity.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\images\" />
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
 
 </Project>

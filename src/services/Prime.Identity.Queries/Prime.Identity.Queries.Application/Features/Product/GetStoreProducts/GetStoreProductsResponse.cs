@@ -1,7 +1,7 @@
 ﻿namespace Prime.Identity.Queries.Application.Features.Product.GetStoreProducts;
 
 public record GetStoreProductsResponse(
-    Guid Id,
+    Guid ProductId,
     Guid StoreId,
     Guid CategoryId,
     string Name,

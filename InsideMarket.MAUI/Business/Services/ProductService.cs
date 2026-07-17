@@ -1,4 +1,5 @@
 ﻿using InsideMarket.MAUI.Business.Models;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using static InsideMarket.MAUI.Route.RouteGate;
 
@@ -10,7 +11,25 @@ public class ProductService(IHttpClientFactory httpClientFactory) : IProductServ
     private readonly HttpClient _httpWrite = httpClientFactory.CreateClient("Write");
     public async Task<bool> CreateProduct(Product product)
     {
-        var response = await _httpWrite.PostAsJsonAsync(ProductRouteGate.CreateProduct,product);
+        using var form = new MultipartFormDataContent();
+
+        // Add normal fields
+        form.Add(new StringContent(product.CategoryId),"CategoryId");
+        form.Add(new StringContent(product.Name),"Name");
+        form.Add(new StringContent(product.Description),"Description");
+        form.Add(new StringContent(product.UnitPrice.ToString()),"UnitPrice");
+        form.Add(new StringContent(product.StockQuantity.ToString()),"StockQuantity");
+
+        // Add file
+        
+
+        var fileContent = new StreamContent(product.ImageStream);
+        fileContent.Headers.ContentType = new MediaTypeHeaderValue("image/*");
+
+        form.Add(fileContent,"ImageFile",product.ImageFileName);
+
+        var response = await _httpWrite.PostAsync(ProductRouteGate.CreateProduct,form);
+        response.EnsureSuccessStatusCode();
 
         if(!response.IsSuccessStatusCode)
             return false;

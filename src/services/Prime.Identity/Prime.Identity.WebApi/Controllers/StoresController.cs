@@ -1,8 +1,10 @@
-﻿using WebApi.Constants;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Prime.Identity.Application.Features.Store.Create;
+using Prime.Identity.Domain.Entities.Categories;
+using Prime.Identity.Domain.Entities.Enums;
+using WebApi.Constants;
 
 namespace Prime.Identity.WebApi.Controllers;
 
@@ -15,13 +17,10 @@ public class StoresController(IMediator mediator) : ControllerBase
 
 
     [HttpPost("CreateStore")]
-    public async Task<IActionResult> CreateStore([FromBody] CreateStoreRequest request,CancellationToken ct)
+    public async Task<IActionResult> CreateStore([FromForm] CreateStoreRequest request,CancellationToken ct)
     {
         var response = await _mediator.Send(new CreateStoreCommand(request,ct));
 
         return response.IsSuccess ? Ok(response.Value) : BadRequest(response.Error);
     }
-
-
-
 }

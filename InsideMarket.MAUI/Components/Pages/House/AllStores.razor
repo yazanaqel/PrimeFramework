@@ -1,6 +1,5 @@
-﻿@page "/markets"
+﻿@page "/house/all-stores"
 @attribute [AllowAnonymous]
-@using InsideMarket.MAUI.Components.Pages.Store
 @inject IStoreService StoreService
 @inject NavigationManager Nav
 
@@ -35,13 +34,13 @@ else
             {
                 <MudItem xs="6">
                     <MudCard>
-                        <MudImage Src="images/mug.png" Alt="Mug" Elevation="25" />
+                        <MudImage Src="@store.Image" Alt="Mug" Elevation="25" />
                         <MudCardContent>
                             <MudText Typo="Typo.h5">@store.Name</MudText>
                             <MudText Typo="Typo.body2">@store.Description</MudText>
                         </MudCardContent>
                         <MudCardActions>
-                            <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => NavigateToMarket(store.Id))">
+                            <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => NavigateToMarket(store.StoreId))">
                                 Details
                             </MudButton>
                             <MudButton Variant="Variant.Text" Color="Color.Primary">+</MudButton>
@@ -56,13 +55,13 @@ else
             {
                 <MudItem xs="6">
                     <MudCard>
-                        <MudImage Src="images/mug.png" Alt="Mug" Elevation="25" />
+                        <MudImage Src="@store.Image" Alt="Mug" Elevation="25" />
                         <MudCardContent>
                             <MudText Typo="Typo.h5">@store.Name</MudText>
                             <MudText Typo="Typo.body2">@store.Description</MudText>
                         </MudCardContent>
                         <MudCardActions>
-                            <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => NavigateToMarket(store.Id))">
+                            <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => NavigateToMarket(store.StoreId))">
                                 Details
                             </MudButton>
                             <MudButton Variant="Variant.Text" Color="Color.Primary">+</MudButton>
@@ -98,9 +97,9 @@ else
 
     }
 
-    private void NavigateToMarket(Guid id)
+    private void NavigateToMarket(string id)
     {
-        Nav.NavigateTo($"/markets/{id}");
+        Nav.NavigateTo($"/store/details/{id}");
     }
 
     private string? _searchText;
