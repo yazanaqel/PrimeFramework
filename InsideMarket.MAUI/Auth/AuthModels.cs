@@ -32,7 +32,11 @@ public class TokenResponse
     [JsonPropertyName("RefreshTokenExpiresAt")]
     public DateTime RefreshTokenExpiresAt { get; set; }
 }
-
+public class UserRole
+{
+    public string Role { get; set; } = string.Empty;
+    public string UserId { get; set; } = string.Empty;
+}
 public class LoginResult
 {
     [JsonPropertyName("userId")]

@@ -15,13 +15,21 @@
     <MudAppBar Elevation="4" Color="Color.Primary">
         <MudIconButton Icon="@Icons.Material.Filled.Menu" OnClick="@ToggleDrawer" />
         <MudText Typo="Typo.h6">Inside-Market</MudText>
+        <MudSpacer />
+        @if(IsUserAuthenticated)
+        {
+            <MudIconButton Icon="@Icons.Material.Outlined.ShoppingBasket"
+                           Color="Color.Default"
+                           Size="Size.Medium"
+                           Href="/shopping-basket" />
+        }
     </MudAppBar>
 
     <!-- Left Drawer -->
     <MudDrawer @bind-Open="_drawerOpen" Elevation="4" ClipMode="DrawerClipMode.Always">
         <MudNavMenu>
 
-            <MudNavLink Href="/settings" Icon="@Icons.Material.Filled.Settings">Settings</MudNavLink>
+            <MudNavLink Href="/settings" Icon="@Icons.Material.Filled.Settings">App Settings</MudNavLink>
 
             @if(IsUserAuthenticated)
             {
@@ -36,6 +44,9 @@
             <MudNavLink Href="/about-us" Icon="@Icons.Material.Filled.Info">About Us</MudNavLink>
 
         </MudNavMenu>
+
+
+
     </MudDrawer>
 
     <!-- Main Content -->
@@ -48,37 +59,31 @@
               Class="bottom-nav d-flex justify-space-around pa-2">
 
         <MudIconButton Icon="@Icons.Material.Rounded.LocalMall"
-                       Color="Color.Primary"
-                       Size="Size.Large"
+                       Color="Color.Dark"
+                       Size="Size.Medium"
                        Href="/house/all-stores" />
 
         <MudIconButton Icon="@Icons.Material.Rounded.Category"
-                       Color="Color.Primary"
-                       Size="Size.Large"
+                       Color="Color.Dark"
+                       Size="Size.Medium"
                        Href="/product/search" />
 
                        
         @if(IsUserAuthenticated && IsMerchantUser)
         {
-            <MudIconButton Icon="@Icons.Material.Filled.Shop"
-                           Color="Color.Primary"
-                           Size="Size.Large"
+            <MudIconButton Icon="@Icons.Material.Rounded.ManageAccounts"
+                           Color="Color.Dark"
+                           Size="Size.Medium"
                            Href="/store/get" />
 
-            <MudIconButton Icon="@Icons.Material.Filled.Settings"
-                           Color="Color.Primary"
-                           Size="Size.Large"
+            <MudIconButton Icon="@Icons.Material.Rounded.Settings"
+                           Color="Color.Dark"
+                           Size="Size.Medium"
                            Href="/store/edit" />
 
         }
 
-        @if(IsUserAuthenticated)
-        {
-            <MudIconButton Icon="@Icons.Material.Outlined.ShoppingBasket"
-                           Color="Color.Primary"
-                           Size="Size.Large"
-                           Href="/shopping-basket" />
-        }
+
 
 
     </MudPaper>

@@ -50,8 +50,9 @@ public class CustomAuthStateProvider : AuthenticationStateProvider
         var token = handler.ReadJwtToken(jwt);
 
         var role = token.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+        var userId = token.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
-        _tokenStore.SaveRoleAsync(role);
+        _tokenStore.SaveUserRoleAsync(new UserRole { Role = role, UserId = userId });
 
         var claims = token.Claims;
 

@@ -1,7 +1,7 @@
 ﻿@page "/store/details/{id:guid}"
 @inject IStoreService StoreService
 @inject IProductService ProductService
-
+@inject IBasketService BasketService
 
 @if(store is null)
 {
@@ -63,7 +63,10 @@ else
                             @*                             <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => NavigateToMarket(product.Id))">
                                 Details
                             </MudButton> *@
-                            <MudButton Variant="Variant.Text" Color="Color.Primary">+</MudButton>
+                            <MudIconButton Icon="@Icons.Material.Outlined.AddToQueue"
+                                           Color="Color.Default"
+                                           Size="Size.Medium"
+                                           OnClick="@(() => AddToCart(product))" />
                         </MudCardActions>
                     </MudCard>
                 </MudItem>
@@ -97,6 +100,7 @@ else
     private InsideMarket.MAUI.Business.Models.Store? store = new();
     private List<InsideMarket.MAUI.Business.Models.Product>? products = new();
     private List<InsideMarket.MAUI.Business.Models.Product>? searchList = new();
+    private List<ProductInBasket> _productsInBasket = new List<ProductInBasket>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -129,5 +133,18 @@ else
         searchList = products
             .Where(x => x.Name.Contains(_searchText,StringComparison.OrdinalIgnoreCase))
             .ToList();
+    }
+
+    private void AddToCart(Product product)
+    {
+        var productInBasket = new ProductInBasket
+        {
+            ProductId = product.ProductId,
+            Name = product.Name,
+            UnitPrice = product.UnitPrice,
+            Quantity = 1
+        };
+        _productsInBasket.Add(productInBasket);
+        BasketService.SaveBasket(_productsInBasket);
     }
 }

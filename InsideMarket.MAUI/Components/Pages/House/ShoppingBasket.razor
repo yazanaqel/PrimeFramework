@@ -1,8 +1,48 @@
 ﻿@page "/shopping-basket"
 @attribute [Authorize]
+@inject IBasketService BasketService
 
-<h3>ShoppingBasket</h3>
+@if(_productsInBasket.Any())
+{
+    <MudTable Items="@_productsInBasket" Dense="true" Hover="false" Bordered="true" Striped="true">
+
+        <HeaderContent>
+            <MudTh>Name</MudTh>
+            <MudTh>Unit Price</MudTh>
+            <MudTh>Quantity</MudTh>
+        </HeaderContent>
+
+        <RowTemplate>
+            <MudTd DataLabel="Name">@context.Name</MudTd>
+            <MudTd DataLabel="Unit Price">@context.UnitPrice</MudTd>
+            <MudTd DataLabel="Quantity">@context.Quantity</MudTd>
+
+                
+            <MudTd>
+@*                 <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                               Color="@Color.Info"
+                               OnClick="@(() => GoToEdit(context))" /> *@
+            </MudTd>
+
+
+        </RowTemplate>
+
+
+    </MudTable>
+}
+else
+{
+    <MudText>
+        Your basket is empty.
+    </MudText>
+}
 
 @code {
 
+    private List<ProductInBasket> _productsInBasket = new List<ProductInBasket>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _productsInBasket = await BasketService.LoadBasket();
+    }
 }

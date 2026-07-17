@@ -4,9 +4,10 @@ public class PreferencesTokenStore : ITokenStore
 {
     private const string AccessTokenKey = "access_token";
     private const string RefreshTokenKey = "refresh_token";
-    private const string AccessTokenExpiresAt = "access_token_expires_at";
-    private const string RefreshTokenExpiresAt = "refresh_token_expires_at";
+    private const string AccessTokenExpiresAt = "access_expires";
+    private const string RefreshTokenExpiresAt = "refresh_expires";
     private const string RoleKey = "role";
+    private const string UserIdKey = "userId";
 
     public Task SaveTokensAsync(TokenResponse tokenResponse)
     {
@@ -47,12 +48,16 @@ public class PreferencesTokenStore : ITokenStore
         Preferences.Remove(RefreshTokenKey);
         Preferences.Remove(AccessTokenExpiresAt);
         Preferences.Remove(RefreshTokenExpiresAt);
+        Preferences.Remove(UserIdKey);
+        Preferences.Remove(RoleKey);
+
         return Task.CompletedTask;
     }
 
-    public Task SaveRoleAsync(string role)
+    public Task SaveUserRoleAsync(UserRole userRole)
     {
-        Preferences.Set(RoleKey,role);
+        Preferences.Set(RoleKey, userRole.Role);
+        Preferences.Set(UserIdKey, userRole.UserId);
 
         return Task.CompletedTask;
     }

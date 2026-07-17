@@ -20,6 +20,7 @@ public static class MauiProgram
 
         builder.Services.AddScoped<IStoreService,StoreService>();
         builder.Services.AddScoped<ICategoryService,CategoryService>();
+        builder.Services.AddScoped<IBasketService,BasketService>();
         builder.Services.AddScoped<IProductService,ProductService>();
 
         builder.Services.AddAuthorizationCore();

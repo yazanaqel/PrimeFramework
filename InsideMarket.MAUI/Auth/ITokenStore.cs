@@ -3,7 +3,7 @@
 public interface ITokenStore
 {
     Task SaveTokensAsync(TokenResponse tokenResponse);
-    Task SaveRoleAsync(string role);
+    Task SaveUserRoleAsync(UserRole userRole);
     Task<TokenResponse?> GetTokensAsync();
     Task ClearTokensAsync();
 }

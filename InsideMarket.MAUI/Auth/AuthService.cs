@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components.Authorization;
+﻿using InsideMarket.MAUI.Business.Services;
+using Microsoft.AspNetCore.Components.Authorization;
 using System.Net.Http.Json;
 using static InsideMarket.MAUI.Route.RouteGate;
 
@@ -9,15 +10,18 @@ public class AuthService : IAuthService
 {
     private readonly HttpClient _http;
     private readonly ITokenStore _tokenStore;
+    private readonly IBasketService _basketService;
     private readonly CustomAuthStateProvider _authStateProvider;
 
     public AuthService(
         IHttpClientFactory httpClientFactory,
         ITokenStore tokenStore,
-        AuthenticationStateProvider authStateProvider)
+        AuthenticationStateProvider authStateProvider,
+        IBasketService basketService)
     {
         _http = httpClientFactory.CreateClient("Write");
         _tokenStore = tokenStore;
+        _basketService = basketService;
         _authStateProvider = (CustomAuthStateProvider)authStateProvider;
     }
 
@@ -68,10 +72,13 @@ public class AuthService : IAuthService
             await _http.PostAsync($"{UsersRouteGate.Logout}/{userId}",null);
         }
 
-        // 3. Clear tokens from SecureStorage
+        // 3. Clear the basket
+        await _basketService.ClearBasket();
+
+        // 4. Clear tokens from SecureStorage
         await _tokenStore.ClearTokensAsync();
 
-        // 4. Notify the UI that the user is logged out
+        // 5. Notify the UI that the user is logged out
         _authStateProvider.MarkUserAsLoggedOut();
     }
 
