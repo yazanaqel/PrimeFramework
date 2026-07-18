@@ -13,7 +13,7 @@ public class Product
 
     // Navigation properties
     public Guid StoreId { get; set; }
-    public Store Store { get; set; }
+    public Store? Store { get; set; }
     public Guid CategoryId { get; set; }
-    public Category Category { get; set; }
+    public Category? Category { get; set; }
 }

@@ -42,7 +42,7 @@ public class StoreService(IReadRepository<Domain.Entities.Business.Store> storeR
         var userId = Guid.TryParse(_currentUserService.UserId,out var parsedUserId)
 ? parsedUserId : throw new InvalidOperationException("Invalid user ID");
 
-        var spec = new GetOwnerStoreByIdSpecification(parsedUserId);
+        var spec = new GetOwnerStoreByIdSpec(parsedUserId);
 
         var store = await _storeRepository.FirstOrDefaultAsync(spec,ct);
 
@@ -74,7 +74,7 @@ public class StoreService(IReadRepository<Domain.Entities.Business.Store> storeR
         var storeIdParsed = Guid.TryParse(storeId.ToString(), out var parsedStoreId)
 ? parsedStoreId : throw new InvalidOperationException("Invalid Store ID");
         
-        var spec = new GetStoreByIdSpecification(storeIdParsed);
+        var spec = new GetStoreByIdSpec(storeIdParsed);
 
         var store = await _storeRepository.FirstOrDefaultAsync(spec,ct);
 

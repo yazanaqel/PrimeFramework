@@ -16,7 +16,7 @@ public class ProductService(IReadRepository<Domain.Entities.Business.Product> pr
         var userId = Guid.TryParse(_currentUserService.UserId,out var parsedUserId)
 ? parsedUserId : throw new InvalidOperationException("Invalid user ID");
 
-        var spec = new GetStoreProductsByOwnerIdSpecification(parsedUserId);
+        var spec = new GetStoreProductsByOwnerIdSpec(parsedUserId);
 
         var products = await _productRepository.ListAsync(spec,ct);
 
@@ -38,7 +38,7 @@ public class ProductService(IReadRepository<Domain.Entities.Business.Product> pr
     }
     public async Task<Result<List<GetStoreProductsResponse>>> GetStoreProductsById(Guid storeId,CancellationToken ct = default)
     {
-        var spec = new GetStoreProductsByStoreIdSpecification(storeId);
+        var spec = new GetStoreProductsByStoreIdSpec(storeId);
 
         var products = await _productRepository.ListAsync(spec,ct);
 

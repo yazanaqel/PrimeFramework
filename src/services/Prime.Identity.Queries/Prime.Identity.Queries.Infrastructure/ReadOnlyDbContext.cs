@@ -15,6 +15,8 @@ public class ReadOnlyDbContext : DbContext
     public DbSet<Category> Categories { get; set; }
     public DbSet<Store> Stores { get; set; }
     public DbSet<Product> Products { get; set; }
+    public DbSet<Order> Orders { get; set; }
+    public DbSet<OrderItem> OrderItems { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -38,6 +40,15 @@ public class ReadOnlyDbContext : DbContext
         builder.Entity<Product>(entity =>
         {
             entity.ToTable("Products","Business");
+        });
+
+        builder.Entity<Order>(entity =>
+        {
+            entity.ToTable("Orders","Business");
+        });
+        builder.Entity<OrderItem>(entity =>
+        {
+            entity.ToTable("OrderItems","Business");
         });
     }
 

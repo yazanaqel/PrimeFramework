@@ -18,4 +18,13 @@ public class Store
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? ModifiedAt { get; set; }
 
+    //Navigation properties
+
+    private readonly List<Product> _products = new();
+    public IReadOnlyCollection<Product> Products => _products.AsReadOnly();
+
+    private readonly List<Order> _orders = new();
+    public IReadOnlyCollection<Order> Orders => _orders.AsReadOnly();
+    public Category? Category { get; private set; }
+
 }

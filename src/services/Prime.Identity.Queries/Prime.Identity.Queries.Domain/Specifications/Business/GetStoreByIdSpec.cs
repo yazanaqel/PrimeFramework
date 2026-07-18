@@ -3,9 +3,9 @@ using Prime.Identity.Queries.Domain.Entities.Business;
 
 namespace Prime.Identity.Queries.Domain.Specifications.Business;
 
-public sealed class GetStoreByIdSpecification : Specification<Store>
+public sealed class GetStoreByIdSpec : Specification<Store>
 {
-    public GetStoreByIdSpecification(Guid storeId)
+    public GetStoreByIdSpec(Guid storeId)
     {
         Query.Where((u) => (u.Id == storeId));
     }

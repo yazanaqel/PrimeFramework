@@ -3,9 +3,9 @@ using Prime.Identity.Queries.Domain.Entities.Business;
 
 namespace Prime.Identity.Queries.Domain.Specifications.Business;
 
-public sealed class GetOwnerStoreByIdSpecification : SingleResultSpecification<Store>
+public sealed class GetOwnerStoreByIdSpec : SingleResultSpecification<Store>
 {
-    public GetOwnerStoreByIdSpecification(Guid userId)
+    public GetOwnerStoreByIdSpec(Guid userId)
     {
         Query.Where((u) => (u.UserId == userId));
     }
