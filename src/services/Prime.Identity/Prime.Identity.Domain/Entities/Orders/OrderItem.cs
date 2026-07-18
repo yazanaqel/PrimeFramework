@@ -8,14 +8,8 @@ namespace Prime.Identity.Domain.Entities.Orders;
 public sealed class OrderItem : Entity<OrderItemId>, IAuditableEntity
 {
 
-
-    public string ProductName { get; private set; } = string.Empty;
     public decimal UnitPrice { get; private set; }
-
-    // Quantity & totals
     public int Quantity { get; private set; }
-    public decimal TotalPrice { get; private set; }
-
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? ModifiedAt { get; set; }
 
@@ -29,7 +23,7 @@ public sealed class OrderItem : Entity<OrderItemId>, IAuditableEntity
     private OrderItem() { }
 
     // Factory
-    public static OrderItem Create(ProductId productId,string productName,decimal unitPrice,int quantity)
+    public static OrderItem Create(ProductId productId,OrderId orderId,decimal unitPrice,int quantity)
     {
         if(quantity <= 0)
             throw new ArgumentException("Quantity must be greater than zero.");
@@ -41,20 +35,10 @@ public sealed class OrderItem : Entity<OrderItemId>, IAuditableEntity
         {
             Id = OrderItemId.New(),
             ProductId = productId,
-            ProductName = productName,
+            OrderId = orderId,
             UnitPrice = unitPrice,
-            Quantity = quantity,
-            TotalPrice = unitPrice * quantity
+            Quantity = quantity
         };
     }
 
-    // Behavior
-    public void ChangeQuantity(int newQuantity)
-    {
-        if(newQuantity <= 0)
-            throw new ArgumentException("Quantity must be greater than zero.");
-
-        Quantity = newQuantity;
-        TotalPrice = UnitPrice * Quantity;
-    }
 }

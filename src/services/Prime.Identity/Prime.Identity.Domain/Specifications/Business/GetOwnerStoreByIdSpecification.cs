@@ -12,3 +12,12 @@ public sealed class GetOwnerStoreByIdSpecification : SingleResultSpecification<S
         Query.Where((u) => (u.UserId == userId));
     }
 }
+
+public class ProductsByIdsSpec : Specification<Product>
+{
+    public ProductsByIdsSpec(IEnumerable<ProductId> productIds)
+    {
+        Query.Where(p => productIds.Contains(p.Id));
+        Query.Include(p => p.Store);
+    }
+}

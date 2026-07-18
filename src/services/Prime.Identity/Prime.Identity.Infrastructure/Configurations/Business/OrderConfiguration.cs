@@ -27,12 +27,6 @@ internal sealed class OrderConfiguration : IEntityTypeConfiguration<Order>
 id => id.Value,
 value => new UserId(value));
 
-        builder.Property(c => c.ProductId)
-.HasConversion(
-id => id.Value,
-value => new ProductId(value)
-);
-
         // Store relationship
         builder.HasOne(o => o.Store)
             .WithMany(s => s.Orders)
@@ -41,7 +35,6 @@ value => new ProductId(value)
 
 
         // Indexes
-        builder.HasIndex(o => o.OrderNumber).IsUnique();
         builder.HasIndex(o => o.StoreId);
         builder.HasIndex(o => o.UserId);
     }
