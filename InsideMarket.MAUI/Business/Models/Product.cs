@@ -22,3 +22,10 @@ public class ProductInBasket
     public int Quantity { get; set; }
 
 }
+
+public class GetCategorizedProductsResponse
+{
+    public string CategoryId { get; set; } = string.Empty;
+    public string CategoryName { get; set; } = string.Empty;
+    public List<Product> Products { get; set; } = new List<Product>();
+}

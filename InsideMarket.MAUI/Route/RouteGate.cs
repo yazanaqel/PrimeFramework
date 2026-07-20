@@ -44,6 +44,7 @@ public class RouteGate
         public const string GetProductById = $"{ControllerName}GetProductById";
         public const string GetStoreProducts = $"{ControllerName}GetStoreProducts";
         public const string GetStoreProductsById = $"{ControllerName}GetStoreProductsById";
+        public const string GetCategorizedProducts = $"{ControllerName}GetCategorizedProducts";
         public const string CreateProduct = $"{ControllerName}CreateProduct";
 
     }

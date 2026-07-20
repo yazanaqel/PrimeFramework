@@ -8,5 +8,7 @@ public class GetAllCategoriesSpec : Specification<Category>
     public GetAllCategoriesSpec()
     {
         Query.OrderBy(s => s.Name);
+
+        Query.Include(s => s.Products);
     }
 }

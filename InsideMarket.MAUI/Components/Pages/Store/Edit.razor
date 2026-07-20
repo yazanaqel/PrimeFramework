@@ -1,8 +1,55 @@
 ﻿@page "/store/edit"
 @attribute [Authorize(Roles = "MERCHANT")]
+@inject IStoreService StoreService
+@inject NavigationManager Nav
 
-<h3>EditStoreDetails</h3>
+@if(store is null)
+{
+    <Loading />
+}
+else
+{
+    <MudGrid Spacing="0">
+
+        <MudItem xs="12">
+            @store.Name
+        </MudItem>
+        <MudItem xs="12">
+            @store.Description
+        </MudItem>
+        <MudItem xs="12">
+            @store.Address
+        </MudItem>
+        <MudItem xs="12">
+            @store.City
+        </MudItem>
+        <MudItem xs="12">
+            @store.StoreStatus
+        </MudItem>
+        <MudItem xs="12">
+            @store.IsShippingAvailable
+        </MudItem>
+
+    </MudGrid>            
+}
+
 
 @code {
 
+    private InsideMarket.MAUI.Business.Models.Store? store = new();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        store = await StoreService.GetStore();
+
+        if(store is null)
+        {
+            Nav.NavigateTo("/store/create",true);
+        }
+
+    }
+
 }
+

@@ -27,4 +27,13 @@ public class ProductsController(IProductService productService) : ControllerBase
 
         return response.IsSuccess ? Ok(response.Value) : NotFound(response.Error);
     }
+
+    [AllowAnonymous]
+    [HttpGet("GetCategorizedProducts")]
+    public async Task<IActionResult> GetCategorizedProducts(CancellationToken ct)
+    {
+        var response = await _productService.GetCategorizedProducts(ct);
+
+        return response.IsSuccess ? Ok(response.Value) : NotFound(response.Error);
+    }
 }

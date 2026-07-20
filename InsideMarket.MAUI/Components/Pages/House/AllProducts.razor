@@ -1,7 +1,129 @@
 ﻿@page "/house/all-products"
+@inject IProductService ProductService
 
-<h3>AllProducts</h3>
+<MudGrid>
+
+    <MudItem xs="12">
+
+        <MudTextField T="string"
+                      Label="Search"
+                      @bind-Value="SearchText"
+                      Immediate="true"
+                      Clearable="true" />
+    </MudItem>
+
+    @if(_categorizedProducts is null || !_categorizedProducts.Any())
+    {
+        <Loading />
+    }
+    else if(string.IsNullOrEmpty(SearchText))
+    {
+        foreach(var category in _categorizedProducts)
+        {
+            <MudItem xs="12">
+                <MudText Typo="Typo.h4">@category.CategoryName</MudText>
+            </MudItem>
+
+            foreach(var product in category.Products)
+            {
+                <MudItem xs="6">
+                    <MudCard>
+                        <MudImage Src="@product.Image" Alt="Mug" Elevation="25" />
+                        <MudCardContent>
+                            <MudText Typo="Typo.h5">@product.Name</MudText>
+                            <MudText Typo="Typo.body2">@product.Description</MudText>
+                        </MudCardContent>
+                        <MudCardActions>
+                            @*                             <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => NavigateToMarket(product.Id))">
+                                Details
+                            </MudButton> *@
+                            @*                         <MudIconButton Icon="@Icons.Material.Outlined.AddToQueue"
+                                       Color="Color.Default"
+                                       Size="Size.Medium"
+                                       OnClick="@(() => AddToCart(product))" /> *@
+                        </MudCardActions>
+                    </MudCard>
+                </MudItem>
+            }
+
+            <MudItem xs="12">
+                <MudText>--------------------------------</MudText>
+            </MudItem>
+        }
+    }
+    else if(searchList is not null && !string.IsNullOrEmpty(SearchText))
+    {
+        foreach(var category in searchList)
+        {
+            <MudItem xs="12">
+                <MudText Typo="Typo.h4">@category.CategoryName</MudText>
+            </MudItem>
+
+            foreach(var product in category.Products)
+            {
+                <MudItem xs="6">
+                    <MudCard>
+                        <MudImage Src="@product.Image" Alt="Mug" Elevation="25" />
+                        <MudCardContent>
+                            <MudText Typo="Typo.h5">@product.Name</MudText>
+                            <MudText Typo="Typo.body2">@product.Description</MudText>
+                        </MudCardContent>
+                        <MudCardActions>
+                            @*                             <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => NavigateToMarket(product.Id))">
+                                Details
+                            </MudButton> *@
+                            @*                         <MudIconButton Icon="@Icons.Material.Outlined.AddToQueue"
+                                       Color="Color.Default"
+                                       Size="Size.Medium"
+                                       OnClick="@(() => AddToCart(product))" /> *@
+                        </MudCardActions>
+                    </MudCard>
+                </MudItem>
+            }
+
+            <MudItem xs="12">
+                <MudText>--------------------------------</MudText>
+            </MudItem>
+        }
+    }
+</MudGrid>
+
 
 @code {
+
+
+    private IEnumerable<InsideMarket.MAUI.Business.Models.GetCategorizedProductsResponse>? _categorizedProducts = new List<InsideMarket.MAUI.Business.Models.GetCategorizedProductsResponse>();
+    private IEnumerable<InsideMarket.MAUI.Business.Models.GetCategorizedProductsResponse>? searchList = new List<InsideMarket.MAUI.Business.Models.GetCategorizedProductsResponse>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _categorizedProducts = await ProductService.GetCategorizedProducts();
+
+    }
+
+    private string? _searchText;
+
+    private string? SearchText
+    {
+        get => _searchText;
+        set
+        {
+            _searchText = value;
+            UpdateResults();
+        }
+    }
+
+    private void UpdateResults()
+    {
+        if(searchList is not null && string.IsNullOrEmpty(_searchText))
+        {
+            searchList = _categorizedProducts;
+            return;
+        }
+
+        searchList = _categorizedProducts
+            .Where(x => x.CategoryName.Contains(_searchText,StringComparison.OrdinalIgnoreCase))
+            .ToList();
+    }
 
 }

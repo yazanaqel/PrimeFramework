@@ -9,6 +9,7 @@ public class Category
     public Category? ParentCategory { get; set; }
     private readonly List<Category> _subCategories = new();
     public IReadOnlyCollection<Category> SubCategories => _subCategories.AsReadOnly();
+    public IReadOnlyCollection<Product> Products { get; set; } = new List<Product>();
 
 
 }
