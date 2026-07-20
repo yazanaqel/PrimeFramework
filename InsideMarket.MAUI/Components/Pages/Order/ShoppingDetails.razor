@@ -1,0 +1,60 @@
+﻿@page "/order/shopping-details"
+@attribute [Authorize]
+@inject NavigationManager Nav
+@inject AuthenticationStateProvider AuthProvider
+
+<MudGrid>
+
+    <MudItem xs="6">
+        <MudCard Class="pa-2" Elevation="8">
+
+            <MudCardContent>
+                <MudText Typo="Typo.h6">Shopping Basket</MudText>
+            </MudCardContent>
+
+            <MudCardActions Class="justify-end">
+                <MudIconButton Icon="@Icons.Material.Outlined.ShoppingBasket"
+                               Color="Color.Primary"
+                               Href="/order/shopping-basket" />
+            </MudCardActions>
+        </MudCard>
+
+    </MudItem>
+
+    <MudItem xs="6">
+        <MudCard>
+
+            <MudCardContent>
+                <MudText Typo="Typo.h6">My Orders</MudText>
+                <MudIconButton Icon="@Icons.Material.Outlined.List"
+                               Color="Color.Default"
+                               Size="Size.Medium"
+                               OnClick="@GoToOrders" />
+            </MudCardContent>
+            <MudCardActions>
+
+            </MudCardActions>
+        </MudCard>
+    </MudItem>
+
+</MudGrid>
+
+
+@code {
+
+    private async Task GoToOrders()
+    {
+        var authState = await AuthProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        switch(user)
+        {
+            case var _ when user.IsInRole("MERCHANT"):
+                Nav.NavigateTo("/order/store-orders",true);
+                break;
+            case var _ when user.IsInRole("USER"):
+                Nav.NavigateTo("/order/user-orders",true);
+                break;
+        }
+    }
+}

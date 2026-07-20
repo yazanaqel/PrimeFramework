@@ -1,0 +1,100 @@
+﻿@page "/order/shopping-basket"
+@attribute [Authorize]
+@inject IBasketService BasketService
+@inject IOrderService OrderService
+@inject NavigationManager Nav
+
+@if(_productsInBasket.Any())
+{
+    <MudText Typo="Typo.h4">
+        My Basket
+    </MudText>
+
+    <MudTable Items="@_productsInBasket" Dense="true" Hover="false" Bordered="true" Striped="true">
+
+        <HeaderContent>
+            <MudTh>Name</MudTh>
+            <MudTh>Unit Price</MudTh>
+            <MudTh>Quantity</MudTh>
+        </HeaderContent>
+
+        <RowTemplate>
+            <MudTd DataLabel="Name">@context.Name</MudTd>
+            <MudTd DataLabel="Unit Price">@context.UnitPrice</MudTd>
+            <MudTd DataLabel="Quantity">@context.Quantity</MudTd>
+
+                
+            <MudTd>
+                @*                 <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                               Color="@Color.Info"
+                               OnClick="@(() => GoToEdit(context))" /> *@
+            </MudTd>
+
+
+        </RowTemplate>
+
+
+    </MudTable>
+
+
+    <MudGrid>
+        <MudItem xs="3">
+            <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="@(() => SubmitOrder())">
+                @if(_isBusy)
+                {
+                    <MudProgressCircular Color="Color.Primary" Size="Size.Small" Indeterminate="true" />
+                }
+                else
+                {
+                    <MudText>Submit Order</MudText>
+                }
+            </MudButton>
+        </MudItem>
+    </MudGrid>
+
+}
+else
+{
+    <MudText>
+        Your basket is empty.
+    </MudText>
+}
+
+@code {
+
+    private List<ProductInBasket> _productsInBasket = new List<ProductInBasket>();
+    private bool _isBusy = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _productsInBasket = await BasketService.LoadBasket();
+    }
+
+    private async Task SubmitOrder()
+    {
+        _isBusy = true;
+        List<CreateOrderRequest> orderRequests = new List<CreateOrderRequest>();
+
+        foreach(var item in _productsInBasket)
+        {
+            orderRequests.Add(new CreateOrderRequest
+            {
+                ProductId = item.ProductId,
+                Quantity = item.Quantity
+            });
+        }
+
+        var result = await OrderService.CreateOrder(orderRequests);
+
+        if(result)
+        {
+            await BasketService.ClearBasket();
+            Nav.NavigateTo("/house/all-stores");
+        }
+        else
+        {
+            _isBusy = false;
+            // Handle order submission failure (e.g., show an error message)
+        }
+    }
+}

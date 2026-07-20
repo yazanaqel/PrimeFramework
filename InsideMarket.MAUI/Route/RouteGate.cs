@@ -29,6 +29,15 @@ public class RouteGate
         public const string CreateStore = $"{ControllerName}CreateStore";
 
     }
+    public static class OrderRouteGate
+    {
+        private const string ControllerName = "api/Orders/";
+        public const string CreateOrder = $"{ControllerName}CreateOrder";
+        public const string GetUserOrders = $"{ControllerName}GetUserOrders";
+        public const string GetStoreOrders = $"{ControllerName}GetStoreOrders";
+
+
+    }
     public static class ProductRouteGate
     {
         private const string ControllerName = "api/Products/";

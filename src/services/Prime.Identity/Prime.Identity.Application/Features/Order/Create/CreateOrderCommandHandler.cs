@@ -5,6 +5,7 @@ using Prime.Identity.Application.Abstractions;
 using Prime.Identity.Application.Abstractions.Auth;
 using Prime.Identity.Application.Features.Product.Create;
 using Prime.Identity.Domain.Entities.Orders;
+using Prime.Identity.Domain.Entities.Products;
 using Prime.Identity.Domain.Entities.Users;
 using Prime.Identity.Domain.Specifications.Business;
 using System.Text.RegularExpressions;
@@ -31,7 +32,21 @@ internal sealed class CreateOrderCommandHandler(
     ? parsedUserId : throw new InvalidOperationException("Invalid user ID");
 
 
-        var spec = new ProductsByIdsSpec(command.Request.ProductIds);
+        List<ProductId> productIds = new List<ProductId>();
+
+        foreach(var item in command.Request)
+        {
+            if(ProductId.TryParse(item.ProductId,out var parsedProductId))
+            {
+                productIds.Add(parsedProductId);
+            }
+            else
+            {
+                return Result.Failure<bool>($"Invalid product ID: {item.ProductId}");
+            }
+        }
+
+        var spec = new ProductsByIdsSpec(productIds);
 
         List<Domain.Entities.Products.Product> products =
             await _productRepository.ListAsync(spec);
@@ -65,7 +80,8 @@ internal sealed class CreateOrderCommandHandler(
 
             foreach(var product in storeProducts)
             {
-                var orderItem = OrderItem.Create(product.Id,order.Id,product.UnitPrice,command.Request.Quantity);
+                var orderItem = OrderItem
+                    .Create(product.Id,order.Id,product.UnitPrice,5);
 
                 orderItems.Add(orderItem);
             }

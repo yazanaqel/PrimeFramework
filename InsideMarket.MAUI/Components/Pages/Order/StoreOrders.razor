@@ -1,0 +1,54 @@
+﻿@page "/order/store-orders"
+@attribute [Authorize(Roles ="MERCHANT")]
+@inject IOrderService OrderService
+
+
+@if(_storeOrders.Any())
+{
+    <MudText Typo="Typo.h4">
+        My Orders
+    </MudText>
+
+    <MudTable Items="@_storeOrders" Dense="true" Hover="false" Bordered="true" Striped="true">
+
+        <HeaderContent>
+            <MudTh>User Id</MudTh>
+            <MudTh>Product Name</MudTh>
+        </HeaderContent>
+
+        <RowTemplate>
+            <MudTd DataLabel="User Id">@context.UserId</MudTd>
+            <MudTd DataLabel="Product Name">@context.ProductName</MudTd>
+
+
+            <MudTd>
+                @*                 <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                               Color="@Color.Info"
+                               OnClick="@(() => GoToEdit(context))" /> *@
+            </MudTd>
+
+
+        </RowTemplate>
+
+
+    </MudTable>
+}
+else
+{
+    <MudText>
+        Your orders are empty.
+    </MudText>
+}
+
+
+@code {
+    private IEnumerable<GetStoreOrdersResponse> _storeOrders = new List<GetStoreOrdersResponse>();
+    private bool _isBusy = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _storeOrders = await OrderService.GetStoreOrders();
+    }
+
+
+}

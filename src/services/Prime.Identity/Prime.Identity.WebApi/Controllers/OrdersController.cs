@@ -15,7 +15,7 @@ public class OrdersController(IMediator mediator) : ControllerBase
 
 
     [HttpPost("CreateOrder")]
-    public async Task<IActionResult> CreateOrder(CreateOrderRequest request,CancellationToken ct)
+    public async Task<IActionResult> CreateOrder(List<CreateOrderRequest> request,CancellationToken ct)
     {
         var response = await _mediator.Send(new CreateOrderCommand(request,ct));
 
