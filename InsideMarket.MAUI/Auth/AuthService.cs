@@ -8,7 +8,8 @@ namespace InsideMarket.MAUI.Auth;
 
 public class AuthService : IAuthService
 {
-    private readonly HttpClient _http;
+    private readonly HttpClient _httpRead;
+    private readonly HttpClient _httpWrite;
     private readonly ITokenStore _tokenStore;
     private readonly IBasketService _basketService;
     private readonly CustomAuthStateProvider _authStateProvider;
@@ -19,7 +20,8 @@ public class AuthService : IAuthService
         AuthenticationStateProvider authStateProvider,
         IBasketService basketService)
     {
-        _http = httpClientFactory.CreateClient("Write");
+        _httpRead = httpClientFactory.CreateClient("Read");
+        _httpWrite = httpClientFactory.CreateClient("Write");
         _tokenStore = tokenStore;
         _basketService = basketService;
         _authStateProvider = (CustomAuthStateProvider)authStateProvider;
@@ -28,7 +30,7 @@ public class AuthService : IAuthService
     public async Task<bool> LoginAsync(LoginRequest loginRequest)
     {
 
-        var response = await _http.PostAsJsonAsync(UsersRouteGate.Login,loginRequest);
+        var response = await _httpWrite.PostAsJsonAsync(UsersRouteGate.Login,loginRequest);
 
         if(!response.IsSuccessStatusCode)
             return false;
@@ -52,7 +54,7 @@ public class AuthService : IAuthService
             registerRequest.Role = "Merchant";
         }
 
-        var response = await _http.PostAsJsonAsync(UsersRouteGate.Register,registerRequest);
+        var response = await _httpWrite.PostAsJsonAsync(UsersRouteGate.Register,registerRequest);
 
         if(!response.IsSuccessStatusCode)
             return false;
@@ -69,7 +71,7 @@ public class AuthService : IAuthService
         if(!string.IsNullOrWhiteSpace(userId))
         {
             // 2. Call your API logout endpoint
-            await _http.PostAsync($"{UsersRouteGate.Logout}/{userId}",null);
+            await _httpWrite.PostAsync($"{UsersRouteGate.Logout}/{userId}",null);
         }
 
         // 3. Clear the basket
@@ -82,4 +84,10 @@ public class AuthService : IAuthService
         _authStateProvider.MarkUserAsLoggedOut();
     }
 
+    public async Task<UserProfileInfo> GetUserProfileAsync()
+    {
+        var response = await _httpRead.GetFromJsonAsync<UserProfileInfo>(UsersRouteGate.GetUserProfile);
+        return response ?? new UserProfileInfo();
+
+    }
 }

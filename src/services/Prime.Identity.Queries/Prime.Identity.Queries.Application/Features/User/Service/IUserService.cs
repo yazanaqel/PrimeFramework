@@ -9,4 +9,5 @@ public interface IUserService
 {
     Task<Result<CursorPageResponse<GetAllUsersResponse>>> GetAllUsersAsync(GetAllUsersRequest request,CancellationToken ct = default);
     Task<Result<GetUserByIdResponse>> GetUserByIdAsync(Guid userId,CancellationToken ct = default);
+    Task<Result<GetUserProfileResponse>> GetUserProfile(CancellationToken ct = default);
 }

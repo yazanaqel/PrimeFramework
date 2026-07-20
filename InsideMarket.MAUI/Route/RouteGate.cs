@@ -12,6 +12,7 @@ public class RouteGate
         public const string Login = $"{ControllerName}Login";
         public const string Register = $"{ControllerName}Register";
         public const string Logout = $"{ControllerName}Logout";
+        public const string GetUserProfile = "api/Home/GetUserProfile";
 
     }
     public static class CategoryRouteGate

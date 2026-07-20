@@ -11,6 +11,7 @@ using System.Data;
 
 namespace WebApi.Controllers;
 
+[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class HomeController(ReadOnlyDbContext applicationDbContext,IUserService userService) : Controller
@@ -55,6 +56,14 @@ public class HomeController(ReadOnlyDbContext applicationDbContext,IUserService 
         }
 
         return BadRequest(new { valid = false,message = "Invalid GUID format." });
+    }
+
+    [HttpGet("GetUserProfile")]
+    public async Task<IActionResult> GetUserProfile(CancellationToken ct)
+    {
+        var response = await _userService.GetUserProfile(ct);
+
+        return response.IsSuccess ? Ok(response.Value) : NotFound(response.Error);
     }
 
 

@@ -5,14 +5,16 @@ using CSharpFunctionalExtensions;
 using Domain.Abstractions;
 using Domain.Entities.User;
 using Domain.Specifications.User;
+using Prime.Identity.Queries.Application.Abstractions.Auth;
 using Prime.Identity.Queries.Application.Abstractions.Cache;
 
 namespace Prime.Identity.Queries.Application.Features.User.Service;
 
-public sealed class UserService(IReadRepository<AppUser> userIdentity,ICacheService cacheService) : IUserService
+public sealed class UserService(IReadRepository<AppUser> userIdentity,ICacheService cacheService,ICurrentUserService currentUserService) : IUserService
 {
     private readonly IReadRepository<AppUser> _userIdentity = userIdentity;
     private readonly ICacheService _cacheService = cacheService;
+    private readonly ICurrentUserService _currentUserService = currentUserService;
 
     public async Task<Result<CursorPageResponse<GetAllUsersResponse>>> GetAllUsersAsync(GetAllUsersRequest request,CancellationToken ct)
     {
@@ -76,6 +78,24 @@ public sealed class UserService(IReadRepository<AppUser> userIdentity,ICacheServ
         var response = new GetUserByIdResponse(user.Id,user.Email,user.UserName);
 
         await _cacheService.SetAsync(cacheKey,response,TimeSpan.FromMinutes(5),ct);
+
+        return Result.Success(response);
+    }
+
+    public async Task<Result<GetUserProfileResponse>> GetUserProfile(CancellationToken ct = default)
+    {
+        var userId = Guid.TryParse(_currentUserService.UserId,out var parsedUserId)
+? parsedUserId : throw new InvalidOperationException("Invalid user ID");
+
+        var spec = new GetUserByIdSpecification(userId);
+
+        var user = await _userIdentity.FirstOrDefaultAsync(spec,ct);
+
+        if(user is null)
+            //throw new NotFoundException(nameof(User),userId);
+            throw new Exception($"User With Id : {userId} Not Found!");
+
+        var response = new GetUserProfileResponse(user.Id.ToString(),user.Email,user.UserName);
 
         return Result.Success(response);
     }
