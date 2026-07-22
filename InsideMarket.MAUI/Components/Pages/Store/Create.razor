@@ -38,11 +38,6 @@
             }
         </MudItem>
 
-        <MudText>
-            CategoryId:
-            @_store.CategoryId
-        </MudText>
-
         <MudTextField @bind-Value="_store.Description"
                       Label="Store Description"
                       Variant="Variant.Outlined"
@@ -147,6 +142,8 @@
             ErrorMessage = "No categories available. Please create a category first.";
             return;
         }
+
+        categories = categories.Where(c => c.ChildrenResponses != null).Select(c => c).ToList();
 
         _store.CategoryId = categories.FirstOrDefault()?.CategoryId;
     }

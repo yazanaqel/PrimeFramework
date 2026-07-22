@@ -15,16 +15,23 @@ public class CategoryService(IReadRepository<Domain.Entities.Business.Category> 
 
         var categories = await _repo.ListAsync(spec,ct);
 
+        var categoriesTree = categories
+            .Where(i => i.ParentCategoryId is null)
+            .Select(p => new GetAllCategoriesResponse(
+                p.Id,
+                p.Name,
+                p.Description,
+                p.SubCategories.Select(c => new ChildrenResponse(
+                    c.Id,
+                    c.Name,
+                    c.Description,
+                    c.ParentCategoryId
+                )).ToList()
+            ))
+            .ToList();
 
-        var response = categories.Select(c => new GetAllCategoriesResponse
-        (
-            c.Id,
-            c.Name,
-            c.Description,
-            c.ParentCategoryId
 
-        )).ToList();
 
-        return Result.Success(response);
+        return Result.Success(categoriesTree);
     }
 }

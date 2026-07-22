@@ -42,12 +42,12 @@
                          Required="true"
                          For="@(() => _product.UnitPrice)" />
         <MudItem>
-            @if (categories is not null)
+            @if (_childrenResponse is not null)
             {
                 <InputSelect TValue="string" class="form-select" @bind-Value="_product.CategoryId">
-                    @foreach (var category in categories)
+                    @foreach (var child in _childrenResponse)
                     {
-                        <option value="@category.CategoryId">@category.Name</option>
+                        <option value="@child.CategoryId">@child.Name</option>
                     }
                 </InputSelect>
             }
@@ -86,7 +86,7 @@
 
 @code {
     private MAUI.Business.Models.Product _product = new();
-    private List<InsideMarket.MAUI.Business.Models.Category> categories = new();
+    private List<InsideMarket.MAUI.Business.Models.ChildrenResponse> _childrenResponse = new();
 
     private bool _isBusy = false;
     private string? ErrorMessage;
@@ -95,7 +95,12 @@
     protected override async Task OnInitializedAsync()
     {
 
-        categories = await CategoryService.GetAllCategories();
+        var categories = await CategoryService.GetAllCategories();
+
+        if(categories != null)
+        {
+            _childrenResponse = categories.Where(c => c.ChildrenResponses != null).SelectMany(c => c.ChildrenResponses).ToList();
+        }
 
     }
 
