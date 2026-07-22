@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using Prime.Identity.Queries.Application.Features.Category;
 using Prime.Identity.Queries.Application.Features.Product;
 using Prime.Identity.Queries.Application.Features.Product.GetStoreProducts;
 
@@ -8,5 +9,5 @@ public interface IProductService
 {
     Task<Result<List<GetStoreProductsResponse>>> GetStoreProductsAsync(CancellationToken ct = default);
     Task<Result<List<GetStoreProductsResponse>>> GetStoreProductsById(Guid storeId, CancellationToken ct = default);
-    Task<Result<List<GetCategorizedProductsResponse>>> GetCategorizedProducts(CancellationToken ct = default);
+    Task<Result<List<GetAllCategoriesResponse>>> GetCategorizedProducts(CancellationToken ct = default);
 }

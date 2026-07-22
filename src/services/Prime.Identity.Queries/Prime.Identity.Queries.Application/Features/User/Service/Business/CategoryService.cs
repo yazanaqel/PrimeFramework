@@ -25,7 +25,8 @@ public class CategoryService(IReadRepository<Domain.Entities.Business.Category> 
                     c.Id,
                     c.Name,
                     c.Description,
-                    c.ParentCategoryId
+                    c.ParentCategoryId,
+                    null
                 )).ToList()
             ))
             .ToList();

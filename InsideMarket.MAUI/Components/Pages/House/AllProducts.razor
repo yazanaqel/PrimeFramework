@@ -21,34 +21,40 @@
         foreach(var category in _categorizedProducts)
         {
             <MudItem xs="12">
-                <MudText Typo="Typo.h4">@category.CategoryName</MudText>
+                <MudText Typo="Typo.h4">@category.Name</MudText>
             </MudItem>
 
-            foreach(var product in category.Products)
+            foreach(var sub in category.ChildrenResponses)
             {
-                <MudItem xs="6">
-                    <MudCard>
-                        <MudImage Src="@product.Image" Alt="Mug" Elevation="25" />
-                        <MudCardContent>
-                            <MudText Typo="Typo.h5">@product.Name</MudText>
-                            <MudText Typo="Typo.body2">@product.Description</MudText>
-                        </MudCardContent>
-                        <MudCardActions>
-                            @*                             <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => NavigateToMarket(product.Id))">
+
+                <MudItem xs="12">
+                    <MudText Typo="Typo.h4">@sub.Name</MudText>
+                </MudItem>
+
+                foreach(var product in sub.Products)
+                {
+
+                    <MudItem xs="6">
+                        <MudCard>
+                            <MudImage Src="@product.Image" Alt="Mug" Elevation="25" />
+                            <MudCardContent>
+                                <MudText Typo="Typo.h5">@product.Name</MudText>
+                                <MudText Typo="Typo.body2">@product.Description</MudText>
+                            </MudCardContent>
+                            <MudCardActions>
+                                @*                             <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => NavigateToMarket(product.Id))">
                                 Details
                             </MudButton> *@
-                            @*                         <MudIconButton Icon="@Icons.Material.Outlined.AddToQueue"
+                                @*                         <MudIconButton Icon="@Icons.Material.Outlined.AddToQueue"
                                        Color="Color.Default"
                                        Size="Size.Medium"
                                        OnClick="@(() => AddToCart(product))" /> *@
-                        </MudCardActions>
-                    </MudCard>
-                </MudItem>
+                            </MudCardActions>
+                        </MudCard>
+                    </MudItem>
+                }
             }
 
-            <MudItem xs="12">
-                <MudText>--------------------------------</MudText>
-            </MudItem>
         }
     }
     else if(searchList is not null && !string.IsNullOrEmpty(SearchText))
@@ -56,34 +62,39 @@
         foreach(var category in searchList)
         {
             <MudItem xs="12">
-                <MudText Typo="Typo.h4">@category.CategoryName</MudText>
+                <MudText Typo="Typo.h4">@category.Name</MudText>
             </MudItem>
 
-            foreach(var product in category.Products)
+            foreach(var sub in category.ChildrenResponses)
             {
-                <MudItem xs="6">
-                    <MudCard>
-                        <MudImage Src="@product.Image" Alt="Mug" Elevation="25" />
-                        <MudCardContent>
-                            <MudText Typo="Typo.h5">@product.Name</MudText>
-                            <MudText Typo="Typo.body2">@product.Description</MudText>
-                        </MudCardContent>
-                        <MudCardActions>
-                            @*                             <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => NavigateToMarket(product.Id))">
+
+                <MudItem xs="12">
+                    <MudText Typo="Typo.h4">@sub.Name</MudText>
+                </MudItem>
+
+                foreach(var product in sub.Products)
+                {
+
+                    <MudItem xs="6">
+                        <MudCard>
+                            <MudImage Src="@product.Image" Alt="Mug" Elevation="25" />
+                            <MudCardContent>
+                                <MudText Typo="Typo.h5">@product.Name</MudText>
+                                <MudText Typo="Typo.body2">@product.Description</MudText>
+                            </MudCardContent>
+                            <MudCardActions>
+                                @*                             <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => NavigateToMarket(product.Id))">
                                 Details
                             </MudButton> *@
-                            @*                         <MudIconButton Icon="@Icons.Material.Outlined.AddToQueue"
+                                @*                         <MudIconButton Icon="@Icons.Material.Outlined.AddToQueue"
                                        Color="Color.Default"
                                        Size="Size.Medium"
                                        OnClick="@(() => AddToCart(product))" /> *@
-                        </MudCardActions>
-                    </MudCard>
-                </MudItem>
+                            </MudCardActions>
+                        </MudCard>
+                    </MudItem>
+                }
             }
-
-            <MudItem xs="12">
-                <MudText>--------------------------------</MudText>
-            </MudItem>
         }
     }
 </MudGrid>
@@ -92,8 +103,8 @@
 @code {
 
 
-    private IEnumerable<InsideMarket.MAUI.Business.Models.GetCategorizedProductsResponse>? _categorizedProducts = new List<InsideMarket.MAUI.Business.Models.GetCategorizedProductsResponse>();
-    private IEnumerable<InsideMarket.MAUI.Business.Models.GetCategorizedProductsResponse>? searchList = new List<InsideMarket.MAUI.Business.Models.GetCategorizedProductsResponse>();
+    private IEnumerable<InsideMarket.MAUI.Business.Models.Category>? _categorizedProducts = new List<InsideMarket.MAUI.Business.Models.Category>();
+    private IEnumerable<InsideMarket.MAUI.Business.Models.Category>? searchList = new List<InsideMarket.MAUI.Business.Models.Category>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -122,7 +133,8 @@
         }
 
         searchList = _categorizedProducts
-            .Where(x => x.CategoryName.Contains(_searchText,StringComparison.OrdinalIgnoreCase))
+            .Where(x =>
+                x.Name.Contains(_searchText,StringComparison.OrdinalIgnoreCase))
             .ToList();
     }
 

@@ -1,6 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using Domain.Abstractions;
 using Prime.Identity.Queries.Application.Abstractions.Auth;
+using Prime.Identity.Queries.Application.Features.Category;
 using Prime.Identity.Queries.Application.Features.Product;
 using Prime.Identity.Queries.Application.Features.Product.GetStoreProducts;
 using Prime.Identity.Queries.Domain.Specifications.Business;
@@ -64,24 +65,34 @@ public class ProductService(
         return Result.Success(response);
     }
 
-    public async Task<Result<List<GetCategorizedProductsResponse>>> GetCategorizedProducts(CancellationToken ct = default)
+    public async Task<Result<List<GetAllCategoriesResponse>>> GetCategorizedProducts(CancellationToken ct = default)
     {
-        var categorizedProducts = await _categoryRepository.ListAsync(new GetAllCategoriesSpec(),ct);
+        var categories = await _categoryRepository.ListAsync(new GetAllCategoriesSpec(),ct);
 
-        var response = categorizedProducts.Select(category => new GetCategorizedProductsResponse(
-            category.Id.ToString(),
-            category.Name,
-            category.Products.Select(product => new GetStoreProductsResponse(
-                product.Id,
-                product.StoreId,
-                product.CategoryId,
-                product.Name,
-                baseUrl + product.Image,
-                product.Description,
-                product.CreatedAt,
-                product.ModifiedAt
-            )).ToList()
-        )).ToList();
+        var response = categories
+            .Where(i => i.ParentCategoryId is null)
+            .Select(p => new GetAllCategoriesResponse(
+                p.Id,
+                p.Name,
+                p.Description,
+                p.SubCategories.Select(c => new ChildrenResponse(
+                    c.Id,
+                    c.Name,
+                    c.Description,
+                    c.ParentCategoryId,
+                    c.Products.Select(product => new GetStoreProductsResponse(
+                        product.Id,
+                        product.StoreId,
+                        product.CategoryId,
+                        product.Name,
+                        baseUrl + product.Image,
+                        product.Description,
+                        product.CreatedAt,
+                        product.ModifiedAt
+                    )).ToList()
+                )).ToList()
+            ))
+            .ToList();
 
         return Result.Success(response);
     }
