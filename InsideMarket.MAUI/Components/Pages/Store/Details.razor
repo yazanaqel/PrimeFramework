@@ -3,35 +3,36 @@
 @inject IProductService ProductService
 @inject IBasketService BasketService
 
-@if(store is null)
+@if(_store is null)
 {
     <Loading />
 }
 else
 {
-    <MudGrid Spacing="0">
-
-        <MudItem xs="12">
-            <div style="aspect-ratio: 16 / 9; width: 100%;">
-                <MudImage Src="@store.ImageCover" Style="width:100%; height:100%; object-fit:cover;" />
-            </div>
-        </MudItem>
-
-        <MudItem xs="4">
-            <div style="aspect-ratio: 1 / 1; width: 100%;">
-                <MudImage Src="@store.Image" Style="width:100%; height:100%; object-fit:cover;" />
-            </div>
-        </MudItem>
-
-        <MudItem xs="6">
-            <MudText Typo="Typo.h4" Class="m-3">
-                @store.Name
-            </MudText>
-        </MudItem>
 
 
+    <div id="story" class="tab-content active">
 
-    </MudGrid>
+        <!-- Cover -->
+        <div class="cover-wrapper">
+            <img src="@_store.ImageCover" alt="Cover Image">
+        </div>
+
+        <!-- Profile -->
+        <div class="profile-wrapper">
+            <img src="@_store.Image" alt="Profile Image">
+        </div>
+
+        <!-- Name + Bio -->
+        <div class="profile-info">
+            <h2>@_store.Name</h2>
+            <p>@_store.Description</p>
+            <p>@_store.City</p>
+            <p>@_store.Address</p>
+        </div>
+
+    </div>
+
 
     <MudGrid>
 
@@ -97,14 +98,14 @@ else
 
     [Parameter] public Guid Id { get; set; }
 
-    private InsideMarket.MAUI.Business.Models.Store? store = new();
+    private InsideMarket.MAUI.Business.Models.Store? _store = new();
     private List<InsideMarket.MAUI.Business.Models.Product>? products = new();
     private List<InsideMarket.MAUI.Business.Models.Product>? searchList = new();
     private List<ProductInBasket> _productsInBasket = new List<ProductInBasket>();
 
     protected override async Task OnInitializedAsync()
     {
-        store = await StoreService.GetStore(Id);
+        _store = await StoreService.GetStore(Id);
 
         products = await ProductService.GetStoreProducts(Id);
 

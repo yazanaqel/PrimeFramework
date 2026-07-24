@@ -6,84 +6,81 @@
 @inject NavigationManager Nav
 @inject HttpClient httpClient
 
-@if(store is null)
+@if(_store is null)
 {
     <Loading />
 }
 else
 {
-    <MudGrid Spacing="0">
 
-        <MudItem xs="12">
-            <div style="aspect-ratio: 16 / 9; width: 100%;">
-                <MudImage Src="@store.ImageCover" Style="width:100%; height:100%; object-fit:cover;" />
-            </div>
-        </MudItem>
+    <div id="story" class="tab-content active">
 
-        <MudItem xs="4">
-            <div style="aspect-ratio: 1 / 1; width: 100%;">
-                <MudImage Src="@store.Image" Style="width:100%; height:100%; object-fit:cover;" />
-            </div>
-        </MudItem>
+        <!-- Cover -->
+        <div class="cover-wrapper">
+            <img src="@_store.ImageCover" alt="Cover Image">
+        </div>
 
-        <MudItem xs="6">
-            <MudText Typo="Typo.h4" Class="m-3">
-                @store.Name
-            </MudText>
-        </MudItem>
+        <!-- Profile -->
+        <div class="profile-wrapper">
+            <img src="@_store.Image" alt="Profile Image">
+        </div>
 
-        <MudItem xs="2">
+        <!-- Name + Bio -->
+        <div class="profile-info">
+            <h2>@_store.Name</h2>
+            <p>@_store.Description</p>
+            <p>@_store.City</p>
+            <p>@_store.Address</p>
+        </div>
 
-        </MudItem>
-
-        <MudItem xs="2">
-            <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Primary" OnClick="@GoToCreate" />
-        </MudItem>
+    </div>
 
 
-
-    </MudGrid>
-
-    @if(products is null || !products.Any())
+    @if(_products is not null && _products.Any())
     {
-        <Loading />
+
+        <section id="menu">
+            <div class="menu-container">
+                <div class="menu-category">
+                    <h3>Store Products</h3>
+                    <ul class="menu-list">
+
+                        <li>
+                            <a href="/product/create">
+                                <span class="menu-item-name">
+                                    <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Success" /> add new product
+                                </span>
+                            </a>
+                        </li>
+
+                        @foreach(var item in _products)
+                        {
+                            <li>
+                                <a>
+                                    <span class="menu-item-name">Name: @item.Name</span>
+                                    <span class="menu-item-price">Stock Quantity: @item.StockQuantity</span>
+                                    <span class="menu-item-price">
+                                        <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Warning" />
+                                    </span>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+
+                </div>
+            </div>
+        </section>
     }
     else
     {
+        <section id="home">
 
-        <MudTable Items="@products" Dense="false" Hover="false" Bordered="true" Striped="true" Filter="new Func<Product,bool>(FilterFunc)">
+            <p class="hero-subtitle">
+                you don't have products yet! add some <MudLink Color="Color.Success" Href="/product/create">products</MudLink>.
+            </p>
 
-            <ToolBarContent>
-                <MudTextField Immediate="true" @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
-            </ToolBarContent>
-
-            <HeaderContent>
-                <MudTh>Name</MudTh>
-                <MudTh>Description</MudTh>
-                <MudTh>Unit Price</MudTh>
-                <MudTh>Stock Quantity</MudTh>
-            </HeaderContent>
-
-            <RowTemplate>
-                <MudTd DataLabel="Name">@context.Name</MudTd>
-                <MudTd DataLabel="Description">@context.Description</MudTd>
-                <MudTd DataLabel="Unit Price">@context.UnitPrice</MudTd>
-                <MudTd DataLabel="Stock Quantity">@context.StockQuantity</MudTd>
-
-                
-                <MudTd>
-                    <MudIconButton Icon="@Icons.Material.Filled.Edit"
-                                   Color="@Color.Info"
-                                   OnClick="@(() => GoToEdit(context))" />
-                </MudTd>
-
-
-            </RowTemplate>
-
-
-        </MudTable>
+        </section>
     }
-
 
 }
 
@@ -93,51 +90,27 @@ else
 
 @code {
 
-    private InsideMarket.MAUI.Business.Models.Store? store = new();
-    private List<InsideMarket.MAUI.Business.Models.Product>? products = new();
-
-    private string searchString = "";
+    private InsideMarket.MAUI.Business.Models.Store? _store = new();
+    private List<InsideMarket.MAUI.Business.Models.Product>? _products = new();
 
 
     protected override async Task OnInitializedAsync()
     {
 
-        store = await StoreService.GetStore();
+        _store = await StoreService.GetStore();
 
-        if(store is null)
+        if(_store is null)
         {
             Nav.NavigateTo("/store/create",true);
         }
         else
         {
-            products = await ProductService.GetStoreProducts();
+            _products = await ProductService.GetStoreProducts();
         }
-            
+
     }
 
 
-    private bool FilterFunc(Product product) => FilterFunc(product,searchString);
-
-    private bool FilterFunc(Product product,string searchString)
-    {
-        if(string.IsNullOrWhiteSpace(searchString))
-            return true;
-        if(product.Name.Contains(searchString,StringComparison.OrdinalIgnoreCase))
-            return true;
-        if(product.Description.Contains(searchString,StringComparison.OrdinalIgnoreCase))
-            return true;
-        return false;
-    }
-
-    private void GoToCreate()
-    {
-        Nav.NavigateTo("/product/create");
-    }
-
-    private void GoToEdit(Product product)
-    {
-        // Nav.NavigateTo($"/product/edit/{product.Id}");
-    }
 }
 
 
