@@ -5,49 +5,45 @@
 @inject AuthenticationStateProvider AuthProvider
 @attribute [AllowAnonymous]
 
-<MudThemeProvider />
+<MudThemeProvider IsDarkMode="true" />
 <MudDialogProvider />
 <MudSnackbarProvider />
 
-<MudLayout>
 
-    <!-- Top App Bar -->
-    <MudAppBar Elevation="4" Color="Color.Primary">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" OnClick="@ToggleDrawer" />
-        <MudText Typo="Typo.h6">Inside-Market</MudText>
-        <MudSpacer />
-        @if(IsUserAuthenticated)
-        {
-            <MudIconButton Icon="@Icons.Material.Outlined.AddShoppingCart"
-                           Color="Color.Default"
-                           Size="Size.Medium"
-                           Href="/order/shopping-details" />
-        }
-    </MudAppBar>
+<!-- Top App Bar -->
+<nav style="position:fixed; top:0; left:0; right:0; z-index:1000;">
+    <div class="nav-container">
+        <div class="logo">INSIDE MARKET</div>
+        <div class="@_menuToggle" onclick="@ToggleDrawer">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
 
-    <!-- Left Drawer -->
-    <MudDrawer @bind-Open="_drawerOpen" Elevation="4" ClipMode="DrawerClipMode.Always">
-        <MudNavMenu>
+        <ul class="@_navLinks">
 
-            <MudNavLink Href="/settings" Icon="@Icons.Material.Filled.Settings">App Settings</MudNavLink>
+            <li onclick="@ToggleDrawer"><a href="/settings">App Settings</a></li>
 
             @if(IsUserAuthenticated)
             {
-                <MudNavLink Href="/user/get" Icon="@Icons.Material.Filled.Person">Profile</MudNavLink>
-                <MudNavLink Icon="@Icons.Material.Filled.Logout" OnClick="ConfirmLogout">Logout</MudNavLink>
+                <li onclick="@ToggleDrawer"><a href="/user/get">Profile</a></li>
+
+                <li onclick="@ToggleDrawer"><a href="/order/shopping-details">Shopping Cart</a></li>
+
+                <li onclick="@ConfirmLogout"><a>Logout</a></li>
             }
             else
             {
-                <MudNavLink Icon="@Icons.Material.Filled.Login" OnClick="@(() => Nav.NavigateTo("/login",true))">Login</MudNavLink>
+                <li onclick="@ToggleDrawer"><a href="/login">Login</a></li>
             }
 
-            <MudNavLink Href="/about-us" Icon="@Icons.Material.Filled.Info">About Us</MudNavLink>
+            <li onclick="@ToggleDrawer"><a href="/about-us">About Us</a></li>
 
-        </MudNavMenu>
+        </ul>
+    </div>
+</nav>
 
-
-
-    </MudDrawer>
+<MudLayout Style="margin-top:64px;">
 
     <!-- Main Content -->
     <MudMainContent Class="content-with-bottom-nav">
@@ -55,7 +51,7 @@
     </MudMainContent>
 
     <!-- Bottom Navigation -->
-    <MudPaper Elevation="8"
+        <MudPaper Elevation="8"
               Class="bottom-nav d-flex justify-space-around pa-2">
 
         <MudIconButton Icon="@Icons.Material.Rounded.LocalMall"
@@ -90,9 +86,16 @@
 
 </MudLayout>
 
+
+
+
+
+
 @code {
+
+    private string _menuToggle = "menu-toggle";
+    private string _navLinks = "nav-links";
     bool _drawerOpen = false;
-    void ToggleDrawer() => _drawerOpen = !_drawerOpen;
     bool IsUserAuthenticated = false;
     bool IsMerchantUser = false;
 
@@ -106,6 +109,15 @@
         {
             IsMerchantUser = true;
         }
+    }
+
+    void ToggleDrawer()
+    {
+        _drawerOpen = !_drawerOpen;
+
+        _menuToggle = _drawerOpen ? "menu-toggle active" : "menu-toggle";
+
+        _navLinks = _drawerOpen ? "nav-links active" : "nav-links";
     }
 
     private async Task ConfirmLogout()

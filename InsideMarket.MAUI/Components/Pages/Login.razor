@@ -4,64 +4,76 @@
 @inject NavigationManager Nav
 @inject AuthenticationStateProvider AuthProvider
 
+<section id="home">
 
-<MudPaper Class="pa-6 mx-auto mt-10" Elevation="8" MaxWidth="400px">
+    <h1 class="hero-title">Inside Market</h1>
+    <p class="hero-subtitle">
+        Built for small businesses
+    </p>
 
-    <MudText Typo="Typo.h5" Class="mb-4">Login</MudText>
+    <div class="contact-container">
+        <div class="contact-form">
 
-    @if(!string.IsNullOrEmpty(ErrorMessage))
-    {
-        <MudAlert Severity="Severity.Error" Dense="true" Class="mb-3">
-            @ErrorMessage
-        </MudAlert>
-    }
-
-    <EditForm Model="@_loginRequest" OnValidSubmit="@LoginAsync">
-        <DataAnnotationsValidator />
-
-        <MudTextField @bind-Value="_loginRequest.Email"
-                      Label="Email"
-                      Variant="Variant.Outlined"
-                      Required="true"
-                      For="@(() => _loginRequest.Email)" />
-
-        <MudTextField @bind-Value="_loginRequest.Password"
-                      Label="Password"
-                      Variant="Variant.Outlined"
-                      InputType="InputType.Password"
-                      Required="true"
-                      For="@(() => _loginRequest.Password)" />
-
-        <MudButton Variant="Variant.Filled"
-                   Color="Color.Primary"
-                   Class="mt-4"
-                   FullWidth="true"
-                   Disabled="@_isBusy"
-                   OnClick="LoginAsync">
-            @if(_isBusy)
+            @if(!string.IsNullOrEmpty(ErrorMessage))
             {
-                <MudProgressCircular Color="Color.Primary" Size="Size.Small" Indeterminate="true" />
+                <MudAlert Severity="Severity.Error" Dense="true" Class="mb-3">
+                    @ErrorMessage
+                </MudAlert>
             }
-            else
-            {
-                <MudText>Login</MudText>
-            }
-        </MudButton>
 
-    </EditForm>
-    
-    <MudText Class="mt-4 text-center">
-        Don't have an account?
-        <MudLink Href="/register">Register</MudLink>
-    </MudText>
+            <EditForm Model="@_loginRequest" OnValidSubmit="@LoginAsync">
+                <DataAnnotationsValidator />
+                
+                <div class="form-group">
 
-    <MudText Class="mt-4 text-center">
-        Guest?
-        <MudLink Href="/house/all-stores">Continue as Guest</MudLink>
-    </MudText>
+                    <label for="@_loginRequest.Email">Email</label>
+                    <MudTextField @bind-Value="_loginRequest.Email"
+                                  Variant="Variant.Outlined"
+                                  Required="true"
+                                  For="@(() => _loginRequest.Email)" />
 
-</MudPaper>
+                </div>
 
+                <div class="form-group">
+
+                    <label for="@_loginRequest.Password">Password</label>
+                    <MudTextField @bind-Value="_loginRequest.Password"
+                                  Variant="Variant.Outlined"
+                                  InputType="InputType.Password"
+                                  Required="true"
+                                  For="@(() => _loginRequest.Password)" />
+                </div>
+               
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Success"
+                           Class="submit-btn"
+                           FullWidth="true"
+                           Disabled="@_isBusy"
+                           OnClick="LoginAsync">
+
+                    @if(_isBusy)
+                    {
+                        <MudProgressCircular Color="Color.Success" Size="Size.Small" Indeterminate="true" />
+                    }
+                    else
+                    {
+                        <MudText>Login</MudText>
+                    }
+                </MudButton>
+            </EditForm>
+
+            <MudText Class="mt-4 text-center" Color="Color.Warning">
+                Don't have an account?
+                <MudLink Href="/register" Color="Color.Info">Register</MudLink>
+            </MudText>
+
+            <MudText Class="mt-4 text-center" Color="Color.Warning">
+                Guest?
+                <MudLink Href="/house/all-stores" Color="Color.Info">Continue as Guest</MudLink>
+            </MudText>
+        </div>
+    </div>
+</section>
 
 @code {
 
@@ -83,17 +95,17 @@
             var authState = await AuthProvider.GetAuthenticationStateAsync();
             var user = authState.User;
 
-            switch (user)
+            switch(user)
             {
                 case var _ when user.IsInRole("MERCHANT"):
-                    Nav.NavigateTo("/store/get", true);
+                    Nav.NavigateTo("/store/get",true);
                     break;
                 case var _ when user.IsInRole("USER"):
                     Nav.NavigateTo("/house/all-stores",true);
                     break;
-                // default:
-                //     Nav.NavigateTo("/", true);
-                //     break;
+                    // default:
+                    //     Nav.NavigateTo("/", true);
+                    //     break;
             }
 
         }

@@ -6,58 +6,55 @@
 
 @if(_productsInBasket.Any())
 {
-    <MudText Typo="Typo.h4">
-        My Basket
-    </MudText>
+    <section id="menu">
+        <div class="menu-container">
+            <div class="menu-category">
+                <h3>Shopping Basket</h3>
+                <ul class="menu-list">
 
-    <MudTable Items="@_productsInBasket" Dense="true" Hover="false" Bordered="true" Striped="true">
+                    @foreach(var item in _productsInBasket)
+                    {
+                        <li>
+                            <a>
+                                <span class="menu-item-name">@item.Name</span>
+                                <span class="menu-item-price">$@item.UnitPrice | Quantity: @item.Quantity</span>
+                            </a>
+                        </li>
+                    }
+                </ul>
 
-        <HeaderContent>
-            <MudTh>Name</MudTh>
-            <MudTh>Unit Price</MudTh>
-            <MudTh>Quantity</MudTh>
-        </HeaderContent>
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Success"
+                           Class="submit-btn"
+                           FullWidth="true"
+                           Disabled="@_isBusy"
+                           OnClick="SubmitOrder">
 
-        <RowTemplate>
-            <MudTd DataLabel="Name">@context.Name</MudTd>
-            <MudTd DataLabel="Unit Price">@context.UnitPrice</MudTd>
-            <MudTd DataLabel="Quantity">@context.Quantity</MudTd>
+                    @if(_isBusy)
+                    {
+                        <MudProgressCircular Color="Color.Success" Size="Size.Small" Indeterminate="true" />
+                    }
+                    else
+                    {
+                        <MudText>submit order</MudText>
+                    }
+                </MudButton>
 
-                
-            <MudTd>
-                @*                 <MudIconButton Icon="@Icons.Material.Filled.Edit"
-                               Color="@Color.Info"
-                               OnClick="@(() => GoToEdit(context))" /> *@
-            </MudTd>
-
-
-        </RowTemplate>
-
-
-    </MudTable>
-
-
-    <MudGrid>
-        <MudItem xs="3">
-            <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="@(() => SubmitOrder())">
-                @if(_isBusy)
-                {
-                    <MudProgressCircular Color="Color.Primary" Size="Size.Small" Indeterminate="true" />
-                }
-                else
-                {
-                    <MudText>Submit Order</MudText>
-                }
-            </MudButton>
-        </MudItem>
-    </MudGrid>
+            </div>
+        </div>
+    </section>
 
 }
 else
 {
-    <MudText>
-        Your basket is empty.
-    </MudText>
+
+    <section id="home">
+
+        <p class="hero-subtitle">
+            oh empty basket!, let's see some <MudLink Color="Color.Success" Href="/house/all-products">products</MudLink>.
+        </p>
+
+    </section>
 }
 
 @code {

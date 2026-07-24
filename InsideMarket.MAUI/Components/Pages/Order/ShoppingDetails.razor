@@ -3,41 +3,23 @@
 @inject NavigationManager Nav
 @inject AuthenticationStateProvider AuthProvider
 
-<MudGrid>
 
-    <MudItem xs="6">
-        <MudCard Class="pa-2" Elevation="8">
+<section id="specialty">
+    <h2 class="glitch">shopping details</h2>
+    <div class="specialty-grid">
 
-            <MudCardContent>
-                <MudText Typo="Typo.h6">Shopping Basket</MudText>
-            </MudCardContent>
+        <div class="specialty-card" onclick="@GoToShoppingBasket">
+            <div class="specialty-icon">🛍️</div>
+            <h3>Shopping Basket</h3>
+        </div>
 
-            <MudCardActions Class="justify-end">
-                <MudIconButton Icon="@Icons.Material.Outlined.ShoppingBasket"
-                               Color="Color.Primary"
-                               Href="/order/shopping-basket" />
-            </MudCardActions>
-        </MudCard>
+        <div class="specialty-card" onclick="@GoToOrders">
+            <div class="specialty-icon">📃</div>
+            <h3>Check my orders</h3>
+        </div>
 
-    </MudItem>
-
-    <MudItem xs="6">
-        <MudCard>
-
-            <MudCardContent>
-                <MudText Typo="Typo.h6">My Orders</MudText>
-                <MudIconButton Icon="@Icons.Material.Outlined.List"
-                               Color="Color.Default"
-                               Size="Size.Medium"
-                               OnClick="@GoToOrders" />
-            </MudCardContent>
-            <MudCardActions>
-
-            </MudCardActions>
-        </MudCard>
-    </MudItem>
-
-</MudGrid>
+    </div>
+</section>
 
 
 @code {
@@ -56,5 +38,9 @@
                 Nav.NavigateTo("/order/user-orders",true);
                 break;
         }
+    }
+    private void GoToShoppingBasket()
+    {
+        Nav.NavigateTo("/order/shopping-basket",true);
     }
 }

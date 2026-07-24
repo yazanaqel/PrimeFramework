@@ -5,84 +5,105 @@
 @inject IStoreService StoreService
 @inject NavigationManager Nav
 
-<MudPaper Class="pa-6 mx-auto mt-10" Elevation="8" MaxWidth="400px">
+<section id="home">
+    <p class="hero-subtitle">
+        add product to your store
+    </p>
+    <div class="contact-container">
+        <div class="contact-form">
 
-    <MudText Typo="Typo.h5" Class="mb-4">Create Product</MudText>
-    @if(!string.IsNullOrEmpty(ErrorMessage))
-    {
-        <MudAlert Severity="Severity.Error" Dense="true" Class="mb-3">
-            @ErrorMessage
-        </MudAlert>
-    }
-
-    <EditForm Model="@_product" OnValidSubmit="@CreateProduct">
-        <DataAnnotationsValidator />
-
-        <MudTextField @bind-Value="_product.Name"
-                      Label="Product Name"
-                      Variant="Variant.Outlined"
-                      Required="true"
-                      For="@(() => _product.Name)" />
-
-        <MudTextField @bind-Value="_product.Description"
-                      Label="Product Description"
-                      Variant="Variant.Outlined"
-                      Required="true"
-                      For="@(() => _product.Description)" />
-
-        <MudNumericField @bind-Value="_product.StockQuantity"
-                         Label="Stock Quantity"
-                         Variant="Variant.Outlined"
-                         Required="true"
-                         For="@(() => _product.StockQuantity)" />
-
-        <MudNumericField @bind-Value="_product.UnitPrice"
-                         Label="Product Unit Price"
-                         Variant="Variant.Outlined"
-                         Required="true"
-                         For="@(() => _product.UnitPrice)" />
-        <MudItem>
-            @if (_childrenResponse is not null)
+            @if(!string.IsNullOrEmpty(ErrorMessage))
             {
-                <InputSelect TValue="string" class="form-select" @bind-Value="_product.CategoryId">
-                    @foreach (var child in _childrenResponse)
+                <MudAlert Severity="Severity.Error" Dense="true" Class="mb-3">
+                    @ErrorMessage
+                </MudAlert>
+            }
+
+            <EditForm Model="@_product" OnValidSubmit="@CreateProduct">
+                <DataAnnotationsValidator />
+
+                <div class="form-group">
+                    <label for="@_product.Name">product name</label>
+                    <MudTextField @bind-Value="_product.Name"
+                                  Variant="Variant.Outlined"
+                                  Required="true"
+                                  For="@(() => _product.Name)" />
+                </div>
+
+                <div class="form-group">
+                    <label for="@_product.Description">tell people about this product</label>
+                    <MudTextField @bind-Value="_product.Description"
+                                  Variant="Variant.Outlined"
+                                  Required="true"
+                                  For="@(() => _product.Description)" />
+
+                </div>
+
+                <div class="form-group">
+                    <label for="@_product.UnitPrice">unit price</label>
+                    <MudNumericField @bind-Value="_product.UnitPrice"
+                                  Variant="Variant.Outlined"
+                                  Required="true"
+                                  For="@(() => _product.UnitPrice)" />
+
+                </div>
+
+                <div class="form-group">
+                    <label for="@_product.StockQuantity">stock quantity</label>
+                    <MudNumericField @bind-Value="_product.StockQuantity"
+                                  Variant="Variant.Outlined"
+                                  Required="true"
+                                     For="@(() => _product.StockQuantity)" />
+
+                </div>
+
+                <div class="form-group">
+                    <label for="@_product.CategoryId">product category</label>
+                    @if(_childrenResponse is not null)
                     {
-                        <option value="@child.CategoryId">@child.Name</option>
+                        <InputSelect TValue="string" class="form-select" @bind-Value="_product.CategoryId">
+                            @foreach(var child in _childrenResponse)
+                            {
+                                <option value="@child.CategoryId">@child.Name</option>
+                            }
+                        </InputSelect>
                     }
-                </InputSelect>
-            }
-        </MudItem>
+                </div>
 
-        <MudItem>
-            <MudText>Product Image</MudText>
-            <MudIconButton Icon="@Icons.Material.Filled.Image"
-                           Color="@Color.Info"
-                           OnClick="@(() => PickImage())" />
-        </MudItem>
+                <div class="form-group">
+                    <label for="@_product.Image">choose an image for the product</label>
+                    <MudIconButton Icon="@Icons.Material.Filled.Image"
+                                   Color="@Color.Info"
+                                   OnClick="@(() => PickImage())" />
 
-        <MudButton Variant="Variant.Filled"
-                   Color="Color.Primary"
-                   Class="mt-4"
-                   FullWidth="true"
-                   Disabled="@_isBusy"
-                   OnClick="CreateProduct">
-
-            @if(_isBusy)
-            {
-                <MudProgressCircular Color="Color.Primary" Size="Size.Small" Indeterminate="true" />
-            }
-            else
-            {
-                <MudText>Create</MudText>
-            }
-        </MudButton>
-
-    </EditForm>
-
-</MudPaper>
+                </div>
 
 
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Success"
+                           Class="submit-btn"
+                           FullWidth="true"
+                           Disabled="@_isBusy"
+                           OnClick="CreateProduct">
 
+                    @if(_isBusy)
+                    {
+                        <MudProgressCircular Color="Color.Success" Size="Size.Small" Indeterminate="true" />
+                    }
+                    else
+                    {
+                        <MudText>add this product</MudText>
+                    }
+                </MudButton>
+            </EditForm>
+
+            <MudText Class="mt-4 text-center">
+                <MudLink Color="Color.Error" Href="/store/get">Cancel</MudLink>
+            </MudText>
+
+        </div>
+    </div>
+</section>
 
 @code {
     private MAUI.Business.Models.Product _product = new();

@@ -5,39 +5,37 @@
 
 @if(_storeOrders.Any())
 {
-    <MudText Typo="Typo.h4">
-        My Orders
-    </MudText>
 
-    <MudTable Items="@_storeOrders" Dense="true" Hover="false" Bordered="true" Striped="true">
+    <section id="menu">
+        <div class="menu-container">
+            <div class="menu-category">
+                <h3>Shopping Basket</h3>
+                <ul class="menu-list">
 
-        <HeaderContent>
-            <MudTh>User Id</MudTh>
-            <MudTh>Product Name</MudTh>
-        </HeaderContent>
+                    @foreach(var item in _storeOrders)
+                    {
+                        <li>
+                            <a>
+                                <span class="menu-item-name">@item.UserId</span>
+                                <span class="menu-item-price">$@item.ProductName</span>
+                            </a>
+                        </li>
+                    }
+                </ul>
 
-        <RowTemplate>
-            <MudTd DataLabel="User Id">@context.UserId</MudTd>
-            <MudTd DataLabel="Product Name">@context.ProductName</MudTd>
-
-
-            <MudTd>
-                @*                 <MudIconButton Icon="@Icons.Material.Filled.Edit"
-                               Color="@Color.Info"
-                               OnClick="@(() => GoToEdit(context))" /> *@
-            </MudTd>
-
-
-        </RowTemplate>
-
-
-    </MudTable>
+            </div>
+        </div>
+    </section>
 }
 else
 {
-    <MudText>
-        Your orders are empty.
-    </MudText>
+    <section id="home">
+
+        <p class="hero-subtitle">
+            you don't have orders yet! see some <MudLink Color="Color.Success" Href="/house/all-products">products</MudLink>.
+        </p>
+
+    </section>
 }
 
 
