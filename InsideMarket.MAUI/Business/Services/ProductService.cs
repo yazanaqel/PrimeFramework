@@ -57,22 +57,22 @@ public class ProductService(IHttpClientFactory httpClientFactory) : IProductServ
         }
     }
 
-    public async Task<Product> GetProductById(Guid productId)
+    public async Task<GetProductByIdResponse> GetProductById(Guid productId)
     {
         var response = await _httpRead.GetAsync($"{ProductRouteGate.GetProductById}/{productId}");
 
         if(response.IsSuccessStatusCode)
         {
-            var result = await response.Content.ReadFromJsonAsync<Product>();
+            var result = await response.Content.ReadFromJsonAsync<GetProductByIdResponse>();
 
             if(result is null)
-                return new Product();
+                return new GetProductByIdResponse();
 
             return result;
         }
         else
         {
-            return new Product();
+            return new GetProductByIdResponse();
         }
     }
 

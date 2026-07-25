@@ -2,6 +2,7 @@
 @inject IStoreService StoreService
 @inject IProductService ProductService
 @inject IBasketService BasketService
+@inject NavigationManager Nav
 
 @if(_store is null)
 {
@@ -45,13 +46,13 @@ else
                           Clearable="true" />
         </MudItem>
 
-        @if(products is null || !products.Any())
+        @if(_products is null || !_products.Any())
         {
             <Loading />
         }
         else if(string.IsNullOrEmpty(SearchText))
         {
-            foreach(var product in products)
+            foreach(var product in _products)
             {
                 <MudItem xs="6">
                     <MudCard>
@@ -61,13 +62,9 @@ else
                             <MudText Typo="Typo.body2">@product.Description</MudText>
                         </MudCardContent>
                         <MudCardActions>
-                            @*                             <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => NavigateToMarket(product.Id))">
+                            <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => NavigateToProductDetails(product.ProductId))">
                                 Details
-                            </MudButton> *@
-                            <MudIconButton Icon="@Icons.Material.Outlined.AddToQueue"
-                                           Color="Color.Default"
-                                           Size="Size.Medium"
-                                           OnClick="@(() => AddToCart(product))" />
+                            </MudButton>
                         </MudCardActions>
                     </MudCard>
                 </MudItem>
@@ -99,15 +96,15 @@ else
     [Parameter] public Guid Id { get; set; }
 
     private InsideMarket.MAUI.Business.Models.Store? _store = new();
-    private List<InsideMarket.MAUI.Business.Models.Product>? products = new();
+    private List<InsideMarket.MAUI.Business.Models.Product>? _products = new();
     private List<InsideMarket.MAUI.Business.Models.Product>? searchList = new();
-    private List<ProductInBasket> _productsInBasket = new List<ProductInBasket>();
+    private List<ProductInBasket> __productsInBasket = new List<ProductInBasket>();
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
         _store = await StoreService.GetStore(Id);
 
-        products = await ProductService.GetStoreProducts(Id);
+        _products = await ProductService.GetStoreProducts(Id);
 
     }
 
@@ -127,25 +124,17 @@ else
     {
         if(searchList is not null && string.IsNullOrEmpty(_searchText))
         {
-            searchList = products;
+            searchList = _products;
             return;
         }
 
-        searchList = products
+        searchList = _products
             .Where(x => x.Name.Contains(_searchText,StringComparison.OrdinalIgnoreCase))
             .ToList();
     }
 
-    private void AddToCart(Product product)
+    private void NavigateToProductDetails(string id)
     {
-        var productInBasket = new ProductInBasket
-        {
-            ProductId = product.ProductId,
-            Name = product.Name,
-            UnitPrice = product.UnitPrice,
-            Quantity = 1
-        };
-        _productsInBasket.Add(productInBasket);
-        BasketService.SaveBasket(_productsInBasket);
+        Nav.NavigateTo($"/product/details/{id}");
     }
 }

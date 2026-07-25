@@ -1,7 +1,123 @@
-﻿@page "/product/details"
+﻿@page "/product/details/{id:guid}"
+@inject IProductService ProductService
+@inject IBasketService BasketService
+@inject NavigationManager Nav
 
-<h3>Details</h3>
+@if(_product is null)
+{
+    <Loading />
+}
+else
+{
+    <section id="about">
+        <h2 class="glitch">Product Details</h2>
+
+        <div id="story" class="tab-content active">
+            <div class="about-content">
+
+                <div class="about-image">
+                    <img src="@_product.Image" alt="@_product.Name">
+                </div>
+
+                <div class="about-text">
+                    <h3>@_product.Name</h3>
+                    <h4><span class="menu-item-price">$@_product.Price</span></h4>
+                    <p>@_product.Description</p>
+                    <br>
+                    <p>
+                        By @_product.Store.Name,
+                        <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => NavigateToMarket(_product.Store.StoreId))">
+                            check the store
+                        </MudButton>
+                    </p>
+                    <br>
+
+                    @if(_product.Store.IsShippingAvailable)
+                    {
+                        <p>
+                            Shipping Is Available 🚚✅
+                        </p>
+                    }
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="about-tabs">
+            <button class="tab-button active" onclick="@(() => AddToCart(_product))">Add To Cart 🛍️</button>
+        </div>
+
+    </section>
+
+    @if(_product.SimilarProducts is not null)
+    {
+        <section id="about">
+            <h2 class="glitch">similar products</h2>
+
+            
+            <MudGrid>
+
+
+                @foreach(var item in _product.SimilarProducts)
+                {
+                    <MudItem xs="12">
+                        <MudCard>
+                          <div class="about-image">
+                            <img src="@item.Image" alt="@item.Name">
+                            </div>
+                            <MudCardContent>
+                            <MudText Typo="Typo.h5">@item.Name</MudText>
+                            <MudText Typo="Typo.body2">@item.Description</MudText>
+                            </MudCardContent>
+                            <MudCardActions>
+                            <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => NavigateToProductDetails(item.ProductId))">
+                                    Details
+                                </MudButton>
+                            </MudCardActions>
+                        </MudCard>
+                    </MudItem>
+                }
+            </MudGrid>
+
+        </section>
+    }
+
+}
+
 
 @code {
 
+    [Parameter] public Guid Id { get; set; }
+
+    private GetProductByIdResponse _product = new GetProductByIdResponse();
+    private List<ProductInBasket> __productsInBasket = new List<ProductInBasket>();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _product = await ProductService.GetProductById(Id);
+    }
+
+    private void AddToCart(GetProductByIdResponse product)
+    {
+        var productInBasket = new ProductInBasket
+        {
+            ProductId = product.ProductId.ToString(),
+            Name = product.Name,
+            UnitPrice = product.Price,
+            Quantity = 1
+        };
+        __productsInBasket.Add(productInBasket);
+        BasketService.SaveBasket(__productsInBasket);
+    }
+
+    private void NavigateToMarket(string id)
+    {
+        Nav.NavigateTo($"/store/details/{id}");
+    }
+
+    private void NavigateToProductDetails(string id)
+    {
+        Nav.NavigateTo($"/product/details/{id}");
+    }
 }

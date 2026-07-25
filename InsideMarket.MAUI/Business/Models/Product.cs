@@ -22,3 +22,16 @@ public class ProductInBasket
     public int Quantity { get; set; }
 
 }
+
+public class GetProductByIdResponse
+{
+    public Guid ProductId { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string Image { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
+    public decimal Price { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime? ModifiedAt { get; set; }
+    public Store Store { get; set; } = new();
+    public List<Product>? SimilarProducts { get; set; } = new List<Product>();
+}

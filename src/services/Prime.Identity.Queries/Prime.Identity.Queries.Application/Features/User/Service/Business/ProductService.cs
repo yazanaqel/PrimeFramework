@@ -96,4 +96,31 @@ public class ProductService(
 
         return Result.Success(response);
     }
+
+    public async Task<Result<GetProductByIdResponse>> GetProductById(Guid productId,CancellationToken ct = default)
+    {
+        var spec = new GetProductByIdSpec(productId);
+
+        var response = await _productRepository.FirstOrDefaultAsync(spec,ct);
+
+        if(response == null)
+            return Result.Failure<GetProductByIdResponse>("No product found!");
+
+        var similarProducts = await _productRepository.ListAsync(new GetSimilarProductsSpec(response.CategoryId,productId), ct);
+
+        var result = new GetProductByIdResponse(response.Id,response.Name,baseUrl + response.Image,response.Description,response.UnitPrice,response.CreatedAt,response.ModifiedAt,
+            new Store.GetOwnerStore.GetOwnerStoreResponse(response.Store.Id,response.Store.UserId,response.Store.CategoryId,response.Store.Name,"","",response.Store.Description,response.Store.Address,response.Store.IsShippingAvailable,response.Store.City,response.Store.StoreStatus,response.Store.CreatedAt,response.Store.ModifiedAt),
+            similarProducts.Select(product => new GetStoreProductsResponse(
+                        product.Id,
+                        product.StoreId,
+                        product.CategoryId,
+                        product.Name,
+                        baseUrl + product.Image,
+                        product.Description,
+                        product.CreatedAt,
+                        product.ModifiedAt
+                    )).ToList()); 
+                        
+        return Result.Success(result);
+    }
 }
