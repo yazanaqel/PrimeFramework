@@ -1,5 +1,5 @@
 ﻿@page "/order/user-orders"
-@attribute [Authorize(Roles ="USER")]
+@attribute [Authorize]
 @inject IOrderService OrderService
 
 
@@ -9,7 +9,7 @@
     <section id="menu">
         <div class="menu-container">
             <div class="menu-category">
-                <h3>Shopping Basket</h3>
+                <h3>Submited Orders</h3>
                 <ul class="menu-list">
 
                     @foreach(var item in _userOrders)

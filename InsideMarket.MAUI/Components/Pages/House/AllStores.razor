@@ -2,13 +2,56 @@
 @attribute [AllowAnonymous]
 @inject IStoreService StoreService
 @inject NavigationManager Nav
+@inject IJSRuntime JS
 
-@if(stores is null || !stores.Any())
+@if(_stores is null || !_stores.Any())
 {
     <Loading />
 }
 else
 {
+
+
+    <div class="deck">
+
+        <button class="nav-button prev" @onclick="() => Previous()">-</button>
+        <button class="nav-button next" @onclick="() => Next()">+</button>
+
+        <div class="slide active">
+
+            <div class="bg">
+                <img src="@_stores[0].ImageCover" />
+            </div>
+
+            <div class="content">
+                <h1>@_stores[0].Name</h1>
+            </div>
+
+        </div>
+
+        @if(_sliderStores is not null && _sliderStores.Count > 0)
+        {
+            @foreach(var item in _sliderStores)
+            {
+                <div class="slide">
+
+                    <div class="bg">
+                        <img src="@item.ImageCover" />
+                    </div>
+
+                    <div class="content">
+                        <h1>@item.Name</h1>
+                    </div>
+
+                </div>
+            }
+        }
+
+
+    </div>
+
+
+
     <MudGrid>
 
         <MudItem xs="12">
@@ -20,17 +63,9 @@ else
                           Clearable="true" />
         </MudItem>
 
-        <MudItem xs="6">
-            somthing here
-        </MudItem>
-
-        <MudItem xs="6">
-            somthing here
-        </MudItem>
-
         @if(string.IsNullOrEmpty(SearchText))
         {
-            @foreach(var store in stores)
+            @foreach(var store in _stores)
             {
                 <MudItem xs="6">
                     <MudCard>
@@ -81,18 +116,42 @@ else
 @code {
 
 
-    private List<InsideMarket.MAUI.Business.Models.Store>? stores = new();
+    private List<InsideMarket.MAUI.Business.Models.Store>? _stores = new();
+    private List<InsideMarket.MAUI.Business.Models.Store>? _sliderStores = new();
     private List<InsideMarket.MAUI.Business.Models.Store>? searchList = new();
+    private int i = 0;
 
     protected override async Task OnInitializedAsync()
     {
+
         var response = await StoreService.GetAllStores(new GetAllStoresRequest());
 
         if(response.Any())
         {
-            stores = response.ToList();
-        }
+            _stores = response.ToList();
 
+            if(_stores.Count > 3)
+            {
+                var firstFive = _stores.Skip(1).Take(2).ToList();
+
+                _sliderStores.AddRange(firstFive);
+            }
+
+        }
+    }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if(firstRender)
+            await JS.InvokeVoidAsync("enableSwipe");
+    }
+    
+    async Task Next()
+    {
+        await JS.InvokeVoidAsync("prevSlide");
+    }
+    async Task Previous()
+    {
+        await JS.InvokeVoidAsync("prevSlide");
     }
 
     private void NavigateToMarket(string id)
@@ -116,11 +175,11 @@ else
     {
         if(searchList is not null && string.IsNullOrEmpty(_searchText))
         {
-            searchList = stores;
+            searchList = _stores;
             return;
         }
 
-        searchList = stores
+        searchList = _stores
             .Where(x => x.Name.Contains(_searchText,StringComparison.OrdinalIgnoreCase))
             .ToList();
     }

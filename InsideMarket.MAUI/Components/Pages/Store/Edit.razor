@@ -1,53 +1,167 @@
 ﻿@page "/store/edit"
 @attribute [Authorize(Roles = "MERCHANT")]
 @inject IStoreService StoreService
+@inject IOrderService OrderService
 @inject NavigationManager Nav
 
-@if(store is null)
+@if(_store is null)
 {
     <Loading />
 }
 else
 {
-    <MudGrid Spacing="0">
 
-        <MudItem xs="12">
-            @store.Name
-        </MudItem>
-        <MudItem xs="12">
-            @store.Description
-        </MudItem>
-        <MudItem xs="12">
-            @store.Address
-        </MudItem>
-        <MudItem xs="12">
-            @store.City
-        </MudItem>
-        <MudItem xs="12">
-            @store.StoreStatus
-        </MudItem>
-        <MudItem xs="12">
-            @store.IsShippingAvailable
-        </MudItem>
+    <section id="menu">
+        <div class="menu-container">
+            <div class="menu-category">
+                <h3>Store Profile</h3>
+                <ul class="menu-list">
 
-    </MudGrid>            
+                    <li class="form-group">
+                        <label for="@_store.StoreStatus">Store Status:</label>
+                        @if(@_store.StoreStatus == InsideMarket.MAUI.Enums.StoreStatus.Active)
+                        {
+                            <span class="menu-item-name">Active ✅</span>
+                        }
+                        else if(@_store.StoreStatus == InsideMarket.MAUI.Enums.StoreStatus.Suspended)
+                        {
+                            <span class="menu-item-name">Suspended 😴</span>
+                        }
+                        else if(@_store.StoreStatus == InsideMarket.MAUI.Enums.StoreStatus.Draft)
+                        {
+                            <span class="menu-item-name">Draft ❌</span>
+                        }
+                    </li>
+
+                    <li class="form-group">
+                        <label for="@_store.Name">Store Name</label>
+                        <span class="menu-item-name">@_store.Name</span>
+                        <span class="menu-item-price">
+                            <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Warning" />
+                        </span>
+                    </li>
+
+                    <li class="form-group">
+                        <label for="@_store.Description">Description:</label>
+                        <span class="menu-item-name">@_store.Description</span>
+                        <span class="menu-item-price">
+                            <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Warning" />
+                        </span>
+                    </li>
+
+                    <li class="form-group">
+                        <label for="@_store.City">City:</label>
+                        <span class="menu-item-name">@_store.City</span>
+                        <span class="menu-item-price">
+                            <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Warning" />
+                        </span>
+                    </li>
+
+                    <li class="form-group">
+                        <label for="@_store.Address">Address:</label>
+                        <span class="menu-item-name">@_store.Address</span>
+                        <span class="menu-item-price">
+                            <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Warning" />
+                        </span>
+                    </li>
+
+                    <li class="form-group">
+                        <label for="@_store.IsShippingAvailable">Available Shipping:</label>
+                        @if(@_store.IsShippingAvailable)
+                        {
+                            <span class="menu-item-name">YES ✅</span>
+                        }
+                        else
+                        {
+                            <span class="menu-item-name">NO ❌</span>
+                        }
+                        <span class="menu-item-price">
+                            <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Warning" />
+                        </span>
+                    </li>
+
+                </ul>
+
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Success"
+                           Class="submit-btn"
+                           FullWidth="true"
+                           Disabled="@_isBusy"
+                           OnClick="Save">
+
+                    @if(_isBusy)
+                    {
+                        <MudProgressCircular Color="Color.Success" Size="Size.Small" Indeterminate="true" />
+                    }
+                    else
+                    {
+                        <MudText>Save</MudText>
+                    }
+                </MudButton>
+
+            </div>
+        </div>
+    </section>
 }
+
+
+@if(_storeOrders.Any())
+{
+
+    <section id="menu">
+        <div class="menu-container">
+            <div class="menu-category">
+                <h3>Requested Orders</h3>
+                <ul class="menu-list">
+
+                    @foreach(var item in _storeOrders)
+                    {
+                        <li>
+                            <a>
+                                <span class="menu-item-name">@item.UserId</span>
+                                <span class="menu-item-price">$@item.ProductName</span>
+                            </a>
+                        </li>
+                    }
+                </ul>
+
+            </div>
+        </div>
+    </section>
+}
+else
+{
+    <section id="home">
+
+        <p class="hero-subtitle">
+            you don't have orders yet! see some <MudLink Color="Color.Success" Href="/house/all-products">products</MudLink>.
+        </p>
+
+    </section>
+}
+
 
 
 @code {
 
-    private InsideMarket.MAUI.Business.Models.Store? store = new();
-
+    private InsideMarket.MAUI.Business.Models.Store? _store = new();
+    private IEnumerable<GetStoreOrdersResponse> _storeOrders = new List<GetStoreOrdersResponse>();
+    private bool _isBusy = false;
 
     protected override async Task OnInitializedAsync()
     {
+        _storeOrders = await OrderService.GetStoreOrders();
+        _store = await StoreService.GetStore();
 
-        store = await StoreService.GetStore();
-
-        if(store is null)
+        if(_store is null)
         {
             Nav.NavigateTo("/store/create",true);
         }
+
+    }
+
+    private void Save()
+    {
 
     }
 

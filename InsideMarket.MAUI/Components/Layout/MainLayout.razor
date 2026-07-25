@@ -14,6 +14,16 @@
 <nav style="position:fixed; top:0; left:0; right:0; z-index:1000;">
     <div class="nav-container">
         <div class="logo">INSIDE MARKET</div>
+
+        @if(IsUserAuthenticated)
+        {
+            <MudIconButton Icon="@Icons.Material.Rounded.AddShoppingCart"
+                           Color="Color.Default"
+                           Size="Size.Large"
+                           Href="/order/shopping-details" />
+
+        }
+
         <div class="@_menuToggle" onclick="@ToggleDrawer">
             <span></span>
             <span></span>
@@ -28,9 +38,7 @@
             {
                 <li onclick="@ToggleDrawer"><a href="/user/get">Profile</a></li>
 
-                <li onclick="@ToggleDrawer"><a href="/order/shopping-details">Shopping Cart</a></li>
-
-                <li onclick="@ConfirmLogout"><a>Logout</a></li>
+                <li onclick="@ConfirmLogout"><a style="cursor:pointer">Logout</a></li>
             }
             else
             {
@@ -55,26 +63,26 @@
               Class="bottom-nav d-flex justify-space-around pa-2">
 
         <MudIconButton Icon="@Icons.Material.Rounded.LocalMall"
-                       Color="Color.Dark"
-                       Size="Size.Medium"
+                       Color="Color.Default"
+                       Size="Size.Large"
                        Href="/house/all-stores" />
 
         <MudIconButton Icon="@Icons.Material.Rounded.Category"
-                       Color="Color.Dark"
-                       Size="Size.Medium"
+                       Color="Color.Default"
+                       Size="Size.Large"
                        Href="/house/all-products" />
 
                        
         @if(IsUserAuthenticated && IsMerchantUser)
         {
             <MudIconButton Icon="@Icons.Material.Rounded.ManageAccounts"
-                           Color="Color.Dark"
-                           Size="Size.Medium"
+                           Color="Color.Default"
+                           Size="Size.Large"
                            Href="/store/get" />
 
-            <MudIconButton Icon="@Icons.Material.Rounded.Settings"
-                           Color="Color.Dark"
-                           Size="Size.Medium"
+            <MudIconButton Icon="@Icons.Material.Rounded.InsertChart"
+                           Color="Color.Default"
+                           Size="Size.Large"
                            Href="/store/edit" />
 
         }

@@ -5,37 +5,83 @@
 
 
 
-@if(user is null || string.IsNullOrWhiteSpace(user.Email))
+@if(_user is null || string.IsNullOrWhiteSpace(_user.Email))
 {
     <Loading />
 }
 else
 {
 
-    <div class="card">
-        <div class="card-header">
-            <h3>User Profile</h3>
+    <section id="menu">
+        <div class="menu-container">
+            <div class="menu-category">
+                <h3>Profile</h3>
+                <ul class="menu-list">
+
+                    <li>
+                        <a>
+                            <span class="menu-item-name">Email:</span>
+                            <span class="menu-item-name">@_user.Email</span>
+                            <span class="menu-item-price">
+                                <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Warning" />
+                            </span>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a>
+                            <span class="menu-item-name">UserName:</span>
+                            <span class="menu-item-name">@_user.UserName</span>
+                            <span class="menu-item-price">
+                                <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Warning" />
+                            </span>
+                        </a>
+                    </li>
+
+                </ul>
+
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Success"
+                           Class="submit-btn"
+                           FullWidth="true"
+                           Disabled="@_isBusy"
+                           OnClick="Save">
+
+                    @if(_isBusy)
+                    {
+                        <MudProgressCircular Color="Color.Success" Size="Size.Small" Indeterminate="true" />
+                    }
+                    else
+                    {
+                        <MudText>Save</MudText>
+                    }
+                </MudButton>
+
+            </div>
         </div>
-        <div class="card-body">
-            <p><strong>Username:</strong> @user.UserName</p>
-            <p><strong>Email:</strong> @user.Email</p>
-        </div>
-    </div>
+    </section>
+
 }
 
 
 @code {
 
 
-    private UserProfileInfo user = new UserProfileInfo();
+    private UserProfileInfo _user = new UserProfileInfo();
+    private bool _isBusy = false;
 
     protected override async Task OnInitializedAsync()
     {
-        user = await AuthService.GetUserProfileAsync();
+        _user = await AuthService.GetUserProfileAsync();
 
-        if(user == null)
+        if(_user == null)
         {
             Nav.NavigateTo("/login");
         }
+    }
+
+    private void Save()
+    {
+        
     }
 }

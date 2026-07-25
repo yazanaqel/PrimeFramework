@@ -27,6 +27,7 @@ https://www.tooplate.com/view/2146-nexus-brew
 	--muted-pink: #b8306a;
 	--muted-blue: #3a9da3;
 	--muted-purple: #6d3fb3;
+	--eq: cubic-bezier(0.77,0,0.175,1);
 }
 
 body {
@@ -1329,4 +1330,76 @@ footer {
 	.profile-info p {
 		font-size: 14px;
 		color: var(--ink-3);
+	}
+
+
+
+.deck {
+	position: relative;
+	width: 100%;
+	height: 300px; /* or your image height */
+	overflow: hidden;
+}
+
+.slide {
+	position: absolute;
+	inset: 0;
+	opacity: 0;
+	visibility: hidden;
+	transform: translateX(40px);
+	transition: opacity .6s cubic-bezier(0.77,0,0.175,1), transform .6s cubic-bezier(0.77,0,0.175,1), visibility .6s;
+}
+
+	.slide.active {
+		opacity: 1;
+		visibility: visible;
+		transform: translateX(0);
+	}
+	.slide .bg {
+		position: absolute;
+		inset: 0;
+		background-size: cover;
+		background-position: center;
+		filter: blur(5px);
+		opacity: .4;
+		transform: scale(1.1);
+		transition: opacity .6s var(--eq), transform .6s var(--eq);
+	}
+
+	.slide.active .bg {
+		opacity: .7;
+		transform: scale(1);
+	}
+
+.nav-button {
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	width: 48px;
+	height: 48px;
+	border-radius: 50%;
+	background: rgba(255,255,255,0.15);
+	backdrop-filter: blur(8px);
+	color: white;
+	font-size: 28px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	transition: background .3s var(--eq), transform .3s var(--eq);
+	z-index: 10;
+	user-select: none;
+}
+
+	.nav-button:hover {
+		background: rgba(255,255,255,0.25);
+		transform: translateY(-50%) scale(1.1);
+	}
+
+	.nav-button.prev {
+		left: 16px;
+	}
+
+	.nav-button.next {
+		right: 16px;
 	}

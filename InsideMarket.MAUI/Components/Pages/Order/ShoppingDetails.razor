@@ -1,7 +1,6 @@
 ﻿@page "/order/shopping-details"
 @attribute [Authorize]
 @inject NavigationManager Nav
-@inject AuthenticationStateProvider AuthProvider
 
 
 <section id="specialty">
@@ -26,18 +25,7 @@
 
     private async Task GoToOrders()
     {
-        var authState = await AuthProvider.GetAuthenticationStateAsync();
-        var user = authState.User;
-
-        switch(user)
-        {
-            case var _ when user.IsInRole("MERCHANT"):
-                Nav.NavigateTo("/order/store-orders",true);
-                break;
-            case var _ when user.IsInRole("USER"):
-                Nav.NavigateTo("/order/user-orders",true);
-                break;
-        }
+        Nav.NavigateTo("/order/user-orders",true);
     }
     private void GoToShoppingBasket()
     {
