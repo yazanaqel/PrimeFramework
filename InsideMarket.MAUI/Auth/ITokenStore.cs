@@ -1,4 +1,7 @@
-﻿namespace InsideMarket.MAUI.Auth;
+﻿using Microsoft.JSInterop;
+
+
+namespace InsideMarket.MAUI.Auth;
 
 public interface ITokenStore
 {
@@ -7,3 +10,5 @@ public interface ITokenStore
     Task<TokenResponse?> GetTokensAsync();
     Task ClearTokensAsync();
 }
+
+

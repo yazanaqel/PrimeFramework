@@ -4,7 +4,7 @@
 @inject NavigationManager Nav
 @inject IJSRuntime JS
 
-@if(_stores is null || !_stores.Any())
+@if(!_stores.Any())
 {
     <Loading />
 }
@@ -29,7 +29,7 @@ else
 
         </div>
 
-        @if(_sliderStores is not null && _sliderStores.Count > 0)
+        @if(_sliderStores.Count > 0)
         {
             @foreach(var item in _sliderStores)
             {
@@ -116,10 +116,9 @@ else
 @code {
 
 
-    private List<InsideMarket.MAUI.Business.Models.Store>? _stores = new();
-    private List<InsideMarket.MAUI.Business.Models.Store>? _sliderStores = new();
-    private List<InsideMarket.MAUI.Business.Models.Store>? searchList = new();
-    private int i = 0;
+    private List<InsideMarket.MAUI.Business.Models.Store> _stores = new();
+    private List<InsideMarket.MAUI.Business.Models.Store> _sliderStores = new();
+    private List<InsideMarket.MAUI.Business.Models.Store> searchList = new();
 
     protected override async Task OnInitializedAsync()
     {
