@@ -28,6 +28,19 @@ builder.Services.AddControllers(options =>
     options.Filters.Add<LoggingFilter>();
 });
 
+
+// CORS for Blazor WASM or other front-end clients
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowLocalBlazor",policy =>
+    {
+        policy.WithOrigins("https://localhost:7075")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
+});
+
 builder.Services.AddTransient<GlobalExceptionHandlingMiddleware>();
 
 // Swagger / OpenAPI
@@ -50,6 +63,10 @@ if(app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+else
+{
+    app.UseHsts();
+}
 
 app.UseGlobalExceptionHandling();
 
@@ -61,6 +78,11 @@ app.UseSerilogRequestLogging(options =>
 {
     options.IncludeQueryInRequestPath = true;
 });
+
+
+app.UseRouting();
+
+app.UseCors("AllowLocalBlazor");
 
 app.UseAuthentication();
 
