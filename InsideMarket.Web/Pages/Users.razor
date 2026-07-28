@@ -1,0 +1,55 @@
+﻿@page "/users"
+@attribute [Authorize(Roles = "ADMIN")]
+@inject IAuthService AuthService
+@inject NavigationManager Nav
+
+
+@if(!_users.Any())
+{
+    <MudProgressLinear Color="Color.Primary" Size="Size.Small" Indeterminate="true" />
+}
+else
+{
+    <section id="menu">
+        <div class="menu-container">
+            <div class="menu-category">
+                <h3>Users</h3>
+                <ul class="menu-list">
+
+                    @foreach(var user in _users)
+                    {
+                        <li>
+                            <a>
+                                <span class="menu-item-name">Email: @user.Email</span>
+                                <span class="menu-item-name">UserId: @user.UserId</span>
+                                <span class="menu-item-price">
+                                    <MudIconButton Icon="@Icons.Material.Filled.Info" Color="Color.Info" OnClick="@(() => GoToUserDetails(user.UserId))" />
+                                </span>
+                            </a>
+                        </li>
+                    }
+                </ul>
+
+            </div>
+        </div>
+    </section>
+}
+
+@code {
+    private IReadOnlyList<GetAllUsersResponse> _users = new List<GetAllUsersResponse>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await AuthService.GetAllUsersAsync();
+
+        if(result is not null)
+        {
+            _users = result.Items.ToList();
+        }
+    }
+
+    private void GoToUserDetails(string userId)
+    {
+        Nav.NavigateTo($"/user/details/{userId}",true);
+    }
+}

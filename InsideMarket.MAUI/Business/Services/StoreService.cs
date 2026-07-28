@@ -4,13 +4,6 @@ using System.Net.Http.Json;
 using static InsideMarket.MAUI.Route.RouteGate;
 
 namespace InsideMarket.MAUI.Business.Services;
-
-public class Person
-{
-    public string Name { get; set; } = string.Empty;
-    public int Age { get; set; } = 0;
-}
-
 public class StoreService(IHttpClientFactory httpClientFactory) : IStoreService
 {
     private readonly HttpClient _httpRead = httpClientFactory.CreateClient("Read");

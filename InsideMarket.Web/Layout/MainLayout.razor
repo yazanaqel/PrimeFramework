@@ -1,25 +1,100 @@
 ﻿@inherits LayoutComponentBase
+@inject IAuthService AuthService
+@inject IDialogService DialogService
+@inject NavigationManager Nav
+@inject AuthenticationStateProvider AuthProvider
+@attribute [AllowAnonymous]
 
-<MudThemeProvider />
+<MudThemeProvider IsDarkMode="true" />
 <MudDialogProvider />
 <MudSnackbarProvider />
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
 
-    <main>
-        <div class="top-row px-4">
-            <MudText Typo="Typo.h6">Inside‑Market</MudText>
-            <MudSpacer />
-            <MudButton Variant="Variant.Text" Href="https://learn.microsoft.com/aspnet/core/" Target="_blank">
-                About
-            </MudButton>
+<!-- Top App Bar -->
+<nav style="position:fixed; top:0; left:0; right:0; z-index:1000;">
+    <div class="nav-container">
+        <div class="logo">INSIDE MARKET</div>
+
+        <div class="@_menuToggle" onclick="@ToggleDrawer">
+            <span></span>
+            <span></span>
+            <span></span>
         </div>
 
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
-</div>
+        <ul class="@_navLinks">
+
+            <li onclick="@ToggleDrawer"><a href="/dashboard">Dashboard</a></li>
+
+            <li onclick="@ToggleDrawer"><a href="/user/get">Profile</a></li>
+
+            <li onclick="@ConfirmLogout"><a style="cursor:pointer">Logout</a></li>
+
+        </ul>
+    </div>
+</nav>
+
+<MudLayout Style="margin-top:64px;">
+
+    <!-- Main Content -->
+    <MudMainContent Class="content-with-bottom-nav">
+        @Body
+    </MudMainContent>
+
+
+</MudLayout>
+
+
+
+
+
+
+@code {
+
+    private string _menuToggle = "menu-toggle";
+    private string _navLinks = "nav-links";
+    bool _drawerOpen = false;
+    bool IsUserAuthenticated = false;
+    bool IsMerchantUser = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        IsUserAuthenticated = user.Identity?.IsAuthenticated == true;
+
+        if(user.IsInRole("MERCHANT"))
+        {
+            IsMerchantUser = true;
+        }
+    }
+
+    void ToggleDrawer()
+    {
+        _drawerOpen = !_drawerOpen;
+
+        _menuToggle = _drawerOpen ? "menu-toggle active" : "menu-toggle";
+
+        _navLinks = _drawerOpen ? "nav-links active" : "nav-links";
+    }
+
+    private async Task ConfirmLogout()
+    {
+        bool? result = await DialogService.ShowMessageBoxAsync(
+            title: "Confirm Logout",
+            markupMessage: (MarkupString)"Are you sure you want to logout?",
+            yesText: "Logout",
+            cancelText: "Cancel",
+            options: new DialogOptions
+            {
+                CloseButton = true,
+                MaxWidth = MaxWidth.ExtraSmall,
+                FullWidth = true
+            });
+
+        if(result == true)
+        {
+            await AuthService.LogoutAsync();
+            Nav.NavigateTo("/login",true);
+        }
+    }
+}

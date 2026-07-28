@@ -1,0 +1,49 @@
+﻿@page "/store/details/{id:guid}"
+@inject IAuthService AuthService
+@inject NavigationManager Nav
+
+@if(_store is null)
+{
+    <MudProgressLinear Color="Color.Primary" Size="Size.Small" Indeterminate="true" />
+}
+else
+{
+
+
+    <div id="story" class="tab-content active">
+
+        <!-- Cover -->
+        <div class="cover-wrapper">
+            <img src="@_store.ImageCover" alt="Cover Image">
+        </div>
+
+        <!-- Profile -->
+        <div class="profile-wrapper">
+            <img src="@_store.Image" alt="Profile Image">
+        </div>
+
+        <!-- Name + Bio -->
+        <div class="profile-info">
+            <h2>@_store.Name</h2>
+            <p>@_store.Description</p>
+            <p>@_store.City</p>
+            <p>@_store.Address</p>
+        </div>
+
+    </div>
+
+}
+
+@code {
+
+    [Parameter] public Guid Id { get; set; }
+
+    private Store _store = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _store = await AuthService.GetStoreById(Id);
+
+    }
+
+}

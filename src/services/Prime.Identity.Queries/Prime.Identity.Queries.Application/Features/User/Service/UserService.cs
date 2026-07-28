@@ -7,15 +7,19 @@ using Domain.Entities.User;
 using Domain.Specifications.User;
 using Prime.Identity.Queries.Application.Abstractions.Auth;
 using Prime.Identity.Queries.Application.Abstractions.Cache;
+using Prime.Identity.Queries.Application.Features.Store.GetOwnerStore;
+using Prime.Identity.Queries.Domain.Specifications.Business;
+using System.Buffers.Text;
 
 namespace Prime.Identity.Queries.Application.Features.User.Service;
 
-public sealed class UserService(IReadRepository<AppUser> userIdentity,ICacheService cacheService,ICurrentUserService currentUserService) : IUserService
+public sealed class UserService(IReadRepository<AppUser> userIdentity,ICacheService cacheService,ICurrentUserService currentUserService,IReadRepository<Domain.Entities.Business.Store> storeRepository) : IUserService
 {
     private readonly IReadRepository<AppUser> _userIdentity = userIdentity;
     private readonly ICacheService _cacheService = cacheService;
     private readonly ICurrentUserService _currentUserService = currentUserService;
-
+    private readonly IReadRepository<Domain.Entities.Business.Store> _storeRepository = storeRepository;
+    private const string baseUrl = "https://localhost:7104/";
     public async Task<Result<CursorPageResponse<GetAllUsersResponse>>> GetAllUsersAsync(GetAllUsersRequest request,CancellationToken ct)
     {
         UserCursor? after = null;
@@ -75,11 +79,38 @@ public sealed class UserService(IReadRepository<AppUser> userIdentity,ICacheServ
             //throw new NotFoundException(nameof(User),userId);
             throw new Exception($"User With Id : {userId} Not Found!");
 
-        var response = new GetUserByIdResponse(user.Id,user.Email,user.UserName);
+        var store = await _storeRepository.FirstOrDefaultAsync(new GetOwnerStoreByIdSpec(userId),ct);
 
-        await _cacheService.SetAsync(cacheKey,response,TimeSpan.FromMinutes(5),ct);
+        if(store is not null)
+        {
+            var storeResponse = new GetOwnerStoreResponse(
+                store.Id,
+                store.UserId,
+                store.CategoryId,
+                store.Name,
+                $"{baseUrl}{store.ImageCover}",
+                $"{baseUrl}{store.Image}",
+                store.Description,
+                store.Address,
+                store.IsShippingAvailable,
+                store.City,
+                store.StoreStatus,
+                store.CreatedAt,
+                store.ModifiedAt
+                );
 
-        return Result.Success(response);
+            var response1 = new GetUserByIdResponse(user.Id,user.Email,user.UserName,storeResponse);
+
+            await _cacheService.SetAsync(cacheKey,response1,TimeSpan.FromMinutes(5),ct);
+
+            return Result.Success(response1);
+        }
+
+        var response2 = new GetUserByIdResponse(user.Id,user.Email,user.UserName,null);
+
+        await _cacheService.SetAsync(cacheKey,response2,TimeSpan.FromMinutes(5),ct);
+
+        return Result.Success(response2);
     }
 
     public async Task<Result<GetUserProfileResponse>> GetUserProfile(CancellationToken ct = default)

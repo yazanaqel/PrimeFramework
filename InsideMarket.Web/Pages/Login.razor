@@ -1,0 +1,103 @@
+﻿@page "/login"
+@layout LoginLayout
+@inject IAuthService AuthService
+@inject NavigationManager Nav
+@inject AuthenticationStateProvider AuthProvider
+
+<section id="home">
+
+    <h1 class="hero-title">Inside Market</h1>
+    <p class="hero-subtitle">
+        Built for small businesses
+    </p>
+
+    <div class="contact-container">
+        <div class="contact-form">
+
+            @if(!string.IsNullOrEmpty(ErrorMessage))
+            {
+                <MudAlert Severity="Severity.Error" Dense="true" Class="mb-3">
+                    @ErrorMessage
+                </MudAlert>
+            }
+
+            <EditForm Model="@_loginRequest" OnValidSubmit="@LoginAsync">
+                <DataAnnotationsValidator />
+
+                <div class="form-group">
+
+                    <label for="@_loginRequest.Email">Email</label>
+                    <MudTextField @bind-Value="_loginRequest.Email"
+                                  Variant="Variant.Outlined"
+                                  Required="true"
+                                  For="@(() => _loginRequest.Email)" />
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="@_loginRequest.Password">Password</label>
+                    <MudTextField @bind-Value="_loginRequest.Password"
+                                  Variant="Variant.Outlined"
+                                  InputType="InputType.Password"
+                                  Required="true"
+                                  For="@(() => _loginRequest.Password)" />
+                </div>
+
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Success"
+                           Class="submit-btn"
+                           FullWidth="true"
+                           Disabled="@_isBusy"
+                           OnClick="LoginAsync">
+
+                    @if(_isBusy)
+                    {
+                        <MudProgressCircular Color="Color.Success" Size="Size.Small" Indeterminate="true" />
+                    }
+                    else
+                    {
+                        <MudText>Login</MudText>
+                    }
+                </MudButton>
+            </EditForm>
+
+        </div>
+    </div>
+</section>
+
+@code {
+
+    private LoginRequest _loginRequest = new();
+    private bool _isBusy = false;
+    private string? ErrorMessage;
+
+    private async Task LoginAsync()
+    {
+        ErrorMessage = null;
+        _isBusy = true;
+
+        var success = await AuthService.LoginAsync(_loginRequest);
+
+        _isBusy = false;
+
+        if(success)
+        {
+            var authState = await AuthProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+
+            switch(user)
+            {
+                case var _ when user.IsInRole("ADMIN"):
+                    Nav.NavigateTo("/",true);
+                    break;
+            }
+
+        }
+        else
+        {
+            ErrorMessage = "Invalid username or password.";
+        }
+    }
+
+}

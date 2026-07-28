@@ -1,0 +1,49 @@
+﻿@page "/user/details/{id}"
+@inject IAuthService AuthService
+
+
+@if(_user is null)
+{
+    <MudProgressLinear Color="Color.Primary" Size="Size.Small" Indeterminate="true" />
+}
+else
+{
+    <section id="menu">
+        <div class="menu-container">
+            <div class="menu-category">
+                <h3>@_user.Email</h3>
+            </div>
+            @if(_user.GetOwnerStoreResponse is not null)
+            {
+                <div class="menu-category">
+                    <h3>@_user.GetOwnerStoreResponse.Name</h3>
+                </div>
+            }
+        </div>
+    </section>
+}
+@code {
+
+    [Parameter] public string Id { get; set; } = string.Empty;
+
+    private GetUserByIdResponse? _user;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var result = await AuthService.GetUserByIdAsync(Id);
+
+        if(result is not null)
+        {
+            _user = new();
+
+            _user.Email = result.Email;
+
+            if(result.GetOwnerStoreResponse is not null)
+            {
+                _user.GetOwnerStoreResponse = result.GetOwnerStoreResponse;
+            }
+        }
+
+
+    }
+}

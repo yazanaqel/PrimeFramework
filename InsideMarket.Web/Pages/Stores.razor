@@ -1,0 +1,120 @@
+﻿@page "/stores"
+@inject IAuthService AuthService
+@inject NavigationManager Nav
+
+@if(!_stores.Any())
+{
+    <MudProgressLinear Color="Color.Primary" Size="Size.Small" Indeterminate="true" />
+}
+else
+{
+
+
+
+    <MudGrid>
+
+        <MudItem xs="12">
+
+            <MudTextField T="string"
+                          Label="Search"
+                          @bind-Value="SearchText"
+                          Immediate="true"
+                          Clearable="true" />
+        </MudItem>
+
+        @if(string.IsNullOrEmpty(SearchText))
+        {
+            @foreach(var store in _stores)
+            {
+                <MudItem xs="6">
+                    <MudCard>
+                        <MudImage Src="@store.Image" Alt="Mug" Elevation="25" />
+                        <MudCardContent>
+                            <MudText Typo="Typo.h5">@store.Name</MudText>
+                            <MudText Typo="Typo.body2">@store.Description</MudText>
+                        </MudCardContent>
+                        <MudCardActions>
+                            <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => NavigateToMarket(store.StoreId))">
+                                Details
+                            </MudButton>
+                        </MudCardActions>
+                    </MudCard>
+                </MudItem>
+            }
+        }
+        else if(!string.IsNullOrEmpty(SearchText))
+        {
+            @foreach(var store in searchList)
+            {
+                <MudItem xs="6">
+                    <MudCard>
+                        <MudImage Src="@store.Image" Alt="Mug" Elevation="25" />
+                        <MudCardContent>
+                            <MudText Typo="Typo.h5">@store.Name</MudText>
+                            <MudText Typo="Typo.body2">@store.Description</MudText>
+                        </MudCardContent>
+                        <MudCardActions>
+                            <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => NavigateToMarket(store.StoreId))">
+                                Details
+                            </MudButton>
+                        </MudCardActions>
+                    </MudCard>
+                </MudItem>
+            }
+        }
+
+
+
+    </MudGrid>
+
+}
+
+
+
+
+@code {
+
+
+    private List<Store> _stores = new();
+    private List<Store> searchList = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        var response = await AuthService.GetAllStores();
+
+        _stores = response.ToList();
+
+    }
+
+    private void NavigateToMarket(string id)
+    {
+        Nav.NavigateTo($"/store/details/{id}");
+    }
+
+    private string? _searchText;
+
+    private string? SearchText
+    {
+        get => _searchText;
+        set
+        {
+            _searchText = value;
+            UpdateResults();
+        }
+    }
+
+    private void UpdateResults()
+    {
+        if(searchList is not null && string.IsNullOrEmpty(_searchText))
+        {
+            searchList = _stores;
+            return;
+        }
+
+        searchList = _stores
+            .Where(x => x.Name.Contains(_searchText,StringComparison.OrdinalIgnoreCase))
+            .ToList();
+    }
+}
+
