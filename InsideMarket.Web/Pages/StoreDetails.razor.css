@@ -82,3 +82,43 @@
     border: 1px solid var(--border);
     color: var(--text)
 }
+
+/* badge styles (neon variants) */
+.badge {
+    font-weight: 700;
+    padding: 0.18rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    display: inline-block
+}
+/* NEW -> green shade (neon) */
+.badge--new {
+    background: linear-gradient(90deg,#3fb950,#2fa94a);
+    color: #071017;
+    box-shadow: 0 8px 30px rgba(63,185,80,0.14), 0 0 10px rgba(63,185,80,0.10) inset
+}
+/* DISCOUNT -> orange shade */
+.badge--discount {
+    background: linear-gradient(90deg,#ff9a3c,#ff7b00);
+    color: #071017;
+    box-shadow: 0 8px 30px rgba(255,154,60,0.14), 0 0 10px rgba(255,154,60,0.10) inset
+}
+/* SOON -> red shade */
+.badge--soon {
+    background: linear-gradient(90deg,#ff6b6b,#ff3b3b);
+    color: #071017;
+    box-shadow: 0 8px 30px rgba(255,107,107,0.14), 0 0 12px rgba(255,59,59,0.10) inset
+}
+
+/* position badge on main image */
+.main-image {
+    position: relative;
+    overflow: visible
+}
+
+    .main-image .badge {
+        position: absolute;
+        top: 0.6rem;
+        right: 0.6rem;
+        z-index: 20
+    }

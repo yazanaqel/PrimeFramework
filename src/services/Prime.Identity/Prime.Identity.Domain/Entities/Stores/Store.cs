@@ -1,9 +1,12 @@
 ﻿using Domain.Primitives;
+using Domain.ValueObjects;
 using Prime.Identity.Domain.Entities.Categories;
 using Prime.Identity.Domain.Entities.Enums;
 using Prime.Identity.Domain.Entities.Orders;
 using Prime.Identity.Domain.Entities.Products;
 using Prime.Identity.Domain.Entities.Users;
+using System.Xml.Linq;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Prime.Identity.Domain.Entities.Stores;
 
@@ -60,6 +63,35 @@ public class Store : Entity<StoreId>, IAuditableEntity
             IsShippingAvailable = isShippingAvailable,
             City = city,
             StoreStatus = StoreStatus.Suspended
+        };
+    }
+
+    public static Store Update(
+        UserId userId,
+        StoreId storeId,
+        CategoryId categoryId,
+    string name,
+    string description,
+    string imageCover,
+    string image,
+    string address,
+    bool isShippingAvailable,
+    City city,StoreStatus storeStatus)
+    {
+
+        return new Store
+        {
+            Id = storeId,
+            UserId = userId,
+            CategoryId = categoryId,
+            Name = name,
+            Description = description,
+            ImageCover = imageCover,
+            Image = image,
+            Address = address,
+            IsShippingAvailable = isShippingAvailable,
+            City = city,
+            StoreStatus = storeStatus
         };
     }
 }

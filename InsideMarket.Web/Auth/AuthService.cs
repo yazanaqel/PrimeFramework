@@ -146,14 +146,14 @@ public class AuthService : BaseApiClient, IAuthService
                ?? new GetUserByIdResponse();
     }
 
-    public async Task<bool> ChangeStoreStatus(Store store)
+    public async Task<bool> ChangeStoreStatus(StoreChangeStatus storeChangeStatus)
     {
-        //var response = await _http.PostAsJsonAsync("https://localhost:7104/Stores/ChangeStoreStatus",store);
+        var response = await _http.PostAsJsonAsync("https://localhost:7104/api/Stores/ChangeStoreStatus",storeChangeStatus);
 
-        //if(!response.IsSuccessStatusCode)
-        //    return false;
+        if(!response.IsSuccessStatusCode)
+            return false;
 
-            return true;
+        return true;
 
     }
 }

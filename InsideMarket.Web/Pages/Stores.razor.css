@@ -120,11 +120,6 @@
         opacity: 1
     }
 
-    .form-control-dark::-ms-input-placeholder {
-        color: rgba(255,255,255,0.65);
-        opacity: 1
-    }
-
     .form-control-dark::-webkit-input-placeholder {
         color: rgba(255,255,255,0.65);
         opacity: 1

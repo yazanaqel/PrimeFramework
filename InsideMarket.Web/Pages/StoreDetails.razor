@@ -15,6 +15,7 @@
         <div class="details-grid">
             <div class="images-column">
                 <div class="main-image" style="background-image: url('@_store.ImageCover')"></div>
+                <div class="badge @BadgeClass(_store.StoreStatus)">@BadgeText(_store.StoreStatus)</div>
                 <div class="thumbs d-flex gap-2 mt-2">
                     <div class="thumb" style="background-image: url('@_store.Image')"></div>
                 </div>
@@ -75,13 +76,30 @@
         if(Id == Guid.Empty)
             return;
 
-        SelectedStatus = _store.StoreStatus;
-
         _store = await AuthService.GetStoreById(Id);
+
+        SelectedStatus = _store.StoreStatus;
     }
 
     bool showSaveConfirm;
+
     StoreStatus SelectedStatus = StoreStatus.Active;
+
+    string BadgeText(StoreStatus b) => b switch
+    {
+        StoreStatus.Active => "Active",
+        StoreStatus.Suspended => "Suspended",
+        StoreStatus.Draft => "Draft",
+        _ => string.Empty
+    };
+
+    string BadgeClass(StoreStatus b) => b switch
+    {
+        StoreStatus.Active => "badge--new",
+        StoreStatus.Suspended => "badge--discount",
+        StoreStatus.Draft => "badge--soon",
+        _ => string.Empty
+    };
 
     void Back() => Navigation.NavigateTo("/stores");
 
@@ -95,9 +113,9 @@
         if(_store is null)
             return;
 
-        SelectedStatus = _store.StoreStatus;
+        StoreChangeStatus storeChangeStatus = new StoreChangeStatus() { StoreId = _store.StoreId,StoreStatus = SelectedStatus };
 
-        bool result = await AuthService.ChangeStoreStatus(_store);
+        bool result = await AuthService.ChangeStoreStatus(storeChangeStatus);
 
         if (result)
         {

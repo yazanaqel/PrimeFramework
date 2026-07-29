@@ -13,7 +13,7 @@ public interface IAuthService
 
     Task<IEnumerable<Store>> GetAllStores();
     Task<Store> GetStoreById(Guid storeId);
-    Task<bool> ChangeStoreStatus(Store store);
+    Task<bool> ChangeStoreStatus(StoreChangeStatus storeChangeStatus);
 }
 public class GetAllUsersResponse
 {
@@ -51,7 +51,13 @@ public class Store
     public string Address { get; set; } = string.Empty;
     public bool IsShippingAvailable { get; set; }
     public City City { get; set; } = City.Damascus;
-    public StoreStatus StoreStatus { get; set; } = StoreStatus.Suspended;
+    public StoreStatus StoreStatus { get; set; }
+
+}
+public class StoreChangeStatus
+{
+    public required string StoreId { get; set; }
+    public required StoreStatus StoreStatus { get; set; }
 
 }
 
