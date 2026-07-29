@@ -13,6 +13,7 @@ public interface IAuthService
 
     Task<IEnumerable<Store>> GetAllStores();
     Task<Store> GetStoreById(Guid storeId);
+    Task<bool> ChangeStoreStatus(Store store);
 }
 public class GetAllUsersResponse
 {

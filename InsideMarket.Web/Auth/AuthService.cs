@@ -145,5 +145,16 @@ public class AuthService : BaseApiClient, IAuthService
         return await response.Content.ReadFromJsonAsync<GetUserByIdResponse>()
                ?? new GetUserByIdResponse();
     }
+
+    public async Task<bool> ChangeStoreStatus(Store store)
+    {
+        //var response = await _http.PostAsJsonAsync("https://localhost:7104/Stores/ChangeStoreStatus",store);
+
+        //if(!response.IsSuccessStatusCode)
+        //    return false;
+
+            return true;
+
+    }
 }
 

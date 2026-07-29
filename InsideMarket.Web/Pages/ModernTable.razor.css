@@ -1,0 +1,199 @@
+﻿
+:root {
+    --bg-main: #0b0c10;
+    --bg-card: #10131a;
+    --bg-header: #151924;
+    --bg-row-hover: #1f2533;
+    --border-soft: #252b3b;
+    --accent: #4f8cff;
+    --accent-soft: rgba(79, 140, 255, 0.2);
+    --text-main: #e5e9f0;
+    --text-muted: #8b92a6;
+    --radius-lg: 14px;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: radial-gradient(circle at top left, #1b1f2b 0, #05060a 55%, #000000 100%);
+    color: var(--text-main);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px;
+}
+
+.table-shell {
+    width: 100%;
+    max-width: 960px;
+    background: linear-gradient(145deg, #0b0c10, #111521);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-soft);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(255, 255, 255, 0.02);
+    overflow: hidden;
+}
+
+.table-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 22px;
+    background: radial-gradient(circle at top left, #1b2233 0, #10131a 60%);
+    border-bottom: 1px solid var(--border-soft);
+}
+
+.table-title {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+    .table-title h2 {
+        font-size: 18px;
+        letter-spacing: 0.03em;
+    }
+
+    .table-title span {
+        font-size: 13px;
+        color: var(--text-muted);
+    }
+
+.table-pill {
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--accent-soft);
+    color: var(--accent);
+    font-size: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(10, 14, 24, 0.9);
+}
+
+.table-pill-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 12px rgba(79, 140, 255, 0.8);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead {
+    background: var(--bg-header);
+}
+
+th,
+td {
+    padding: 12px 18px;
+    text-align: left;
+    font-size: 13px;
+    border-bottom: 1px solid rgba(37, 43, 59, 0.7);
+}
+
+th {
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-size: 11px;
+}
+
+tbody tr {
+    transition: background 0.18s ease, transform 0.12s ease;
+}
+
+    tbody tr:hover {
+        background: var(--bg-row-hover);
+        transform: translateY(-1px);
+    }
+
+    tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+.cell-primary {
+    font-weight: 500;
+    color: var(--text-main);
+}
+
+.cell-muted {
+    color: var(--text-muted);
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+}
+
+.badge-green {
+    background: rgba(46, 204, 113, 0.12);
+    color: #2ecc71;
+    border: 1px solid rgba(46, 204, 113, 0.4);
+}
+
+.badge-yellow {
+    background: rgba(241, 196, 15, 0.12);
+    color: #f1c40f;
+    border: 1px solid rgba(241, 196, 15, 0.4);
+}
+
+.badge-red {
+    background: rgba(231, 76, 60, 0.12);
+    color: #e74c3c;
+    border: 1px solid rgba(231, 76, 60, 0.4);
+}
+
+.cell-right {
+    text-align: right;
+}
+
+.cell-accent {
+    color: var(--accent);
+    font-weight: 500;
+}
+
+.footer {
+    padding: 10px 18px 14px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    background: #0b0c10;
+}
+
+.footer-text {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+.footer-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+}
+
+.table-shell {
+    width: 100%;
+    max-width: 960px;
+    background: linear-gradient(145deg, #0b0c10, #111521);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-soft);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(255, 255, 255, 0.02);
+    overflow: hidden;
+}

@@ -1,102 +1,58 @@
 ﻿@page "/login"
 @layout LoginLayout
 @inject IAuthService AuthService
-@inject NavigationManager Nav
 @inject AuthenticationStateProvider AuthProvider
 
-<section id="home">
+<PageTitle>Login</PageTitle>
 
-    <h1 class="hero-title">Inside Market</h1>
-    <p class="hero-subtitle">
-        Built for small businesses
-    </p>
+<div class="login-page d-flex align-items-center justify-content-center">
+    <div class="login-card card bg-surface p-4">
+        <h3 class="mb-1">Sign in to BlazorApp1</h3>
+        <p class="text-muted mb-3">Enter your credentials to access the admin dashboard.</p>
 
-    <div class="contact-container">
-        <div class="contact-form">
+        <EditForm Model="@_loginRequest" OnValidSubmit="LoginAsync">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
 
-            @if(!string.IsNullOrEmpty(ErrorMessage))
-            {
-                <MudAlert Severity="Severity.Error" Dense="true" Class="mb-3">
-                    @ErrorMessage
-                </MudAlert>
-            }
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                <InputText class="form-control" @bind-Value="_loginRequest.Email" />
+            </div>
 
-            <EditForm Model="@_loginRequest" OnValidSubmit="@LoginAsync">
-                <DataAnnotationsValidator />
+            <div class="mb-3">
+                <label class="form-label">Password</label>
+                <InputText type="password" class="form-control" @bind-Value="_loginRequest.Password" />
+            </div>
 
-                <div class="form-group">
+            <div class="form-check mb-3">
+                <InputCheckbox class="form-check-input" @bind-Value="_loginRequest.Remember" />
+                <label class="form-check-label ms-2">Remember me</label>
+            </div>
 
-                    <label for="@_loginRequest.Email">Email</label>
-                    <MudTextField @bind-Value="_loginRequest.Email"
-                                  Variant="Variant.Outlined"
-                                  Required="true"
-                                  For="@(() => _loginRequest.Email)" />
-
-                </div>
-
-                <div class="form-group">
-
-                    <label for="@_loginRequest.Password">Password</label>
-                    <MudTextField @bind-Value="_loginRequest.Password"
-                                  Variant="Variant.Outlined"
-                                  InputType="InputType.Password"
-                                  Required="true"
-                                  For="@(() => _loginRequest.Password)" />
-                </div>
-
-                <MudButton Variant="Variant.Filled"
-                           Color="Color.Success"
-                           Class="submit-btn"
-                           FullWidth="true"
-                           Disabled="@_isBusy"
-                           OnClick="LoginAsync">
-
-                    @if(_isBusy)
-                    {
-                        <MudProgressCircular Color="Color.Success" Size="Size.Small" Indeterminate="true" />
-                    }
-                    else
-                    {
-                        <MudText>Login</MudText>
-                    }
-                </MudButton>
-            </EditForm>
-
-        </div>
+            <div class="d-flex justify-content-between align-items-center">
+                <button class="btn btn-primary" type="submit">Sign in</button>
+                <a class="btn btn-link">Forgot password?</a>
+            </div>
+        </EditForm>
     </div>
-</section>
+</div>
+
+
 
 @code {
 
     private LoginRequest _loginRequest = new();
-    private bool _isBusy = false;
-    private string? ErrorMessage;
+
+    [Inject]
+    private NavigationManager Navigation { get; set; } = default!;
 
     private async Task LoginAsync()
     {
-        ErrorMessage = null;
-        _isBusy = true;
-
         var success = await AuthService.LoginAsync(_loginRequest);
-
-        _isBusy = false;
 
         if(success)
         {
-            var authState = await AuthProvider.GetAuthenticationStateAsync();
-            var user = authState.User;
-
-            switch(user)
-            {
-                case var _ when user.IsInRole("ADMIN"):
-                    Nav.NavigateTo("/",true);
-                    break;
-            }
-
-        }
-        else
-        {
-            ErrorMessage = "Invalid username or password.";
+            Navigation.NavigateTo("/dashboard",true);
         }
     }
 

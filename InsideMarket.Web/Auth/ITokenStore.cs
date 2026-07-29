@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace InsideMarket.Web.Auth;
 
@@ -11,8 +12,13 @@ public interface ITokenStore
 }
 public class LoginRequest
 {
+    [Required]
+    [EmailAddress]
     public string Email { get; set; } = string.Empty;
+
+    [Required]
     public string Password { get; set; } = string.Empty;
+    public bool Remember { get; set; }
 }
 public class TokenResponse
 {

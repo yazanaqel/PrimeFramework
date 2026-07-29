@@ -1,100 +1,58 @@
 ﻿@inherits LayoutComponentBase
+@attribute [Authorize(Roles = "ADMIN")]
 @inject IAuthService AuthService
-@inject IDialogService DialogService
-@inject NavigationManager Nav
-@inject AuthenticationStateProvider AuthProvider
-@attribute [AllowAnonymous]
-
-<MudThemeProvider IsDarkMode="true" />
-<MudDialogProvider />
-<MudSnackbarProvider />
+@inject IJSRuntime JS
+@inject NavigationManager Navigation
 
 
-<!-- Top App Bar -->
-<nav style="position:fixed; top:0; left:0; right:0; z-index:1000;">
-    <div class="nav-container">
-        <div class="logo">INSIDE MARKET</div>
+<div class="page">
+    <div class="sidebar">
+        <NavMenu />
+    </div>
 
-        <div class="@_menuToggle" onclick="@ToggleDrawer">
-            <span></span>
-            <span></span>
-            <span></span>
+    <main>
+        <div class="top-row px-4 d-flex align-items-center auth">
+            <button class="btn btn-link ms-2 text-danger" @onclick="ShowLogoutDialog">Logout</button>
         </div>
 
-        <ul class="@_navLinks">
-
-            <li onclick="@ToggleDrawer"><a href="/dashboard">Dashboard</a></li>
-
-            <li onclick="@ToggleDrawer"><a href="/user/get">Profile</a></li>
-
-            <li onclick="@ConfirmLogout"><a style="cursor:pointer">Logout</a></li>
-
-        </ul>
-    </div>
-</nav>
-
-<MudLayout Style="margin-top:64px;">
-
-    <!-- Main Content -->
-    <MudMainContent Class="content-with-bottom-nav">
-        @Body
-    </MudMainContent>
-
-
-</MudLayout>
-
-
-
-
-
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>
 
 @code {
+    private bool showLogoutConfirm;
 
-    private string _menuToggle = "menu-toggle";
-    private string _navLinks = "nav-links";
-    bool _drawerOpen = false;
-    bool IsUserAuthenticated = false;
-    bool IsMerchantUser = false;
-
-    protected override async Task OnInitializedAsync()
+    private void ShowLogoutDialog()
     {
-        var authState = await AuthProvider.GetAuthenticationStateAsync();
-        var user = authState.User;
-        IsUserAuthenticated = user.Identity?.IsAuthenticated == true;
-
-        if(user.IsInRole("MERCHANT"))
-        {
-            IsMerchantUser = true;
-        }
+        showLogoutConfirm = true;
     }
 
-    void ToggleDrawer()
+    private void CancelLogout()
     {
-        _drawerOpen = !_drawerOpen;
-
-        _menuToggle = _drawerOpen ? "menu-toggle active" : "menu-toggle";
-
-        _navLinks = _drawerOpen ? "nav-links active" : "nav-links";
+        showLogoutConfirm = false;
     }
 
-    private async Task ConfirmLogout()
+    private async Task DoLogout()
     {
-        bool? result = await DialogService.ShowMessageBoxAsync(
-            title: "Confirm Logout",
-            markupMessage: (MarkupString)"Are you sure you want to logout?",
-            yesText: "Logout",
-            cancelText: "Cancel",
-            options: new DialogOptions
-            {
-                CloseButton = true,
-                MaxWidth = MaxWidth.ExtraSmall,
-                FullWidth = true
-            });
-
-        if(result == true)
-        {
-            await AuthService.LogoutAsync();
-            Nav.NavigateTo("/login",true);
-        }
+        showLogoutConfirm = false;
+        
+        await AuthService.LogoutAsync();
+        Navigation.NavigateTo("/login",true);
     }
+}
+
+@if(showLogoutConfirm)
+{
+    <div class="modal-overlay" @onclick="CancelLogout">
+        <div class="logout-modal" @onclick:stopPropagation>
+            <h5 class="mb-1">Sign out of BlazorApp1?</h5>
+            <p class="text-muted mb-3">You will be signed out and returned to the home page.</p>
+            <div class="d-flex justify-content-end gap-2">
+                <button class="btn btn-outline-light" @onclick="CancelLogout">Cancel</button>
+                <button class="btn btn-danger" @onclick="DoLogout">Sign out</button>
+            </div>
+        </div>
+    </div>
 }

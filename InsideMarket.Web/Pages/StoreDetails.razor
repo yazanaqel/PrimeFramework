@@ -1,38 +1,68 @@
 ﻿@page "/store/details/{id:guid}"
 @inject IAuthService AuthService
-@inject NavigationManager Nav
+@inject NavigationManager Navigation
 
-@if(_store is null)
+<PageTitle>Store Details</PageTitle>
+
+
+<div class="product-details page-content">
+    @if(_store is null)
+    {
+        <div>Store not found.</div>
+    }
+    else
+    {
+        <div class="details-grid">
+            <div class="images-column">
+                <div class="main-image" style="background-image: url('@_store.ImageCover')"></div>
+                <div class="thumbs d-flex gap-2 mt-2">
+                    <div class="thumb" style="background-image: url('@_store.Image')"></div>
+                </div>
+            </div>
+
+            <div class="info-column">
+                <h2 class="product-title">@_store.Name</h2>
+                <div class="product-meta text-muted mb-3">Category</div>
+
+                <div class="mb-3">
+                    <label class="form-label">Store Status</label>
+                    <select class="form-select" @bind="SelectedStatus">
+                        @foreach(var b in Enum.GetValues(typeof(StoreStatus)).Cast<StoreStatus>())
+                        {
+                            <option value="@b">@b</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <div class="h5">@_store.City</div>
+                    <label class="form-label">@_store.Address</label>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-light" @onclick="Back">Back</button>
+                    <button class="btn btn-primary" @onclick="ShowSaveConfirm">Save</button>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@if(showSaveConfirm)
 {
-    <MudProgressLinear Color="Color.Primary" Size="Size.Small" Indeterminate="true" />
-}
-else
-{
-
-
-    <div id="story" class="tab-content active">
-
-        <!-- Cover -->
-        <div class="cover-wrapper">
-            <img src="@_store.ImageCover" alt="Cover Image">
+    <div class="modal-overlay" @onclick="HideSaveConfirm">
+        <div class="confirm-modal" @onclick:stopPropagation>
+            <h5 class="mb-1">Save changes?</h5>
+            <p class="text-muted mb-3">Change store status to <strong>@SelectedStatus</strong>.</p>
+            <div class="d-flex justify-content-end gap-2">
+                <button class="btn btn-outline-light" @onclick="HideSaveConfirm">Cancel</button>
+                <button class="btn btn-primary" @onclick="ConfirmSave">Confirm</button>
+            </div>
         </div>
-
-        <!-- Profile -->
-        <div class="profile-wrapper">
-            <img src="@_store.Image" alt="Profile Image">
-        </div>
-
-        <!-- Name + Bio -->
-        <div class="profile-info">
-            <h2>@_store.Name</h2>
-            <p>@_store.Description</p>
-            <p>@_store.City</p>
-            <p>@_store.Address</p>
-        </div>
-
     </div>
-
 }
+
+
 
 @code {
 
@@ -42,8 +72,40 @@ else
 
     protected override async Task OnParametersSetAsync()
     {
-        _store = await AuthService.GetStoreById(Id);
+        if(Id == Guid.Empty)
+            return;
 
+        SelectedStatus = _store.StoreStatus;
+
+        _store = await AuthService.GetStoreById(Id);
     }
 
+    bool showSaveConfirm;
+    StoreStatus SelectedStatus = StoreStatus.Active;
+
+    void Back() => Navigation.NavigateTo("/stores");
+
+    void ShowSaveConfirm() => showSaveConfirm = true;
+    void HideSaveConfirm() => showSaveConfirm = false;
+
+    async Task ConfirmSave()
+    {
+        showSaveConfirm = false;
+
+        if(_store is null)
+            return;
+
+        SelectedStatus = _store.StoreStatus;
+
+        bool result = await AuthService.ChangeStoreStatus(_store);
+
+        if (result)
+        {
+
+        }
+        else
+        {
+            
+        }
+    }
 }

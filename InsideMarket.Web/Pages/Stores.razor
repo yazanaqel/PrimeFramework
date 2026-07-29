@@ -10,73 +10,76 @@ else
 {
 
 
+    <PageTitle>Stores</PageTitle>
 
-    <MudGrid>
+    <div class="products-page page-content">
+        <header class="d-flex align-items-center justify-content-between mb-4">
+            <div>
+                <h2 class="page-title">Stores</h2>
+                <p class="page-subtitle">Manage Stores.</p>
+            </div>
+            <div>
+                <input class="form-control form-control-dark" placeholder="Search products..." @bind="query" />
+            </div>
+        </header>
 
-        <MudItem xs="12">
-
-            <MudTextField T="string"
-                          Label="Search"
-                          @bind-Value="SearchText"
-                          Immediate="true"
-                          Clearable="true" />
-        </MudItem>
-
-        @if(string.IsNullOrEmpty(SearchText))
-        {
-            @foreach(var store in _stores)
+        <section class="products-grid">
+            @foreach(var p in Filtered)
             {
-                <MudItem xs="6">
-                    <MudCard>
-                        <MudImage Src="@store.Image" Alt="Mug" Elevation="25" />
-                        <MudCardContent>
-                            <MudText Typo="Typo.h5">@store.Name</MudText>
-                            <MudText Typo="Typo.body2">@store.Description</MudText>
-                        </MudCardContent>
-                        <MudCardActions>
-                            <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => NavigateToMarket(store.StoreId))">
-                                Details
-                            </MudButton>
-                        </MudCardActions>
-                    </MudCard>
-                </MudItem>
+                <article class="product-card card bg-surface">
+                    <div class="product-media" style="background-image: url('@p.ImageCover'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+                        <div class="badge @BadgeClass(p.StoreStatus)">@BadgeText(p.StoreStatus)</div>
+                    </div>
+                    <div class="product-body p-3">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div>
+                                <div class="product-title">@p.Name</div>
+                                <div class="product-meta small text-muted">@p.Description</div>
+                            </div>
+                            <div class="product-avatar" style="background-image: url('@p.Image');" title="profile"></div>
+                        </div>
+
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="rating" title="stars">
+                                @for(int i = 1;i <= 5;i++)
+                                {
+                                    <svg class="star" width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M12 .587l3.668 7.431L23.5 9.748l-5.75 5.603L19.334 24 12 20.013 4.666 24l1.584-8.649L.5 9.748l7.832-1.73L12 .587z" fill="@(i <= Math.Round(3.3) ? "#f6c84c" : "rgba(255,255,255,0.06)")" />
+                                    </svg>
+                                }
+                            </div>
+
+                            <div>
+                                <button class="btn btn-primary btn-sm" onclick="@(() => NavigateToMarket(p.StoreId))">Details</button>
+                            </div>
+                        </div>
+                    </div>
+                </article>
             }
+        </section>
+    </div>
+
+    <style>
+        .form-control-dark {
+            background: #0b1116;
+            border: 1px solid var(--border);
+            color: var(--text);
+            width: 260px
         }
-        else if(!string.IsNullOrEmpty(SearchText))
-        {
-            @foreach(var store in searchList)
-            {
-                <MudItem xs="6">
-                    <MudCard>
-                        <MudImage Src="@store.Image" Alt="Mug" Elevation="25" />
-                        <MudCardContent>
-                            <MudText Typo="Typo.h5">@store.Name</MudText>
-                            <MudText Typo="Typo.body2">@store.Description</MudText>
-                        </MudCardContent>
-                        <MudCardActions>
-                            <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => NavigateToMarket(store.StoreId))">
-                                Details
-                            </MudButton>
-                        </MudCardActions>
-                    </MudCard>
-                </MudItem>
-            }
-        }
-
-
-
-    </MudGrid>
+    </style>
 
 }
 
 
-
-
 @code {
 
-
     private List<Store> _stores = new();
-    private List<Store> searchList = new();
+    string query = string.Empty;
+
+    IEnumerable<Store> Filtered => string.IsNullOrWhiteSpace(query)
+        ? _stores
+        : _stores.Where(p => p.Name.Contains(query,StringComparison.OrdinalIgnoreCase) || p.Description.Contains(query,StringComparison.OrdinalIgnoreCase));
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -92,29 +95,21 @@ else
         Nav.NavigateTo($"/store/details/{id}");
     }
 
-    private string? _searchText;
-
-    private string? SearchText
+    string BadgeText(StoreStatus b) => b switch
     {
-        get => _searchText;
-        set
-        {
-            _searchText = value;
-            UpdateResults();
-        }
-    }
+        StoreStatus.Active => "Active",
+        StoreStatus.Suspended => "Suspended",
+        StoreStatus.Draft => "Draft",
+        _ => string.Empty
+    };
 
-    private void UpdateResults()
+    string BadgeClass(StoreStatus b) => b switch
     {
-        if(searchList is not null && string.IsNullOrEmpty(_searchText))
-        {
-            searchList = _stores;
-            return;
-        }
+        StoreStatus.Active => "badge--new",
+        StoreStatus.Suspended => "badge--discount",
+        StoreStatus.Draft => "badge--soon",
+        _ => string.Empty
+    };
 
-        searchList = _stores
-            .Where(x => x.Name.Contains(_searchText,StringComparison.OrdinalIgnoreCase))
-            .ToList();
-    }
 }
 
