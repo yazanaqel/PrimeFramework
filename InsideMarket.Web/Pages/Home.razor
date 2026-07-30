@@ -1,22 +1,33 @@
 ﻿@page "/"
+@attribute [Authorize(Roles = "ADMIN")]
 @inject AuthenticationStateProvider AuthProvider
+@inject IAuthService AuthService
 @inject NavigationManager Nav
 
-<MudProgressLinear Color="Color.Primary" Size="Size.Small" Indeterminate="true" />
+@if(_info is not null)
+{
+    <section id="specialty">
+        <h2 class="glitch">Dashboard</h2>
+        <h2 class="glitch">Admin: @_info.Email</h2>
+    </section>
+
+
+}
+else
+{
+    <MudProgressLinear Color="Color.Primary" Size="Size.Small" Indeterminate="true" />
+}
+
+
+
 
 @code {
+
+    private UserProfileInfo? _info;
+
     protected override async Task OnInitializedAsync()
     {
-        var authState = await AuthProvider.GetAuthenticationStateAsync();
-        var user = authState.User;
-
-        if(user.Identity?.IsAuthenticated == true && user.IsInRole("ADMIN"))
-        {
-            Nav.NavigateTo("/dashboard",true);
-        }
-        else
-        {
-            Nav.NavigateTo("/login",true);
-        }
+        _info = await AuthService.GetUserProfileAsync();
     }
+
 }

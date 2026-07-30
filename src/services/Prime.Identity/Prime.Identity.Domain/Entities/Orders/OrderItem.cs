@@ -1,4 +1,5 @@
 ﻿using Domain.Primitives;
+using Prime.Identity.Domain.Entities.Enums;
 using Prime.Identity.Domain.Entities.Products;
 using Prime.Identity.Domain.Entities.Stores;
 
@@ -18,6 +19,7 @@ public sealed class OrderItem : Entity<OrderItemId>, IAuditableEntity
     public ProductId ProductId { get; private set; }
     public Order Order { get; private set; }
     public OrderId OrderId { get; private set; }
+    public OrderItemStatus OrderItemStatus { get; private set; } 
 
     // EF Core
     private OrderItem() { }
@@ -25,11 +27,11 @@ public sealed class OrderItem : Entity<OrderItemId>, IAuditableEntity
     // Factory
     public static OrderItem Create(ProductId productId,OrderId orderId,decimal unitPrice,int quantity)
     {
-        if(quantity <= 0)
-            throw new ArgumentException("Quantity must be greater than zero.");
+        //if(quantity <= 0)
+        //    throw new ArgumentException("Quantity must be greater than zero.");
 
-        if(unitPrice <= 0)
-            throw new ArgumentException("Unit price must be greater than zero.");
+        //if(unitPrice <= 0)
+        //    throw new ArgumentException("Unit price must be greater than zero.");
 
         return new OrderItem
         {
@@ -37,7 +39,9 @@ public sealed class OrderItem : Entity<OrderItemId>, IAuditableEntity
             ProductId = productId,
             OrderId = orderId,
             UnitPrice = unitPrice,
-            Quantity = quantity
+            Quantity = quantity,
+            CreatedAt = DateTime.UtcNow,
+            OrderItemStatus = OrderItemStatus.Suspended,
         };
     }
 

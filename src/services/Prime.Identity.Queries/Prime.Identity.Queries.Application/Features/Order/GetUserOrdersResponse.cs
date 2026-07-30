@@ -1,3 +1,7 @@
-﻿namespace Prime.Identity.Queries.Application.Features.Order;
+﻿using Prime.Identity.Queries.Domain.Entities.Business;
+using Prime.Identity.Queries.Domain.Entities.Enums;
+using System.Xml.Linq;
 
-public record GetUserOrdersResponse(string StoreName,string ProductName);
+namespace Prime.Identity.Queries.Application.Features.Order;
+
+public record GetUserOrdersResponse(string StoreName,string ProductName,OrderItemStatus OrderItemStatus);

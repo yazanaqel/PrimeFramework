@@ -7,4 +7,6 @@ public interface IOrderService
 {
     Task<Result<List<GetStoreOrdersResponse>>> GetStoreOrders(CancellationToken ct = default);
     Task<Result<List<GetUserOrdersResponse>>> GetUserOrders(CancellationToken ct = default);
+    Task<Result<GetOrderResponse>> GetOrderById(string orderId,CancellationToken ct = default);
+
 }

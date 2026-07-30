@@ -1,14 +1,10 @@
 ﻿using Application.Abstractions.Messaging;
 using CSharpFunctionalExtensions;
-using MediatR;
 using Prime.Identity.Application.Abstractions;
 using Prime.Identity.Application.Abstractions.Auth;
-using Prime.Identity.Application.Features.Product.Create;
-using Prime.Identity.Domain.Entities.Orders;
 using Prime.Identity.Domain.Entities.Products;
 using Prime.Identity.Domain.Entities.Users;
 using Prime.Identity.Domain.Specifications.Business;
-using System.Text.RegularExpressions;
 
 namespace Prime.Identity.Application.Features.Order.Create;
 
@@ -76,11 +72,11 @@ internal sealed class CreateOrderCommandHandler(
 
             await _orderRepository.AddAsync(order,ct);
 
-            List<OrderItem> orderItems = new List<OrderItem>();
+            List<Domain.Entities.Orders.OrderItem> orderItems = new List<Domain.Entities.Orders.OrderItem>();
 
             foreach(var product in storeProducts)
             {
-                var orderItem = OrderItem
+                var orderItem = Domain.Entities.Orders.OrderItem
                     .Create(product.Id,order.Id,product.UnitPrice,5);
 
                 orderItems.Add(orderItem);

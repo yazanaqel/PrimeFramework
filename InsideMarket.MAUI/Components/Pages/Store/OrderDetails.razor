@@ -1,0 +1,110 @@
+﻿@page "/store/order-details/{id}"
+@attribute [Authorize(Roles = "MERCHANT")]
+@inject IOrderService OrderService
+
+@if(getOrderResponse is not null)
+{
+    <section id="menu">
+        <div class="menu-container">
+            <div class="menu-category">
+                <h3>Order Details</h3>
+                <ul class="menu-list">
+
+                    
+                    <li>
+                        <div class="form-group">
+                            <label for="@getOrderResponse.Email">Email</label>
+                            <span class="menu-item-name">@getOrderResponse.Email</span>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="form-group">
+                            <label for="@getOrderResponse.PhoneNumber">Phone Number</label>
+                            <span class="menu-item-name">@getOrderResponse.PhoneNumber</span>
+                        </div>
+                    </li>
+
+                    <li>
+                        <div class="form-group">
+                            <label for="@getOrderResponse.OrderItems">Order Items</label>
+                            @foreach(var item in getOrderResponse.OrderItems)
+                            {
+                                <span class="menu-item-name">@item.ProductName</span>
+
+                                <div class="form-group">
+                                    <label for="@item.OrderItemStatus">Change Order Status</label>
+                                    <InputSelect class="form-select" @bind-Value="item.OrderItemStatus">
+                                        @foreach(var value in Enum.GetValues<InsideMarket.MAUI.Enums.OrderItemStatus>())
+                                        {
+                                            <option value="@value">@value</option>
+                                        }
+                                    </InputSelect>
+                                </div>
+                            }
+                        </div>
+                    </li>
+
+                </ul>
+
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Success"
+                           Class="submit-btn"
+                           FullWidth="true"
+                           Disabled="@_isBusy"
+                           OnClick="Save">
+
+                    @if(_isBusy)
+                    {
+                        <MudProgressCircular Color="Color.Success" Size="Size.Small" Indeterminate="true" />
+                    }
+                    else
+                    {
+                        <MudText>Save</MudText>
+                    }
+                </MudButton>
+
+            </div>
+        </div>
+    </section>
+
+}
+else
+{
+    <Loading/>
+}
+
+@code {
+
+    [Parameter]
+    public string Id { get; set; } = string.Empty;
+    private GetOrderResponse? getOrderResponse;
+    private bool _isBusy = false;
+    private List<ChangeOrderItemStatus> changeOrderItemStatuses = [];
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var result = await OrderService.GetOrderById(Id);
+
+        if(result is not null)
+        {
+            getOrderResponse = result;
+        }
+    }
+
+    private async Task Save()
+    {
+
+        foreach(var item in getOrderResponse.OrderItems)
+        {
+            changeOrderItemStatuses.Add(new ChangeOrderItemStatus { OrderItemId = item.OrderItemId,OrderItemStatus = item.OrderItemStatus });
+        }
+
+        bool result = await OrderService.ChangeOrderItemStatus(changeOrderItemStatuses);
+
+        if (result)
+        {
+            
+        }
+
+    } 
+}

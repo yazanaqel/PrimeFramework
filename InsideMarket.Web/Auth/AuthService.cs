@@ -148,7 +148,9 @@ public class AuthService : BaseApiClient, IAuthService
 
     public async Task<bool> ChangeStoreStatus(StoreChangeStatus storeChangeStatus)
     {
-        var response = await _http.PostAsJsonAsync("https://localhost:7104/api/Stores/ChangeStoreStatus",storeChangeStatus);
+
+        var response = await SendWithRefreshAsync(() =>
+    _http.PostAsJsonAsync("https://localhost:7104/api/Stores/ChangeStoreStatus",storeChangeStatus));
 
         if(!response.IsSuccessStatusCode)
             return false;

@@ -22,6 +22,7 @@ public sealed class UserService(IReadRepository<AppUser> userIdentity,ICacheServ
     private const string baseUrl = "https://localhost:7104/";
     public async Task<Result<CursorPageResponse<GetAllUsersResponse>>> GetAllUsersAsync(GetAllUsersRequest request,CancellationToken ct)
     {
+
         UserCursor? after = null;
 
         if(!string.IsNullOrWhiteSpace(request.After))
@@ -55,10 +56,11 @@ public sealed class UserService(IReadRepository<AppUser> userIdentity,ICacheServ
 
         return new CursorPageResponse<GetAllUsersResponse>
         {
-            Items = pageItems.Select(u => new GetAllUsersResponse(u.Id,u.Email,u.CreatedAt)).ToList(),
+            Items = pageItems.Select(u => new GetAllUsersResponse(u.Id,u.UserName,u.Email,u.PhoneNumber,u.EmailConfirmed,u.CreatedAt)).ToList(),
             HasMore = hasMore,
             NextCursor = nextCursor
         };
+
     }
 
 
@@ -66,7 +68,7 @@ public sealed class UserService(IReadRepository<AppUser> userIdentity,ICacheServ
     {
         var cacheKey = $"_user_:{userId}";
 
-        var cached = await _cacheService.GetAsync<GetUserByIdResponse>(cacheKey, ct);
+        var cached = await _cacheService.GetAsync<GetUserByIdResponse>(cacheKey,ct);
 
         if(cached is not null)
             return cached;
@@ -99,14 +101,14 @@ public sealed class UserService(IReadRepository<AppUser> userIdentity,ICacheServ
                 store.ModifiedAt
                 );
 
-            var response1 = new GetUserByIdResponse(user.Id,user.Email,user.UserName,storeResponse);
+            var response1 = new GetUserByIdResponse(user.Id,user.UserName,user.Email,user.PhoneNumber,user.EmailConfirmed,user.CreatedAt,storeResponse);
 
             await _cacheService.SetAsync(cacheKey,response1,TimeSpan.FromMinutes(5),ct);
 
             return Result.Success(response1);
         }
 
-        var response2 = new GetUserByIdResponse(user.Id,user.Email,user.UserName,null);
+        var response2 = new GetUserByIdResponse(user.Id,user.UserName,user.Email,user.PhoneNumber,user.EmailConfirmed,user.CreatedAt,null);
 
         await _cacheService.SetAsync(cacheKey,response2,TimeSpan.FromMinutes(5),ct);
 

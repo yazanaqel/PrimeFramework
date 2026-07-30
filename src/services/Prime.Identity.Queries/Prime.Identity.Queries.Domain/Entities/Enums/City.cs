@@ -21,4 +21,3 @@ public enum City
     Idlib = 13,
     Suweida = 14,
 }
-

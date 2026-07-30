@@ -1,4 +1,5 @@
 ﻿@page "/user/details/{id}"
+@attribute [Authorize(Roles = "ADMIN")]
 @inject IAuthService AuthService
 
 
@@ -13,14 +14,15 @@ else
             <div class="menu-category">
                 <h3>@_user.Email</h3>
             </div>
-            @if(_user.GetOwnerStoreResponse is not null)
-            {
-                <div class="menu-category">
-                    <h3>@_user.GetOwnerStoreResponse.Name</h3>
-                </div>
-            }
         </div>
     </section>
+
+    @if(_user.GetOwnerStoreResponse is not null)
+    {
+        Guid.TryParse(_user.GetOwnerStoreResponse.StoreId,out Guid result);
+
+        <StoreDetails id="result"></StoreDetails>
+    }
 }
 @code {
 

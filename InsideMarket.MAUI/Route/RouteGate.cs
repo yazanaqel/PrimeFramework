@@ -36,6 +36,8 @@ public class RouteGate
         public const string CreateOrder = $"{ControllerName}CreateOrder";
         public const string GetUserOrders = $"{ControllerName}GetUserOrders";
         public const string GetStoreOrders = $"{ControllerName}GetStoreOrders";
+        public const string GetOrderById = $"{ControllerName}GetOrderById";
+        public const string ChangeOrderItemStatus = $"{ControllerName}ChangeOrderItemStatus";
 
 
     }

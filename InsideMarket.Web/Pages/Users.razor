@@ -10,31 +10,52 @@
 }
 else
 {
-    <section id="menu">
-        <div class="menu-container">
-            <div class="menu-category">
-                <h3>Users</h3>
-                <ul class="menu-list">
 
-                    @foreach(var user in _users)
-                    {
-                        <li>
-                            <a>
-                                <span class="menu-item-name">Email: @user.Email</span>
-                                <span class="menu-item-name">UserId: @user.UserId</span>
-                                <span class="menu-item-price">
-                                    <MudIconButton Icon="@Icons.Material.Filled.Info" Color="Color.Info" OnClick="@(() => GoToUserDetails(user.UserId))" />
-                                </span>
-                            </a>
-                        </li>
-                    }
-                </ul>
-
+    <div class="table-shell">
+        <div class="table-header">
+            <div class="table-title">
+                <h2>Title</h2>
+                <span>Subtitle</span>
+            </div>
+            <div class="table-pill">
+                <span class="table-pill-dot"></span>
+                <span>PillText</span>
             </div>
         </div>
-    </section>
 
+        <table>
+            <thead>
+                <tr>
+                    <th>User Id</th>
+                    <th>Username</th>
+                    <th>Email Confirmed</th>
+                    <th>Phone Number</th>
+                    <th class="cell-right">Created At</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach(var user in _users)
+                {
+                    <tr>
+                        <td class="cell-primary" onclick="@(() => GoToUserDetails(user.UserId))" style="cursor:pointer">@user.UserId</td>
+                        <td class="cell-muted">@user.UserName</td>
+                        <td>
+                            <span class="badge @GetStatusClass(user.EmailConfirmed.ToString().ToLower())">
+                                @user.EmailConfirmed
+                            </span>
+                        </td>
+                        <td class="cell-muted">@user.PhoneNumber</td>
+                        <td class="cell-right cell-accent">@user.CreatedAt</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
 
+        <div class="footer">
+            <span class="footer-text">FooterText</span>
+            <span class="footer-dot"></span>
+        </div>
+    </div>
 
 
 
@@ -58,4 +79,15 @@ else
     {
         Nav.NavigateTo($"/user/details/{userId}",true);
     }
+
+
+
+    private string GetStatusClass(string status) => status switch
+    {
+        "true" or "Stable" => "badge-green",
+        "In review" => "badge-yellow",
+        "false" => "badge-red",
+        _ => "badge-yellow"
+    };
 }
+

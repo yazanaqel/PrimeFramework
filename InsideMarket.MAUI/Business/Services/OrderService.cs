@@ -59,4 +59,36 @@ public class OrderService(IHttpClientFactory httpClientFactory) : IOrderService
             return Enumerable.Empty<GetStoreOrdersResponse>();
         }
     }
+
+    public async Task<GetOrderResponse> GetOrderById(string orderId)
+    {
+        var response = await _httpRead.GetAsync($"{OrderRouteGate.GetOrderById}/{orderId}");
+        response.EnsureSuccessStatusCode();
+
+        if(response.IsSuccessStatusCode)
+        {
+            var result = await response.Content.ReadFromJsonAsync<GetOrderResponse>();
+
+            if(result is null)
+                return new GetOrderResponse();
+
+            return result;
+        }
+        else
+        {
+            return new GetOrderResponse();
+        }
+    }
+
+    public async Task<bool> ChangeOrderItemStatus(List<ChangeOrderItemStatus> changeOrderItemStatus)
+    {
+        var response = await _httpWrite.PostAsJsonAsync(OrderRouteGate.ChangeOrderItemStatus,changeOrderItemStatus);
+
+        response.EnsureSuccessStatusCode();
+
+        if(!response.IsSuccessStatusCode)
+            return false;
+
+        return true;
+    }
 }

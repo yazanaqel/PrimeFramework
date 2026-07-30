@@ -11,7 +11,7 @@ using System.Data;
 
 namespace WebApi.Controllers;
 
-[Authorize]
+//[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class HomeController(ReadOnlyDbContext applicationDbContext,IUserService userService) : Controller

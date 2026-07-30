@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Prime.Identity.Application.Abstractions;
+using Prime.Identity.Domain.Repositories;
 using Prime.Identity.Infrastructure.Abstractions;
 using Prime.Identity.Infrastructure.Services;
 
@@ -37,6 +38,8 @@ public static class InfrastructureRegistration
         services.AddScoped<IUnitOfWork,ApplicationDbContext>();
 
         services.AddScoped<IImageService,ImageService>();
+
+        services.AddScoped<IOrderItemService,OrderItemService>();
 
         services.AddScoped(typeof(IRepository<>),typeof(Repository<>));
 

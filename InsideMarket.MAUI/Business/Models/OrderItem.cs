@@ -1,4 +1,6 @@
-﻿namespace InsideMarket.MAUI.Business.Models;
+﻿using InsideMarket.MAUI.Enums;
+
+namespace InsideMarket.MAUI.Business.Models;
 
 public class OrderItem
 {
@@ -20,9 +22,33 @@ public class GetUserOrdersResponse
 {
     public string StoreName { get; set; } = string.Empty;
     public string ProductName { get; set; } = string.Empty;
+    public OrderItemStatus OrderItemStatus { get; set; }
+
 }
 public class GetStoreOrdersResponse
 {
     public string UserId { get; set; } = string.Empty;
+    public string OrderId { get; set; } = string.Empty;
+    public string ProductName { get; set; } = string.Empty; 
+}
+public class GetOrderResponse
+{
+    public string OrderId { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
+    public string PhoneNumber { get; set; } = string.Empty;
+    public IEnumerable<OrderItemResponse>? OrderItems { get; set; }
+}
+
+public class OrderItemResponse
+{
+    public string OrderItemId { get; set; } = string.Empty;
     public string ProductName { get; set; } = string.Empty;
+    public OrderItemStatus OrderItemStatus { get; set; }
+
+}
+public class ChangeOrderItemStatus
+{
+    public string OrderItemId { get; set; } = string.Empty;
+    public OrderItemStatus OrderItemStatus { get; set; }
+
 }

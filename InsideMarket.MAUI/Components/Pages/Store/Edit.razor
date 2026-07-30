@@ -86,8 +86,7 @@ else
                            Color="Color.Success"
                            Class="submit-btn"
                            FullWidth="true"
-                           Disabled="@_isBusy"
-                           OnClick="Save">
+                           Disabled="@_isBusy">
 
                     @if(_isBusy)
                     {
@@ -118,8 +117,10 @@ else
                     {
                         <li>
                             <a>
-                                <span class="menu-item-name">@item.UserId</span>
-                                <span class="menu-item-price">$@item.ProductName</span>
+                                <span class="menu-item-price">@item.ProductName</span>
+                                <span class="menu-item-price">
+                                    <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Warning" onclick="@(() => GoToOrderDetails(item.OrderId))" />
+                                </span>
                             </a>
                         </li>
                     }
@@ -134,7 +135,7 @@ else
     <section id="home">
 
         <p class="hero-subtitle">
-            you don't have orders yet! see some <MudLink Color="Color.Success" Href="/house/all-products">products</MudLink>.
+            you don't have orders yet!
         </p>
 
     </section>
@@ -160,9 +161,9 @@ else
 
     }
 
-    private void Save()
+    private void GoToOrderDetails(string orderId)
     {
-
+        Nav.NavigateTo($"/store/order-details/{orderId}",true);
     }
 
 }

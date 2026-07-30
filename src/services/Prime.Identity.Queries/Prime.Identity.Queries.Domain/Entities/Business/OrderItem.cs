@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Prime.Identity.Queries.Domain.Entities.Enums;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -17,4 +18,5 @@ public class OrderItem
     public Guid ProductId { get;  set; }
     public Order? Order { get;  set; }
     public Guid OrderId { get;  set; }
+    public OrderItemStatus OrderItemStatus { get; set; }
 }
