@@ -20,9 +20,8 @@ public class CreateOrderRequest
 }
 public class GetUserOrdersResponse
 {
+    public string OrderId { get; set; } = string.Empty;
     public string StoreName { get; set; } = string.Empty;
-    public string ProductName { get; set; } = string.Empty;
-    public OrderItemStatus OrderItemStatus { get; set; }
 
 }
 public class GetStoreOrdersResponse

@@ -50,12 +50,7 @@ public class OrderService(
 
         var orders = await _orderRepository.ListAsync(new GetUserOrdersSpec(userId),ct);
 
-        var responses = orders.Select(o =>
-        new GetUserOrdersResponse(
-            o.Store?.Name ?? "Unknown",
-            string.Join(", ",
-            o.OrderItems.Select(oi => oi.Product?.Name ?? "Unknown")),
-            o.OrderItems.Select(s => s.OrderItemStatus).First())).ToList();
+        var responses = orders.Select(o => new GetUserOrdersResponse(o.Id.ToString(),o.Store.Name)).ToList();
 
         return Result.Success(responses);
     }

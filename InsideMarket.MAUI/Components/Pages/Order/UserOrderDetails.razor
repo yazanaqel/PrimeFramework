@@ -1,0 +1,75 @@
+﻿@page "/order/user-order-details/{id}"
+@using InsideMarket.MAUI.Enums
+@attribute [Authorize]
+@inject IOrderService OrderService
+
+@if(getOrderResponse is not null)
+{
+    <section id="menu">
+        <div class="menu-container">
+            <div class="menu-category">
+                <h3>Order Details</h3>
+                <ul class="menu-list">
+
+                    
+                    <li>
+                        <div class="form-group">
+                            <label for="@getOrderResponse.Email">Email</label>
+                            <span class="menu-item-name">@getOrderResponse.Email</span>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="form-group">
+                            <label for="@getOrderResponse.PhoneNumber">Phone Number</label>
+                            <span class="menu-item-name">@getOrderResponse.PhoneNumber</span>
+                        </div>
+                    </li>
+
+                    <li>
+                        <div class="form-group">
+                            <label for="@getOrderResponse.OrderItems">Order Items</label>
+                            @foreach(var item in getOrderResponse.OrderItems)
+                            {
+                                <span class="menu-item-name">@StatusText(item.OrderItemStatus) @item.OrderItemStatus </span>
+                                <span class="menu-item-price">@item.ProductName</span>
+                                <br />
+                            }
+                        </div>
+                    </li>
+
+                </ul>
+
+            </div>
+        </div>
+    </section>
+
+}
+else
+{
+    <Loading />
+}
+
+@code {
+
+    [Parameter]
+    public string Id { get; set; } = string.Empty;
+    private GetOrderResponse? getOrderResponse;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var result = await OrderService.GetOrderById(Id);
+
+        if(result is not null)
+        {
+            getOrderResponse = result;
+        }
+    }
+
+    string StatusText(OrderItemStatus orderItemStatus) => orderItemStatus switch
+    {
+        OrderItemStatus.Accepted => "✅",
+        OrderItemStatus.Suspended => "⏰",
+        OrderItemStatus.Canceled => "❌",
+        _ => string.Empty
+    };
+}

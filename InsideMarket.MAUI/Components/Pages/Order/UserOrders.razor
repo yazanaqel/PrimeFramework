@@ -1,7 +1,7 @@
 ﻿@page "/order/user-orders"
 @attribute [Authorize]
 @inject IOrderService OrderService
-
+@inject NavigationManager Nav
 
 @if(_userOrders.Any())
 {
@@ -16,9 +16,11 @@
                     {
                         <li>
                             <a>
-                                <span class="menu-item-name">@item.StoreName</span>
-                                <span class="menu-item-price">@item.ProductName</span>
-                                <span class="menu-item-price">@item.OrderItemStatus</span>
+                                <span class="menu-item-name">@item.OrderId</span>
+                                <span class="menu-item-price">@item.StoreName</span>
+                                <span class="menu-item-price">
+                                    <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Warning" onclick="@(() => GoToOrderDetails(item.OrderId))" />
+                                </span>
                             </a>
                         </li>
                     }
@@ -48,5 +50,8 @@ else
         _userOrders = await OrderService.GetUserOrders();
     }
 
-
+    private void GoToOrderDetails(string orderId)
+    {
+        Nav.NavigateTo($"/order/user-order-details/{orderId}",true);
+    }
 }
