@@ -1,9 +1,11 @@
 ﻿using CSharpFunctionalExtensions;
 using Domain.Abstractions;
 using Prime.Identity.Queries.Application.Abstractions.Auth;
+using Prime.Identity.Queries.Application.Abstractions.Cache;
 using Prime.Identity.Queries.Application.Features.Category;
 using Prime.Identity.Queries.Application.Features.Product;
 using Prime.Identity.Queries.Application.Features.Product.GetStoreProducts;
+using Prime.Identity.Queries.Application.Features.Store.GetAllStores;
 using Prime.Identity.Queries.Domain.Entities.Business;
 using Prime.Identity.Queries.Domain.Entities.Enums;
 using Prime.Identity.Queries.Domain.Specifications.Business;
@@ -13,11 +15,13 @@ namespace Prime.Identity.Queries.Application.Features.User.Service.Business;
 public class ProductService(
     IReadRepository<Domain.Entities.Business.Product> productRepository,
     IReadRepository<Domain.Entities.Business.Category> categoryRepository,
-    ICurrentUserService currentUserService) : IProductService
+    ICurrentUserService currentUserService,
+    ICacheService cacheService) : IProductService
 {
     private readonly IReadRepository<Domain.Entities.Business.Product> _productRepository = productRepository;
     private readonly IReadRepository<Domain.Entities.Business.Category> _categoryRepository = categoryRepository;
     private readonly ICurrentUserService _currentUserService = currentUserService;
+    private readonly ICacheService _cacheService = cacheService;
     private const string baseUrl = "https://localhost:7104/";
     public async Task<Result<List<GetStoreProductsResponse>>> GetStoreProductsAsync(CancellationToken ct = default)
     {
@@ -69,10 +73,18 @@ public class ProductService(
     public async Task<Result<List<GetAllProductsResponse>>> GetCategorizedProducts(CancellationToken ct = default)
     {
 
+        var cacheKey = $"_products_";
+
+        var cached = await _cacheService.GetAsync<List<GetAllProductsResponse>>(cacheKey,ct);
+
+        if(cached is not null)
+            return cached;
+
         var products = await _productRepository.ListAsync(new GetAllProductsSpec(),ct);
 
-
         var response = products.Select(p => new GetAllProductsResponse(p.Category.Name,p.Id.ToString(),p.Name,baseUrl+p.Image)).ToList();
+
+        await _cacheService.SetAsync(cacheKey,response,TimeSpan.FromMinutes(5),ct);
 
         return Result.Success(response);
     }

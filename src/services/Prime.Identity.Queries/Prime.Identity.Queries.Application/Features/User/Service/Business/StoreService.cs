@@ -1,25 +1,35 @@
-﻿using CSharpFunctionalExtensions;
+﻿using Application.Features.User.GetUserById;
+using CSharpFunctionalExtensions;
 using Domain.Abstractions;
 using Prime.Identity.Queries.Application.Abstractions.Auth;
+using Prime.Identity.Queries.Application.Abstractions.Cache;
 using Prime.Identity.Queries.Application.Features.Store.GetAllStores;
 using Prime.Identity.Queries.Application.Features.Store.GetOwnerStore;
 using Prime.Identity.Queries.Domain.Specifications.Business;
 
 namespace Prime.Identity.Queries.Application.Features.User.Service.Business;
 
-public class StoreService(IReadRepository<Domain.Entities.Business.Store> storeRepository,ICurrentUserService currentUserService) : IStoreService
+public class StoreService(IReadRepository<Domain.Entities.Business.Store> storeRepository,ICurrentUserService currentUserService,ICacheService cacheService) : IStoreService
 {
     private readonly IReadRepository<Domain.Entities.Business.Store> _storeRepository = storeRepository;
     private readonly ICurrentUserService _currentUserService = currentUserService;
+    private readonly ICacheService _cacheService = cacheService;
     private const string baseUrl = "https://localhost:7104/";
     public async Task<Result<IEnumerable<GetAllStoresResponse>>> GetAllStores(GetAllStoresRequest request,CancellationToken ct = default)
     {
+        var cacheKey = $"_stores_";
+
+        var cached = await _cacheService.GetAsync<List<GetAllStoresResponse>>(cacheKey,ct);
+
+        if(cached is not null)
+            return cached;
+
 
         var spec = new GetAllStoresSpec(request.Search);
 
         var stores = await _storeRepository.ListAsync(spec,ct);
 
-        return Result.Success(stores.Select(s => new GetAllStoresResponse(
+        var response = stores.Select(s => new GetAllStoresResponse(
             s.Id,
             s.UserId,
             s.CategoryId,
@@ -33,7 +43,11 @@ public class StoreService(IReadRepository<Domain.Entities.Business.Store> storeR
             s.StoreStatus,
             s.CreatedAt,
             s.ModifiedAt
-        )));
+        ));
+
+        await _cacheService.SetAsync(cacheKey,response,TimeSpan.FromMinutes(5),ct);
+
+        return Result.Success(response);
     }
 
 
