@@ -7,7 +7,7 @@
 
 <div class="login-page d-flex align-items-center justify-content-center">
     <div class="login-card card bg-surface p-4">
-        <h3 class="mb-1">Sign in to BlazorApp1</h3>
+        <h3 class="mb-1">Sign in to Inside Market</h3>
         <p class="text-muted mb-3">Enter your credentials to access the admin dashboard.</p>
 
         <EditForm Model="@_loginRequest" OnValidSubmit="LoginAsync">
@@ -24,14 +24,14 @@
                 <InputText type="password" class="form-control" @bind-Value="_loginRequest.Password" />
             </div>
 
-            <div class="form-check mb-3">
+@*             <div class="form-check mb-3">
                 <InputCheckbox class="form-check-input" @bind-Value="_loginRequest.Remember" />
                 <label class="form-check-label ms-2">Remember me</label>
-            </div>
+            </div> *@
 
             <div class="d-flex justify-content-between align-items-center">
                 <button class="btn btn-primary" type="submit">Sign in</button>
-                <a class="btn btn-link">Forgot password?</a>
+@*                 <a class="btn btn-link">Forgot password?</a> *@
             </div>
         </EditForm>
     </div>

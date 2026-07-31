@@ -103,7 +103,7 @@ public sealed class UserService(IReadRepository<AppUser> userIdentity,ICacheServ
 
             var response1 = new GetUserByIdResponse(user.Id,user.UserName,user.Email,user.PhoneNumber,user.EmailConfirmed,user.CreatedAt,storeResponse);
 
-            await _cacheService.SetAsync(cacheKey,response1,TimeSpan.FromMinutes(5),ct);
+            await _cacheService.SetAsync(cacheKey,response1,TimeSpan.FromMinutes(1),ct);
 
             return Result.Success(response1);
         }

@@ -45,7 +45,7 @@ public class StoreService(IReadRepository<Domain.Entities.Business.Store> storeR
             s.ModifiedAt
         ));
 
-        await _cacheService.SetAsync(cacheKey,response,TimeSpan.FromMinutes(5),ct);
+        await _cacheService.SetAsync(cacheKey,response,TimeSpan.FromMinutes(1),ct);
 
         return Result.Success(response);
     }

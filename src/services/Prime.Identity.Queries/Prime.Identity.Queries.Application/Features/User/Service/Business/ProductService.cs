@@ -84,7 +84,7 @@ public class ProductService(
 
         var response = products.Select(p => new GetAllProductsResponse(p.Category.Name,p.Id.ToString(),p.Name,baseUrl+p.Image)).ToList();
 
-        await _cacheService.SetAsync(cacheKey,response,TimeSpan.FromMinutes(5),ct);
+        await _cacheService.SetAsync(cacheKey,response,TimeSpan.FromMinutes(1),ct);
 
         return Result.Success(response);
     }

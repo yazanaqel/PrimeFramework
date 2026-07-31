@@ -1360,7 +1360,7 @@ footer {
 		inset: 0;
 		background-size: cover;
 		background-position: center;
-		filter: blur(5px);
+		filter: blur(2px);
 		opacity: .4;
 		transform: scale(1.1);
 		transition: opacity .6s var(--eq), transform .6s var(--eq);

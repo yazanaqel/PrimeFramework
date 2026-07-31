@@ -29,9 +29,9 @@ else
 
         </div>
 
-        @if(_sliderStores.Count > 0)
+        @if(_stores.Count > 0)
         {
-            @foreach(var item in _sliderStores)
+            @foreach(var item in _stores)
             {
                 <div class="slide">
 
@@ -117,7 +117,7 @@ else
 
 
     private List<InsideMarket.MAUI.Business.Models.Store> _stores = new();
-    private List<InsideMarket.MAUI.Business.Models.Store> _sliderStores = new();
+    // private List<InsideMarket.MAUI.Business.Models.Store> _sliderStores = new();
     private List<InsideMarket.MAUI.Business.Models.Store> searchList = new();
 
     protected override async Task OnInitializedAsync()
@@ -129,12 +129,12 @@ else
         {
             _stores = response.Where(s => s.StoreStatus == Enums.StoreStatus.Active).ToList();
 
-            if(_stores.Count > 3)
-            {
-                var firstFive = _stores.Skip(1).Take(2).ToList();
+            // if(_stores.Count > 3)
+            // {
+            //     var firstFive = _stores.Skip(1).Take(2).ToList();
 
-                _sliderStores.AddRange(firstFive);
-            }
+            //     _sliderStores.AddRange(firstFive);
+            // }
 
         }
     }
