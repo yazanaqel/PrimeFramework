@@ -121,6 +121,8 @@
         if(categories != null)
         {
             _childrenResponse = categories.Where(c => c.ChildrenResponses != null).SelectMany(c => c.ChildrenResponses).ToList();
+
+            _product.CategoryId = _childrenResponse.First().CategoryId;
         }
 
     }

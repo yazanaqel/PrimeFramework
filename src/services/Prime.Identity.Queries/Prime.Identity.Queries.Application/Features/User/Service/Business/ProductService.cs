@@ -4,6 +4,8 @@ using Prime.Identity.Queries.Application.Abstractions.Auth;
 using Prime.Identity.Queries.Application.Features.Category;
 using Prime.Identity.Queries.Application.Features.Product;
 using Prime.Identity.Queries.Application.Features.Product.GetStoreProducts;
+using Prime.Identity.Queries.Domain.Entities.Business;
+using Prime.Identity.Queries.Domain.Entities.Enums;
 using Prime.Identity.Queries.Domain.Specifications.Business;
 
 namespace Prime.Identity.Queries.Application.Features.User.Service.Business;
@@ -44,9 +46,8 @@ public class ProductService(
     }
     public async Task<Result<List<GetStoreProductsResponse>>> GetStoreProductsById(Guid storeId,CancellationToken ct = default)
     {
-        var spec = new GetStoreProductsByStoreIdSpec(storeId);
 
-        var products = await _productRepository.ListAsync(spec,ct);
+        var products = await _productRepository.ListAsync(new GetStoreProductsByStoreIdSpec(storeId),ct);
 
         if(products is null || !products.Any())
             return Result.Failure<List<GetStoreProductsResponse>>("No products found for the current user.");
@@ -65,34 +66,13 @@ public class ProductService(
         return Result.Success(response);
     }
 
-    public async Task<Result<List<GetAllCategoriesResponse>>> GetCategorizedProducts(CancellationToken ct = default)
+    public async Task<Result<List<GetAllProductsResponse>>> GetCategorizedProducts(CancellationToken ct = default)
     {
-        var categories = await _categoryRepository.ListAsync(new GetAllCategoriesSpec(),ct);
 
-        var response = categories
-            .Where(i => i.ParentCategoryId is null)
-            .Select(p => new GetAllCategoriesResponse(
-                p.Id,
-                p.Name,
-                p.Description,
-                p.SubCategories.Select(c => new ChildrenResponse(
-                    c.Id,
-                    c.Name,
-                    c.Description,
-                    c.ParentCategoryId,
-                    c.Products.Select(product => new GetStoreProductsResponse(
-                        product.Id,
-                        product.StoreId,
-                        product.CategoryId,
-                        product.Name,
-                        baseUrl + product.Image,
-                        product.Description,
-                        product.CreatedAt,
-                        product.ModifiedAt
-                    )).ToList()
-                )).ToList()
-            ))
-            .ToList();
+        var products = await _productRepository.ListAsync(new GetAllProductsSpec(),ct);
+
+
+        var response = products.Select(p => new GetAllProductsResponse(p.Category.Name,p.Id.ToString(),p.Name,baseUrl+p.Image)).ToList();
 
         return Result.Success(response);
     }
@@ -106,7 +86,7 @@ public class ProductService(
         if(response == null)
             return Result.Failure<GetProductByIdResponse>("No product found!");
 
-        var similarProducts = await _productRepository.ListAsync(new GetSimilarProductsSpec(response.CategoryId,productId), ct);
+        var similarProducts = await _productRepository.ListAsync(new GetSimilarProductsSpec(response.CategoryId,productId),ct);
 
         var result = new GetProductByIdResponse(response.Id,response.Name,baseUrl + response.Image,response.Description,response.UnitPrice,response.CreatedAt,response.ModifiedAt,
             new Store.GetOwnerStore.GetOwnerStoreResponse(response.Store.Id,response.Store.UserId,response.Store.CategoryId,response.Store.Name,"","",response.Store.Description,response.Store.Address,response.Store.IsShippingAvailable,response.Store.City,response.Store.StoreStatus,response.Store.CreatedAt,response.Store.ModifiedAt),
@@ -119,8 +99,8 @@ public class ProductService(
                         product.Description,
                         product.CreatedAt,
                         product.ModifiedAt
-                    )).ToList()); 
-                        
+                    )).ToList());
+
         return Result.Success(result);
     }
 }

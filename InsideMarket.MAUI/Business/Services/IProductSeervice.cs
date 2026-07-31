@@ -6,6 +6,6 @@ public interface IProductService
 {
     Task<GetProductByIdResponse> GetProductById(Guid productId);
     Task<List<Product>> GetStoreProducts(Guid? storeId = null);
-    Task<IEnumerable<Category>> GetCategorizedProducts();
+    Task<IEnumerable<GetAllProductsResponse>> GetCategorizedProducts();
     Task<bool> CreateProduct(Product product);
 }

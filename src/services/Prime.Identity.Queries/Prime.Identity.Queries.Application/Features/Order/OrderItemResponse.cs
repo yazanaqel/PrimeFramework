@@ -2,4 +2,4 @@
 
 namespace Prime.Identity.Queries.Application.Features.Order;
 
-public record OrderItemResponse(string OrderItemId,string ProductName,OrderItemStatus OrderItemStatus);
+public record OrderItemResponse(string OrderItemId,string ProductName,int Quantity,OrderItemStatus OrderItemStatus);

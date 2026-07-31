@@ -35,3 +35,11 @@ public class GetProductByIdResponse
     public Store Store { get; set; } = new();
     public List<Product>? SimilarProducts { get; set; } = new List<Product>();
 }
+
+public class GetAllProductsResponse
+{
+    public string CategoryName { get; set; } = string.Empty;
+    public string ProductId { get; set; } = string.Empty;
+    public string ProductName { get; set; } = string.Empty;
+    public string Image { get; set; } = string.Empty;
+}

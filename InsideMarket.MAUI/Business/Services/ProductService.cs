@@ -38,22 +38,22 @@ public class ProductService(IHttpClientFactory httpClientFactory) : IProductServ
             return true;
     }
 
-    public async Task<IEnumerable<Category>> GetCategorizedProducts()
+    public async Task<IEnumerable<GetAllProductsResponse>> GetCategorizedProducts()
     {
         var response = await _httpRead.GetAsync(ProductRouteGate.GetCategorizedProducts);
 
         if(response.IsSuccessStatusCode)
         {
-            var result = await response.Content.ReadFromJsonAsync<IEnumerable<Category>>();
+            var result = await response.Content.ReadFromJsonAsync<IEnumerable<GetAllProductsResponse>>();
 
             if(result is null)
-                return new List<Category>();
+                return new List<GetAllProductsResponse>();
 
             return result;
         }
         else
         {
-            return new List<Category>();
+            return new List<GetAllProductsResponse>();
         }
     }
 

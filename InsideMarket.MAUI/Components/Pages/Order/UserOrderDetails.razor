@@ -30,8 +30,11 @@
                             <label for="@getOrderResponse.OrderItems">Order Items</label>
                             @foreach(var item in getOrderResponse.OrderItems)
                             {
-                                <span class="menu-item-name">@StatusText(item.OrderItemStatus) @item.OrderItemStatus </span>
-                                <span class="menu-item-price">@item.ProductName</span>
+                                <span class="menu-item-name">Status: @StatusText(item.OrderItemStatus) @item.OrderItemStatus </span>
+                                <br />
+                                <span class="menu-item-name">ProductName: @item.ProductName</span>
+                                <br />
+                                <span class="menu-item-price">Quantity: @item.Quantity</span>
                                 <br />
                             }
                         </div>

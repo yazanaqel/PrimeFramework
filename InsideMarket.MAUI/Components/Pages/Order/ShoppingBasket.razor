@@ -17,7 +17,12 @@
                         <li>
                             <a>
                                 <span class="menu-item-name">@item.Name</span>
-                                <span class="menu-item-price">$@item.UnitPrice | Quantity: @item.Quantity</span>
+                                <span class="menu-item-price">$@(item.UnitPrice * item.Quantity)</span>
+                                <div class="quantity-controls">
+                                    <MudButton Variant="Variant.Text" Size="Size.Small" OnClick="@(() => DecreaseQuantity(item))">-</MudButton>
+                                    <span class="menu-item-quantity">@item.Quantity</span>
+                                    <MudButton Variant="Variant.Text" Size="Size.Small" OnClick="@(() => IncreaseQuantity(item))">+</MudButton>
+                                </div>
                             </a>
                         </li>
                     }
@@ -93,5 +98,27 @@ else
             _isBusy = false;
             // Handle order submission failure (e.g., show an error message)
         }
+    }
+
+    private void IncreaseQuantity(ProductInBasket item)
+    {
+        if(item is null)
+            return;
+        if(item.Quantity >= 5)
+            return;
+        item.Quantity++;
+        BasketService.SaveBasket(_productsInBasket);
+        StateHasChanged();
+    }
+
+    private void DecreaseQuantity(ProductInBasket item)
+    {
+        if(item is null)
+            return;
+        if(item.Quantity <= 1)
+            return;
+        item.Quantity--;
+        BasketService.SaveBasket(_productsInBasket);
+        StateHasChanged();
     }
 }

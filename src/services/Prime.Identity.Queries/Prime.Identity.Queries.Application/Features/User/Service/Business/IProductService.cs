@@ -9,6 +9,6 @@ public interface IProductService
 {
     Task<Result<List<GetStoreProductsResponse>>> GetStoreProductsAsync(CancellationToken ct = default);
     Task<Result<List<GetStoreProductsResponse>>> GetStoreProductsById(Guid storeId, CancellationToken ct = default);
-    Task<Result<List<GetAllCategoriesResponse>>> GetCategorizedProducts(CancellationToken ct = default);
+    Task<Result<List<GetAllProductsResponse>>> GetCategorizedProducts(CancellationToken ct = default);
     Task<Result<GetProductByIdResponse>> GetProductById(Guid productId, CancellationToken ct = default);
 }

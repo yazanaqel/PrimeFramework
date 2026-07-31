@@ -27,8 +27,8 @@ public sealed class OrderItem : Entity<OrderItemId>, IAuditableEntity
     // Factory
     public static OrderItem Create(ProductId productId,OrderId orderId,decimal unitPrice,int quantity)
     {
-        //if(quantity <= 0)
-        //    throw new ArgumentException("Quantity must be greater than zero.");
+        if(quantity <= 0)
+            throw new ArgumentException("Quantity must be greater than zero.");
 
         //if(unitPrice <= 0)
         //    throw new ArgumentException("Unit price must be greater than zero.");

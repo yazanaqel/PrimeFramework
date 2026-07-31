@@ -29,8 +29,10 @@
                             <label for="@getOrderResponse.OrderItems">Order Items</label>
                             @foreach(var item in getOrderResponse.OrderItems)
                             {
-                                <span class="menu-item-name">@item.ProductName</span>
-
+                                <span class="menu-item-name">Product Name: @item.ProductName</span>
+                                <br />
+                                <span class="menu-item-name">Quantity: @item.Quantity</span>
+                                <br />
                                 <div class="form-group">
                                     <label for="@item.OrderItemStatus">Change Order Status</label>
                                     <InputSelect class="form-select" @bind-Value="item.OrderItemStatus">
@@ -40,6 +42,7 @@
                                         }
                                     </InputSelect>
                                 </div>
+                                <br />
                             }
                         </div>
                     </li>

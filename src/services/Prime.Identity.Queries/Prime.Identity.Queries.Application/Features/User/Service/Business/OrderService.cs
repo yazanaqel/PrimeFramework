@@ -67,7 +67,7 @@ public class OrderService(
         var user = await _userIdentity.FirstOrDefaultAsync(new GetUserByIdSpecification(order.UserId),ct);
 
 
-        var responses = new GetOrderResponse(order.Id.ToString(),user.Email,user.PhoneNumber,order.OrderItems.Select(o=> new OrderItemResponse(o.Id.ToString(),o.Product.Name,o.OrderItemStatus)));
+        var responses = new GetOrderResponse(order.Id.ToString(),user.Email,user.PhoneNumber,order.OrderItems.Select(o=> new OrderItemResponse(o.Id.ToString(),o.Product.Name,o.Quantity,o.OrderItemStatus)));
 
 
         return Result.Success(responses);

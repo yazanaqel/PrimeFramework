@@ -76,8 +76,10 @@ internal sealed class CreateOrderCommandHandler(
 
             foreach(var product in storeProducts)
             {
+                int quantity = command.Request.FirstOrDefault(i => i.ProductId == product.Id.Value.ToString()).Quantity;
+
                 var orderItem = Domain.Entities.Orders.OrderItem
-                    .Create(product.Id,order.Id,product.UnitPrice,5);
+                    .Create(product.Id,order.Id,product.UnitPrice,quantity);
 
                 orderItems.Add(orderItem);
             }

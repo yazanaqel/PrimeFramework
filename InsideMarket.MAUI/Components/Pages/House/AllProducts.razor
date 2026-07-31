@@ -1,5 +1,7 @@
 ﻿@page "/house/all-products"
 @inject IProductService ProductService
+@inject NavigationManager Nav
+
 
 <MudGrid>
 
@@ -16,101 +18,83 @@
     {
         <Loading />
     }
-    else if(string.IsNullOrEmpty(SearchText))
+    else
     {
-        foreach(var category in _categorizedProducts)
+        foreach(var item in _groupedProducts)
         {
             <MudItem xs="12">
-                <MudText Typo="Typo.h4">@category.Name</MudText>
+                <h2 class="glitch">@item.Key</h2>
             </MudItem>
-
-            foreach(var sub in category.ChildrenResponses)
+            
+            @foreach(var product in item.Value)
             {
 
-                <MudItem xs="12">
-                    <MudText Typo="Typo.h4">@sub.Name</MudText>
-                </MudItem>
-
-                foreach(var product in sub.Products)
-                {
-
-                    <MudItem xs="6">
-                        <MudCard>
-                            <MudImage Src="@product.Image" Alt="Mug" Elevation="25" />
-                            <MudCardContent>
-                                <MudText Typo="Typo.h5">@product.Name</MudText>
-                                <MudText Typo="Typo.body2">@product.Description</MudText>
-                            </MudCardContent>
-                            <MudCardActions>
-                                @*                             <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => NavigateToMarket(product.Id))">
+                <MudItem xs="6">
+                    <MudCard>
+                        <MudImage Src="@product.Image" Alt="Mug" Elevation="25" />
+                        <MudCardContent>
+                            <MudText Typo="Typo.h5">@product.ProductName</MudText>
+                        </MudCardContent>
+                        <MudCardActions>
+                            <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => NavigateToProductDetails(product.ProductId))">
                                 Details
-                            </MudButton> *@
-                                @*                         <MudIconButton Icon="@Icons.Material.Outlined.AddToQueue"
-                                       Color="Color.Default"
-                                       Size="Size.Medium"
-                                       OnClick="@(() => AddToCart(product))" /> *@
-                            </MudCardActions>
-                        </MudCard>
-                    </MudItem>
-                }
+                            </MudButton>
+                        </MudCardActions>
+                    </MudCard>
+                </MudItem>
             }
-
+               
         }
     }
-    else if(searchList is not null && !string.IsNullOrEmpty(SearchText))
+@*     else if(searchList is not null && !string.IsNullOrEmpty(SearchText))
     {
-        foreach(var category in searchList)
+        foreach(var item in _categorizedProducts)
         {
             <MudItem xs="12">
-                <MudText Typo="Typo.h4">@category.Name</MudText>
+                <MudText Typo="Typo.h4">@item.CategoryName</MudText>
             </MudItem>
 
-            foreach(var sub in category.ChildrenResponses)
+   
+            foreach(var product in _categorizedProducts.Where(i => i.CategoryName == item.CategoryName))
             {
 
-                <MudItem xs="12">
-                    <MudText Typo="Typo.h4">@sub.Name</MudText>
-                </MudItem>
-
-                foreach(var product in sub.Products)
-                {
-
-                    <MudItem xs="6">
-                        <MudCard>
-                            <MudImage Src="@product.Image" Alt="Mug" Elevation="25" />
-                            <MudCardContent>
-                                <MudText Typo="Typo.h5">@product.Name</MudText>
-                                <MudText Typo="Typo.body2">@product.Description</MudText>
-                            </MudCardContent>
-                            <MudCardActions>
-                                @*                             <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => NavigateToMarket(product.Id))">
+                <MudItem xs="6">
+                    <MudCard>
+                        <MudImage Src="@product.Image" Alt="Mug" Elevation="25" />
+                        <MudCardContent>
+                            <MudText Typo="Typo.h5">@product.ProductName</MudText>
+                        </MudCardContent>
+                        <MudCardActions>
+                            <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => NavigateToProductDetails(product.ProductId))">
                                 Details
-                            </MudButton> *@
-                                @*                         <MudIconButton Icon="@Icons.Material.Outlined.AddToQueue"
-                                       Color="Color.Default"
-                                       Size="Size.Medium"
-                                       OnClick="@(() => AddToCart(product))" /> *@
-                            </MudCardActions>
-                        </MudCard>
-                    </MudItem>
-                }
+                            </MudButton>
+                        </MudCardActions>
+                    </MudCard>
+                </MudItem>
             }
+
+            
         }
-    }
+    } *@
 </MudGrid>
 
 
-@code {
+    @code {
 
 
-    private IEnumerable<InsideMarket.MAUI.Business.Models.Category>? _categorizedProducts = new List<InsideMarket.MAUI.Business.Models.Category>();
-    private IEnumerable<InsideMarket.MAUI.Business.Models.Category>? searchList = new List<InsideMarket.MAUI.Business.Models.Category>();
+    private IEnumerable<InsideMarket.MAUI.Business.Models.GetAllProductsResponse>? _categorizedProducts = new List<InsideMarket.MAUI.Business.Models.GetAllProductsResponse>();
+    private IEnumerable<InsideMarket.MAUI.Business.Models.GetAllProductsResponse>? searchList = new List<InsideMarket.MAUI.Business.Models.GetAllProductsResponse>();
+    private Dictionary<string,List<InsideMarket.MAUI.Business.Models.GetAllProductsResponse>> _groupedProducts = new Dictionary<string,List<InsideMarket.MAUI.Business.Models.GetAllProductsResponse>>();
 
     protected override async Task OnInitializedAsync()
     {
         _categorizedProducts = await ProductService.GetCategorizedProducts();
 
+        _groupedProducts = _categorizedProducts
+            .GroupBy(p => p.CategoryName)
+            .ToDictionary(g => g.Key,g => g.ToList());
     }
+
 
     private string? _searchText;
 
@@ -134,8 +118,12 @@
 
         searchList = _categorizedProducts
             .Where(x =>
-                x.Name.Contains(_searchText,StringComparison.OrdinalIgnoreCase))
+                x.CategoryName.Contains(_searchText,StringComparison.OrdinalIgnoreCase)||
+            x.ProductName.Contains(_searchText,StringComparison.OrdinalIgnoreCase))
             .ToList();
     }
-
+    private void NavigateToProductDetails(string id)
+    {
+        Nav.NavigateTo($"/product/details/{id}");
+    }
 }
